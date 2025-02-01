@@ -11,6 +11,6 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 **📖 How to Use**
 
   Clone the repo
-  _git clone https://github.com/rishitaggarwal1/striver-sheet-cpp.git_
+  _git clone [https://github.com/rishitaggarwal1/striver-sheet-cpp.git](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution.git)_
   
   Navigate to topics and run solutions in C++17/20.

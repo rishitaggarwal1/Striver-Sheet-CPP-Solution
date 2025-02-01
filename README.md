@@ -14,3 +14,15 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
   _git clone [https://github.com/rishitaggarwal1/striver-sheet-cpp.git](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution.git)_
   
   Navigate to topics and run solutions in C++17/20.
+
+<!---LeetCode Topics Start-->
+# LeetCode Topics
+## Array
+|  |
+| ------- |
+| [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
+## Binary Search
+|  |
+| ------- |
+| [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
+<!---LeetCode Topics End-->

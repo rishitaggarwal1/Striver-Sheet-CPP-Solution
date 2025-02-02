@@ -20,6 +20,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Array
 |  |
 | ------- |
+| [0001-two-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0001-two-sum) |
 | [0035-search-insert-position](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0035-search-insert-position) |
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
@@ -37,4 +38,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0237-delete-node-in-a-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0237-delete-node-in-a-linked-list) |
+## Hash Table
+|  |
+| ------- |
+| [0001-two-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0001-two-sum) |
 <!---LeetCode Topics End-->

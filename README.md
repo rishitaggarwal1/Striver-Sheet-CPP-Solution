@@ -25,6 +25,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0053-maximum-subarray](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0053-maximum-subarray) |
 | [0075-sort-colors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0075-sort-colors) |
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
+| [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
 | [0169-majority-element](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0169-majority-element) |
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
@@ -38,6 +39,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0053-maximum-subarray](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0053-maximum-subarray) |
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
+| [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
 ## Linked List
 |  |
 | ------- |

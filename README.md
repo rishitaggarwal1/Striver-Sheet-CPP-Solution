@@ -32,6 +32,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
+| [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 ## Binary Search
 |  |
 | ------- |
@@ -60,6 +61,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0075-sort-colors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0075-sort-colors) |
 | [0125-valid-palindrome](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0125-valid-palindrome) |
+| [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 ## String
 |  |
 | ------- |
@@ -119,4 +121,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0128-longest-consecutive-sequence](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0128-longest-consecutive-sequence) |
+## Simulation
+|  |
+| ------- |
+| [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 <!---LeetCode Topics End-->

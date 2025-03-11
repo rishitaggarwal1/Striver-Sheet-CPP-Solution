@@ -49,6 +49,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Linked List
 |  |
 | ------- |
+| [0002-add-two-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0002-add-two-numbers) |
 | [0019-remove-nth-node-from-end-of-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0019-remove-nth-node-from-end-of-list) |
 | [0141-linked-list-cycle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0141-linked-list-cycle) |
 | [0142-linked-list-cycle-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0142-linked-list-cycle-ii) |
@@ -95,6 +96,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Math
 |  |
 | ------- |
+| [0002-add-two-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0002-add-two-numbers) |
 | [0048-rotate-image](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0048-rotate-image) |
 | [2649-count-total-number-of-colored-cells](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2649-count-total-number-of-colored-cells) |
 ## Sorting
@@ -152,5 +154,6 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Recursion
 |  |
 | ------- |
+| [0002-add-two-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0002-add-two-numbers) |
 | [0234-palindrome-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0234-palindrome-linked-list) |
 <!---LeetCode Topics End-->

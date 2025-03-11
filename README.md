@@ -49,6 +49,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Linked List
 |  |
 | ------- |
+| [0019-remove-nth-node-from-end-of-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0019-remove-nth-node-from-end-of-list) |
 | [0141-linked-list-cycle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0141-linked-list-cycle) |
 | [0142-linked-list-cycle-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0142-linked-list-cycle-ii) |
 | [0234-palindrome-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0234-palindrome-linked-list) |
@@ -68,6 +69,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Two Pointers
 |  |
 | ------- |
+| [0019-remove-nth-node-from-end-of-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0019-remove-nth-node-from-end-of-list) |
 | [0031-next-permutation](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0031-next-permutation) |
 | [0075-sort-colors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0075-sort-colors) |
 | [0125-valid-palindrome](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0125-valid-palindrome) |

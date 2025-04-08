@@ -38,6 +38,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
+| [3656-minimum-number-of-operations-to-make-elements-in-array-distinct](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3656-minimum-number-of-operations-to-make-elements-in-array-distinct) |
 ## Binary Search
 |  |
 | ------- |
@@ -74,6 +75,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
+| [3656-minimum-number-of-operations-to-make-elements-in-array-distinct](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3656-minimum-number-of-operations-to-make-elements-in-array-distinct) |
 ## Two Pointers
 |  |
 | ------- |

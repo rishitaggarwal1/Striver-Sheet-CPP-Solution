@@ -138,6 +138,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0094-binary-tree-inorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0094-binary-tree-inorder-traversal) |
 | [0144-binary-tree-preorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0144-binary-tree-preorder-traversal) |
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
+| [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
 ## Depth-First Search
 |  |
 | ------- |
@@ -150,6 +151,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0094-binary-tree-inorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0094-binary-tree-inorder-traversal) |
 | [0144-binary-tree-preorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0144-binary-tree-preorder-traversal) |
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
+| [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
 ## Union Find
 |  |
 | ------- |
@@ -185,4 +187,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
+## Binary Search Tree
+|  |
+| ------- |
+| [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
 <!---LeetCode Topics End-->

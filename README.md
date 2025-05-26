@@ -98,6 +98,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0125-valid-palindrome](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0125-valid-palindrome) |
 | [0151-reverse-words-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0151-reverse-words-in-a-string) |
 | [0205-isomorphic-strings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0205-isomorphic-strings) |
+| [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 ## Counting
@@ -197,4 +198,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
+## String Matching
+|  |
+| ------- |
+| [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
 <!---LeetCode Topics End-->

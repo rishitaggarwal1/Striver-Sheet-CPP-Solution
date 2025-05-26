@@ -96,6 +96,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## String
 |  |
 | ------- |
+| [0008-string-to-integer-atoi](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0008-string-to-integer-atoi) |
 | [0125-valid-palindrome](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0125-valid-palindrome) |
 | [0151-reverse-words-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0151-reverse-words-in-a-string) |
 | [0205-isomorphic-strings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0205-isomorphic-strings) |

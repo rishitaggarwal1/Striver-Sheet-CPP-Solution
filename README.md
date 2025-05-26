@@ -72,6 +72,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0142-linked-list-cycle-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0142-linked-list-cycle-ii) |
 | [0160-intersection-of-two-linked-lists](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0160-intersection-of-two-linked-lists) |
 | [0169-majority-element](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0169-majority-element) |
+| [0205-isomorphic-strings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0205-isomorphic-strings) |
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
@@ -96,6 +97,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0125-valid-palindrome](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0125-valid-palindrome) |
 | [0151-reverse-words-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0151-reverse-words-in-a-string) |
+| [0205-isomorphic-strings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0205-isomorphic-strings) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 ## Counting

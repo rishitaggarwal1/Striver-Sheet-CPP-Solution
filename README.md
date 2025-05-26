@@ -74,6 +74,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0169-majority-element](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0169-majority-element) |
 | [0205-isomorphic-strings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0205-isomorphic-strings) |
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
+| [0242-valid-anagram](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0242-valid-anagram) |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
@@ -98,6 +99,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0125-valid-palindrome](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0125-valid-palindrome) |
 | [0151-reverse-words-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0151-reverse-words-in-a-string) |
 | [0205-isomorphic-strings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0205-isomorphic-strings) |
+| [0242-valid-anagram](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0242-valid-anagram) |
 | [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
@@ -121,6 +123,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0075-sort-colors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0075-sort-colors) |
 | [0169-majority-element](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0169-majority-element) |
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
+| [0242-valid-anagram](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0242-valid-anagram) |
 ## Divide and Conquer
 |  |
 | ------- |

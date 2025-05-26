@@ -25,6 +25,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0035-search-insert-position](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0035-search-insert-position) |
 | [0048-rotate-image](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0048-rotate-image) |
 | [0053-maximum-subarray](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0053-maximum-subarray) |
+| [0066-plus-one](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0066-plus-one) |
 | [0073-set-matrix-zeroes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0073-set-matrix-zeroes) |
 | [0075-sort-colors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0075-sort-colors) |
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
@@ -121,6 +122,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0002-add-two-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0002-add-two-numbers) |
 | [0013-roman-to-integer](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0013-roman-to-integer) |
 | [0048-rotate-image](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0048-rotate-image) |
+| [0066-plus-one](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0066-plus-one) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 | [2649-count-total-number-of-colored-cells](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2649-count-total-number-of-colored-cells) |
 ## Sorting

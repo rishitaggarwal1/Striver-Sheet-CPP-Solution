@@ -33,6 +33,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0128-longest-consecutive-sequence](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0128-longest-consecutive-sequence) |
 | [0169-majority-element](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0169-majority-element) |
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
+| [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
@@ -93,6 +94,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0151-reverse-words-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0151-reverse-words-in-a-string) |
 | [0160-intersection-of-two-linked-lists](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0160-intersection-of-two-linked-lists) |
 | [0234-palindrome-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0234-palindrome-linked-list) |
+| [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0908-middle-of-the-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0908-middle-of-the-linked-list) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 ## String
@@ -134,6 +136,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0169-majority-element](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0169-majority-element) |
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
 | [0242-valid-anagram](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0242-valid-anagram) |
+| [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 ## Divide and Conquer
 |  |
 | ------- |
@@ -210,6 +213,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Greedy
 |  |
 | ------- |
+| [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 ## Binary Search Tree
 |  |

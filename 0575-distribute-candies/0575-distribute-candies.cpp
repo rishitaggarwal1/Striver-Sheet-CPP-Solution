@@ -5,7 +5,7 @@ public:
         set<int> s;
         for(int i=0;i<n;i++)
             s.insert(candyType[i]);
-        if(s.size()<=n/2)
+        if(s.size()<n/2)
             return s.size();
         return n/2;
     }

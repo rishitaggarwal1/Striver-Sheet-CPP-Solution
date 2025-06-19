@@ -34,6 +34,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0066-plus-one](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0066-plus-one) |
 | [0073-set-matrix-zeroes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0073-set-matrix-zeroes) |
 | [0075-sort-colors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0075-sort-colors) |
+| [0081-search-in-rotated-sorted-array-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0081-search-in-rotated-sorted-array-ii) |
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
 | [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
 | [0128-longest-consecutive-sequence](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0128-longest-consecutive-sequence) |
@@ -56,6 +57,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0033-search-in-rotated-sorted-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0033-search-in-rotated-sorted-array) |
 | [0034-find-first-and-last-position-of-element-in-sorted-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0034-find-first-and-last-position-of-element-in-sorted-array) |
 | [0035-search-insert-position](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0035-search-insert-position) |
+| [0081-search-in-rotated-sorted-array-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0081-search-in-rotated-sorted-array-ii) |
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
 ## Dynamic Programming
 |  |

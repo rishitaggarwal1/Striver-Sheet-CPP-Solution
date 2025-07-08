@@ -187,6 +187,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0144-binary-tree-preorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0144-binary-tree-preorder-traversal) |
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
 | [0155-min-stack](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0155-min-stack) |
+| [0225-implement-stack-using-queues](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0225-implement-stack-using-queues) |
 | [0232-implement-queue-using-stacks](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0232-implement-queue-using-stacks) |
 | [0234-palindrome-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0234-palindrome-linked-list) |
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
@@ -244,6 +245,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Queue
 |  |
 | ------- |
+| [0225-implement-stack-using-queues](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0225-implement-stack-using-queues) |
 | [0232-implement-queue-using-stacks](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0232-implement-queue-using-stacks) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 ## Sliding Window
@@ -272,6 +274,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0155-min-stack](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0155-min-stack) |
+| [0225-implement-stack-using-queues](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0225-implement-stack-using-queues) |
 | [0232-implement-queue-using-stacks](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0232-implement-queue-using-stacks) |
 ## Monotonic Stack
 |  |

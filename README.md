@@ -49,6 +49,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
+| [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
@@ -64,6 +65,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0081-search-in-rotated-sorted-array-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0081-search-in-rotated-sorted-array-ii) |
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
+| [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 ## Dynamic Programming
 |  |
 | ------- |
@@ -234,6 +236,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
+| [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 ## Recursion
 |  |
@@ -258,6 +261,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0003-longest-substring-without-repeating-characters](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0003-longest-substring-without-repeating-characters) |
+| [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 ## Greedy
 |  |

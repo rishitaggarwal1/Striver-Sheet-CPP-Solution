@@ -49,6 +49,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
+| [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
@@ -104,6 +105,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [0575-distribute-candies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0575-distribute-candies) |
+| [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [3656-minimum-number-of-operations-to-make-elements-in-array-distinct](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3656-minimum-number-of-operations-to-make-elements-in-array-distinct) |
@@ -261,6 +263,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0003-longest-substring-without-repeating-characters](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0003-longest-substring-without-repeating-characters) |
+| [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 ## Greedy

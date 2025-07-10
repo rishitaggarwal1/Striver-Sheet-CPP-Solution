@@ -9,17 +9,9 @@ public:
             m[s[i]]=-1;
         while(j<n)
         {
-            if(m[s[j]]<i)
-            {
-                m[s[j]]=j;
-                if(j==n-1 && ans<(j-i+1))   ans=j-i+1;
-            }
-            else
-            {
-                if(ans<(j-i)) ans=j-i;
-                i=m[s[j]]+1;           
-                m[s[j]]=j;
-            }
+            i=max(i,m[s[j]]+1);
+            ans=max(ans,j-i+1);
+            m[s[j]]=j;
             j++;
         }
         return ans;

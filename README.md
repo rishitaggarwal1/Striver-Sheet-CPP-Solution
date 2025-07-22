@@ -115,6 +115,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0015-3sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0015-3sum) |
 | [0018-4sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0018-4sum) |
 | [0019-remove-nth-node-from-end-of-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0019-remove-nth-node-from-end-of-list) |
+| [0028-find-the-index-of-the-first-occurrence-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0028-find-the-index-of-the-first-occurrence-in-a-string) |
 | [0031-next-permutation](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0031-next-permutation) |
 | [0042-trapping-rain-water](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0042-trapping-rain-water) |
 | [0075-sort-colors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0075-sort-colors) |
@@ -135,6 +136,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0013-roman-to-integer](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0013-roman-to-integer) |
 | [0014-longest-common-prefix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0014-longest-common-prefix) |
 | [0020-valid-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0020-valid-parentheses) |
+| [0028-find-the-index-of-the-first-occurrence-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0028-find-the-index-of-the-first-occurrence-in-a-string) |
 | [0125-valid-palindrome](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0125-valid-palindrome) |
 | [0151-reverse-words-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0151-reverse-words-in-a-string) |
 | [0205-isomorphic-strings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0205-isomorphic-strings) |
@@ -279,6 +281,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## String Matching
 |  |
 | ------- |
+| [0028-find-the-index-of-the-first-occurrence-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0028-find-the-index-of-the-first-occurrence-in-a-string) |
 | [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
 ## Trie
 |  |

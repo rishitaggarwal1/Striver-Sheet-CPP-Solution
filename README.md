@@ -41,6 +41,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0128-longest-consecutive-sequence](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0128-longest-consecutive-sequence) |
 | [0169-majority-element](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0169-majority-element) |
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
+| [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
@@ -64,6 +65,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0034-find-first-and-last-position-of-element-in-sorted-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0034-find-first-and-last-position-of-element-in-sorted-array) |
 | [0035-search-insert-position](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0035-search-insert-position) |
 | [0081-search-in-rotated-sorted-array-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0081-search-in-rotated-sorted-array-ii) |
+| [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
@@ -125,6 +127,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0151-reverse-words-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0151-reverse-words-in-a-string) |
 | [0160-intersection-of-two-linked-lists](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0160-intersection-of-two-linked-lists) |
 | [0234-palindrome-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0234-palindrome-linked-list) |
+| [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0908-middle-of-the-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0908-middle-of-the-linked-list) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
@@ -253,6 +256,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
+| [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 ## Queue

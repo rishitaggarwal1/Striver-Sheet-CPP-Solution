@@ -172,6 +172,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 | [2649-count-total-number-of-colored-cells](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2649-count-total-number-of-colored-cells) |
+| [3830-find-closest-person](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3830-find-closest-person) |
 ## Sorting
 |  |
 | ------- |

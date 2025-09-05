@@ -172,6 +172,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0066-plus-one](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0066-plus-one) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
+| [2050-count-good-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2050-count-good-numbers) |
 | [2649-count-total-number-of-colored-cells](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2649-count-total-number-of-colored-cells) |
 | [3830-find-closest-person](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3830-find-closest-person) |
 ## Sorting
@@ -259,6 +260,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0206-reverse-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0206-reverse-linked-list) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
 | [0234-palindrome-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0234-palindrome-linked-list) |
+| [2050-count-good-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2050-count-good-numbers) |
 ## Bit Manipulation
 |  |
 | ------- |

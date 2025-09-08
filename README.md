@@ -199,6 +199,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0053-maximum-subarray](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0053-maximum-subarray) |
 | [0169-majority-element](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0169-majority-element) |
+| [0191-number-of-1-bits](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0191-number-of-1-bits) |
 | [0215-kth-largest-element-in-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0215-kth-largest-element-in-an-array) |
 ## Matrix
 |  |
@@ -270,6 +271,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Bit Manipulation
 |  |
 | ------- |
+| [0191-number-of-1-bits](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0191-number-of-1-bits) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
 | [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |

@@ -35,6 +35,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0066-plus-one](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0066-plus-one) |
 | [0073-set-matrix-zeroes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0073-set-matrix-zeroes) |
 | [0075-sort-colors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0075-sort-colors) |
+| [0078-subsets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0078-subsets) |
 | [0081-search-in-rotated-sorted-array-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0081-search-in-rotated-sorted-array-ii) |
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
 | [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
@@ -273,6 +274,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Bit Manipulation
 |  |
 | ------- |
+| [0078-subsets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0078-subsets) |
 | [0191-number-of-1-bits](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0191-number-of-1-bits) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
 | [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
@@ -344,4 +346,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
+## Backtracking
+|  |
+| ------- |
+| [0078-subsets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0078-subsets) |
 <!---LeetCode Topics End-->

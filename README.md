@@ -236,6 +236,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0144-binary-tree-preorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0144-binary-tree-preorder-traversal) |
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
 | [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
+| [0784-insert-into-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0784-insert-into-a-binary-search-tree) |
 ## Depth-First Search
 |  |
 | ------- |
@@ -249,6 +250,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0144-binary-tree-preorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0144-binary-tree-preorder-traversal) |
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
 | [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
+| [0784-insert-into-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0784-insert-into-a-binary-search-tree) |
 ## Union Find
 |  |
 | ------- |
@@ -307,6 +309,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
+| [0784-insert-into-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0784-insert-into-a-binary-search-tree) |
 ## String Matching
 |  |
 | ------- |

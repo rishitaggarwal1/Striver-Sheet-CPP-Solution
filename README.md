@@ -57,6 +57,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
+| [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [3251-maximum-area-of-longest-diagonal-rectangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3251-maximum-area-of-longest-diagonal-rectangle) |
@@ -231,6 +232,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
 | [1078-remove-outermost-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1078-remove-outermost-parentheses) |
 | [1737-maximum-nesting-depth-of-the-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1737-maximum-nesting-depth-of-the-parentheses) |
+| [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
 ## Tree
 |  |
 | ------- |
@@ -333,6 +335,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0042-trapping-rain-water](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0042-trapping-rain-water) |
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
+| [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
 ## Heap (Priority Queue)
 |  |
 | ------- |

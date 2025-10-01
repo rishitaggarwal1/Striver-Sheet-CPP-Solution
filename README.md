@@ -190,6 +190,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0066-plus-one](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0066-plus-one) |
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
+| [1642-water-bottles](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1642-water-bottles) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 | [2050-count-good-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2050-count-good-numbers) |
 | [2324-find-triangular-sum-of-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2324-find-triangular-sum-of-an-array) |
@@ -268,6 +269,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0054-spiral-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0054-spiral-matrix) |
+| [1642-water-bottles](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1642-water-bottles) |
 | [2260-divide-a-string-into-groups-of-size-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2260-divide-a-string-into-groups-of-size-k) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 | [2324-find-triangular-sum-of-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2324-find-triangular-sum-of-an-array) |

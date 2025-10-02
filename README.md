@@ -54,6 +54,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
+| [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
@@ -223,6 +224,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0048-rotate-image](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0048-rotate-image) |
 | [0054-spiral-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0054-spiral-matrix) |
 | [0073-set-matrix-zeroes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0073-set-matrix-zeroes) |
+| [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 ## Stack
 |  |
 | ------- |
@@ -381,6 +383,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
+| [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 ## Graph
 |  |
 | ------- |

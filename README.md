@@ -63,6 +63,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
+| [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
 | [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
@@ -95,6 +96,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0053-maximum-subarray](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0053-maximum-subarray) |
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
 | [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
+| [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 ## Linked List
 |  |
 | ------- |
@@ -233,6 +235,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
+| [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 ## Divide and Conquer
 |  |
@@ -350,6 +353,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0011-container-with-most-water](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0011-container-with-most-water) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
+| [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 ## Binary Search Tree
 |  |

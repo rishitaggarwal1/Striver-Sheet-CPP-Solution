@@ -61,6 +61,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [0739-daily-temperatures](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0739-daily-temperatures) |
 | [0792-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0792-binary-search) |
+| [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
@@ -241,6 +242,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
+| [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 ## Divide and Conquer
@@ -276,6 +278,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
 | [0739-daily-temperatures](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0739-daily-temperatures) |
+| [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [1078-remove-outermost-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1078-remove-outermost-parentheses) |
 | [1737-maximum-nesting-depth-of-the-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1737-maximum-nesting-depth-of-the-parentheses) |
 | [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
@@ -391,6 +394,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
 | [0739-daily-temperatures](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0739-daily-temperatures) |
+| [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
 ## Heap (Priority Queue)
 |  |

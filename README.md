@@ -64,6 +64,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
+| [1018-binary-prefix-divisible-by-5](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1018-binary-prefix-divisible-by-5) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
@@ -338,6 +339,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0191-number-of-1-bits](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0191-number-of-1-bits) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
 | [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
+| [1018-binary-prefix-divisible-by-5](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1018-binary-prefix-divisible-by-5) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [2323-minimum-bit-flips-to-convert-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2323-minimum-bit-flips-to-convert-number) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |

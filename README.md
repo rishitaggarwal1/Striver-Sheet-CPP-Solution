@@ -142,6 +142,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [0575-distribute-candies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0575-distribute-candies) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
+| [1015-smallest-integer-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1015-smallest-integer-divisible-by-k) |
 | [1264-maximum-number-of-words-you-can-type](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1264-maximum-number-of-words-you-can-type) |
 | [1890-sum-of-beauty-of-all-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1890-sum-of-beauty-of-all-substrings) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
@@ -222,6 +223,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0150-evaluate-reverse-polish-notation](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0150-evaluate-reverse-polish-notation) |
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
+| [1015-smallest-integer-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1015-smallest-integer-divisible-by-k) |
 | [1642-water-bottles](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1642-water-bottles) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 | [2050-count-good-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2050-count-good-numbers) |

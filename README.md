@@ -82,6 +82,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
 | [3251-maximum-area-of-longest-diagonal-rectangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3251-maximum-area-of-longest-diagonal-rectangle) |
+| [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 | [3656-minimum-number-of-operations-to-make-elements-in-array-distinct](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3656-minimum-number-of-operations-to-make-elements-in-array-distinct) |
 ## Binary Search
@@ -156,6 +157,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
+| [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3656-minimum-number-of-operations-to-make-elements-in-array-distinct](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3656-minimum-number-of-operations-to-make-elements-in-array-distinct) |
 | [3872-find-most-frequent-vowel-and-consonant](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3872-find-most-frequent-vowel-and-consonant) |
 ## Two Pointers
@@ -346,6 +348,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
+| [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 ## Recursion
 |  |

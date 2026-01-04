@@ -72,6 +72,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
+| [1390-four-divisors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1390-four-divisors) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
 | [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
@@ -237,6 +238,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
 | [1015-smallest-integer-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1015-smallest-integer-divisible-by-k) |
+| [1390-four-divisors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1390-four-divisors) |
 | [1642-water-bottles](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1642-water-bottles) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 | [2050-count-good-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2050-count-good-numbers) |

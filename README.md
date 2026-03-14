@@ -210,6 +210,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0981-time-based-key-value-store](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0981-time-based-key-value-store) |
 | [1078-remove-outermost-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1078-remove-outermost-parentheses) |
 | [1264-maximum-number-of-words-you-can-type](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1264-maximum-number-of-words-you-can-type) |
+| [1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n) |
 | [1737-maximum-nesting-depth-of-the-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1737-maximum-nesting-depth-of-the-parentheses) |
 | [1890-sum-of-beauty-of-all-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1890-sum-of-beauty-of-all-substrings) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
@@ -459,6 +460,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0078-subsets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0078-subsets) |
+| [1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n) |
 ## Combinatorics
 |  |
 | ------- |

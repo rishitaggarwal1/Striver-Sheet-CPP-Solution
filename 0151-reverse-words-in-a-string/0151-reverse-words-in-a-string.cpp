@@ -2,25 +2,13 @@ class Solution {
 public:
     string reverseWords(string s) {
         string st="",ans="";
-        for(int i=0;i<s.length();i++)
+        int n = s.length();
+        stringstream ss(s);
+        while(ss>>st)
         {
-            if(s[i]!=' ')
-            {
-                st+=s[i];
-            }
-            else if(st!="")
-            {
-                cout<<"Test\t"<<st<<endl;
-                if(ans!="")
-                    ans=st+ " " + ans;
-                else ans=st+ans;
-                st="";
-            }
+            ans= st+ " "+ ans;
         }
-        if(st=="")
-            return ans;
-        else if(ans=="")
-            return st;
-        return st+ " " +ans;
+        n=ans.length();
+        return ans.substr(0,n-1);
     }
 };

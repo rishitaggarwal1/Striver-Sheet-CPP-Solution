@@ -90,6 +90,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 | [3512-minimum-operations-to-make-array-sum-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3512-minimum-operations-to-make-array-sum-divisible-by-k) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
+| [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
 | [3637-trionic-array-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3637-trionic-array-i) |
 | [3643-flip-square-submatrix-vertically](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3643-flip-square-submatrix-vertically) |
 | [3656-minimum-number-of-operations-to-make-elements-in-array-distinct](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3656-minimum-number-of-operations-to-make-elements-in-array-distinct) |
@@ -167,6 +168,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
 | [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
+| [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
 | [3656-minimum-number-of-operations-to-make-elements-in-array-distinct](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3656-minimum-number-of-operations-to-make-elements-in-array-distinct) |
 | [3872-find-most-frequent-vowel-and-consonant](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3872-find-most-frequent-vowel-and-consonant) |
 ## Two Pointers
@@ -302,6 +304,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
 | [3070-count-submatrices-with-top-left-element-and-sum-less-than-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3070-count-submatrices-with-top-left-element-and-sum-less-than-k) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
+| [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
 | [3643-flip-square-submatrix-vertically](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3643-flip-square-submatrix-vertically) |
 ## Stack
 |  |
@@ -375,6 +378,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
+| [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
 ## Recursion
 |  |
 | ------- |
@@ -470,6 +474,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
+| [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
 ## Number Theory
 |  |
 | ------- |

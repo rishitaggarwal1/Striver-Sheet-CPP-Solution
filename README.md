@@ -83,6 +83,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
+| [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3070-count-submatrices-with-top-left-element-and-sum-less-than-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3070-count-submatrices-with-top-left-element-and-sum-less-than-k) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
 | [3251-maximum-area-of-longest-diagonal-rectangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3251-maximum-area-of-longest-diagonal-rectangle) |
@@ -259,6 +260,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2050-count-good-numbers](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2050-count-good-numbers) |
 | [2324-find-triangular-sum-of-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2324-find-triangular-sum-of-an-array) |
 | [2649-count-total-number-of-colored-cells](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2649-count-total-number-of-colored-cells) |
+| [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3336-water-bottles-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3336-water-bottles-ii) |
 | [3512-minimum-operations-to-make-array-sum-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3512-minimum-operations-to-make-array-sum-divisible-by-k) |
 | [3830-find-closest-person](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3830-find-closest-person) |
@@ -302,6 +304,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
+| [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3070-count-submatrices-with-top-left-element-and-sum-less-than-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3070-count-submatrices-with-top-left-element-and-sum-less-than-k) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
 | [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
@@ -367,6 +370,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2260-divide-a-string-into-groups-of-size-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2260-divide-a-string-into-groups-of-size-k) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 | [2324-find-triangular-sum-of-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2324-find-triangular-sum-of-an-array) |
+| [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3336-water-bottles-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3336-water-bottles-ii) |
 ## Prefix Sum
 |  |

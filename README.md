@@ -75,6 +75,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1390-four-divisors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1390-four-divisors) |
 | [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
+| [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
 | [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
@@ -200,6 +201,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0696-count-binary-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0696-count-binary-substrings) |
 | [0908-middle-of-the-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0908-middle-of-the-linked-list) |
 | [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
+| [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 | [3643-flip-square-submatrix-vertically](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3643-flip-square-submatrix-vertically) |
@@ -286,6 +288,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
+| [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 ## Divide and Conquer
 |  |
@@ -429,6 +432,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
+| [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 ## Binary Search Tree
 |  |

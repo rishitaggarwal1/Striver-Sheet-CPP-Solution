@@ -73,6 +73,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1390-four-divisors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1390-four-divisors) |
+| [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
@@ -111,6 +112,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
 | [0981-time-based-key-value-store](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0981-time-based-key-value-store) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
+| [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 ## Dynamic Programming
 |  |
@@ -197,6 +199,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0696-count-binary-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0696-count-binary-substrings) |
 | [0908-middle-of-the-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0908-middle-of-the-linked-list) |
+| [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 | [3643-flip-square-submatrix-vertically](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3643-flip-square-submatrix-vertically) |
@@ -282,6 +285,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
+| [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 ## Divide and Conquer
 |  |

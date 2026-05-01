@@ -55,6 +55,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
 | [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
+| [0396-rotate-function](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0396-rotate-function) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
@@ -123,6 +124,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0053-maximum-subarray](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0053-maximum-subarray) |
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
 | [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
+| [0396-rotate-function](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0396-rotate-function) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
@@ -265,6 +267,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0150-evaluate-reverse-polish-notation](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0150-evaluate-reverse-polish-notation) |
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
 | [0231-power-of-two](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0231-power-of-two) |
+| [0396-rotate-function](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0396-rotate-function) |
 | [1015-smallest-integer-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1015-smallest-integer-divisible-by-k) |
 | [1390-four-divisors](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1390-four-divisors) |
 | [1642-water-bottles](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1642-water-bottles) |

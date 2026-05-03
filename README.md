@@ -227,6 +227,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0345-reverse-vowels-of-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0345-reverse-vowels-of-a-string) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
 | [0696-count-binary-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0696-count-binary-substrings) |
+| [0796-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0796-rotate-string) |
 | [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
 | [0981-time-based-key-value-store](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0981-time-based-key-value-store) |
 | [1078-remove-outermost-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1078-remove-outermost-parentheses) |
@@ -454,6 +455,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0028-find-the-index-of-the-first-occurrence-in-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0028-find-the-index-of-the-first-occurrence-in-a-string) |
+| [0796-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0796-rotate-string) |
 | [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
 ## Trie
 |  |

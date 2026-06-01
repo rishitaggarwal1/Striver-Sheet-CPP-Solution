@@ -79,6 +79,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
+| [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
 | [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
@@ -300,6 +301,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
+| [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
 ## Divide and Conquer
@@ -446,6 +448,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
+| [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
 ## Binary Search Tree
 |  |
 | ------- |

@@ -134,6 +134,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
+| [3751-total-waviness-of-numbers-in-range-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3751-total-waviness-of-numbers-in-range-i) |
 ## Linked List
 |  |
 | ------- |
@@ -287,6 +288,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3336-water-bottles-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3336-water-bottles-ii) |
 | [3512-minimum-operations-to-make-array-sum-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3512-minimum-operations-to-make-array-sum-divisible-by-k) |
+| [3751-total-waviness-of-numbers-in-range-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3751-total-waviness-of-numbers-in-range-i) |
 | [3830-find-closest-person](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3830-find-closest-person) |
 ## Sorting
 |  |
@@ -516,6 +518,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
 | [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
+| [3751-total-waviness-of-numbers-in-range-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3751-total-waviness-of-numbers-in-range-i) |
 ## Number Theory
 |  |
 | ------- |

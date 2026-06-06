@@ -87,6 +87,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2324-find-triangular-sum-of-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2324-find-triangular-sum-of-an-array) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
+| [2574-left-and-right-sum-differences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2574-left-and-right-sum-differences) |
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
 | [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3070-count-submatrices-with-top-left-element-and-sum-less-than-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3070-count-submatrices-with-top-left-element-and-sum-less-than-k) |
@@ -410,6 +411,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1423-maximum-points-you-can-obtain-from-cards](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1423-maximum-points-you-can-obtain-from-cards) |
+| [2574-left-and-right-sum-differences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2574-left-and-right-sum-differences) |
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
 | [3070-count-submatrices-with-top-left-element-and-sum-less-than-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3070-count-submatrices-with-top-left-element-and-sum-less-than-k) |
 | [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |

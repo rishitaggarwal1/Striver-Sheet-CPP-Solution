@@ -81,6 +81,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [2144-maximum-difference-between-increasing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-maximum-difference-between-increasing-elements) |
 | [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
+| [2196-create-binary-tree-from-descriptions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2196-create-binary-tree-from-descriptions) |
 | [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
 | [2271-rearrange-array-elements-by-sign](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2271-rearrange-array-elements-by-sign) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
@@ -179,6 +180,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1264-maximum-number-of-words-you-can-type](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1264-maximum-number-of-words-you-can-type) |
 | [1890-sum-of-beauty-of-all-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1890-sum-of-beauty-of-all-substrings) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
+| [2196-create-binary-tree-from-descriptions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2196-create-binary-tree-from-descriptions) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
@@ -373,6 +375,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
 | [0784-insert-into-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0784-insert-into-a-binary-search-tree) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
+| [2196-create-binary-tree-from-descriptions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2196-create-binary-tree-from-descriptions) |
 ## Depth-First Search
 |  |
 | ------- |
@@ -390,6 +393,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
 | [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
 | [0784-insert-into-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0784-insert-into-a-binary-search-tree) |
+| [2196-create-binary-tree-from-descriptions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2196-create-binary-tree-from-descriptions) |
 ## Union Find
 |  |
 | ------- |

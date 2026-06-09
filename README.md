@@ -105,6 +105,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3637-trionic-array-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3637-trionic-array-i) |
 | [3643-flip-square-submatrix-vertically](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3643-flip-square-submatrix-vertically) |
 | [3656-minimum-number-of-operations-to-make-elements-in-array-distinct](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3656-minimum-number-of-operations-to-make-elements-in-array-distinct) |
+| [3689-maximum-total-subarray-value-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3689-maximum-total-subarray-value-i) |
 ## Binary Search
 |  |
 | ------- |
@@ -473,6 +474,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
 | [3633-earliest-finish-time-for-land-and-water-rides-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3633-earliest-finish-time-for-land-and-water-rides-i) |
 | [3635-earliest-finish-time-for-land-and-water-rides-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3635-earliest-finish-time-for-land-and-water-rides-ii) |
+| [3689-maximum-total-subarray-value-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3689-maximum-total-subarray-value-i) |
 ## Binary Search Tree
 |  |
 | ------- |

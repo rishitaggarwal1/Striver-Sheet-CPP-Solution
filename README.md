@@ -180,6 +180,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [0981-time-based-key-value-store](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0981-time-based-key-value-store) |
 | [1015-smallest-integer-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1015-smallest-integer-divisible-by-k) |
+| [1189-maximum-number-of-balloons](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1189-maximum-number-of-balloons) |
 | [1264-maximum-number-of-words-you-can-type](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1264-maximum-number-of-words-you-can-type) |
 | [1890-sum-of-beauty-of-all-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1890-sum-of-beauty-of-all-substrings) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
@@ -247,6 +248,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
 | [0981-time-based-key-value-store](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0981-time-based-key-value-store) |
 | [1078-remove-outermost-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1078-remove-outermost-parentheses) |
+| [1189-maximum-number-of-balloons](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1189-maximum-number-of-balloons) |
 | [1264-maximum-number-of-words-you-can-type](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1264-maximum-number-of-words-you-can-type) |
 | [1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n) |
 | [1737-maximum-nesting-depth-of-the-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1737-maximum-nesting-depth-of-the-parentheses) |
@@ -267,6 +269,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
+| [1189-maximum-number-of-balloons](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1189-maximum-number-of-balloons) |
 | [1890-sum-of-beauty-of-all-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1890-sum-of-beauty-of-all-substrings) |
 | [1915-check-if-one-string-swap-can-make-strings-equal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1915-check-if-one-string-swap-can-make-strings-equal) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |

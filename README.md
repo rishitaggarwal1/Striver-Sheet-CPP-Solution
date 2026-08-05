@@ -395,6 +395,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
+| [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 ## Binary Tree
 |  |
 | ------- |
@@ -559,6 +560,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
+| [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 ## Graph
 |  |
 | ------- |
@@ -567,4 +569,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [3691-maximum-total-subarray-value-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3691-maximum-total-subarray-value-ii) |
+## Graph Theory
+|  |
+| ------- |
+| [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 <!---LeetCode Topics End-->

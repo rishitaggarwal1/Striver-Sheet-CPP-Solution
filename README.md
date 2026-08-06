@@ -301,6 +301,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2649-count-total-number-of-colored-cells](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2649-count-total-number-of-colored-cells) |
 | [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3336-water-bottles-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3336-water-bottles-ii) |
+| [3345-smallest-divisible-digit-product-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3345-smallest-divisible-digit-product-i) |
 | [3512-minimum-operations-to-make-array-sum-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3512-minimum-operations-to-make-array-sum-divisible-by-k) |
 | [3751-total-waviness-of-numbers-in-range-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3751-total-waviness-of-numbers-in-range-i) |
 | [3754-concatenate-non-zero-digits-and-multiply-by-sum-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3754-concatenate-non-zero-digits-and-multiply-by-sum-i) |
@@ -540,6 +541,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
+| [3345-smallest-divisible-digit-product-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3345-smallest-divisible-digit-product-i) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
 | [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
 | [3751-total-waviness-of-numbers-in-range-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3751-total-waviness-of-numbers-in-range-i) |

@@ -577,5 +577,10 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Graph Theory
 |  |
 | ------- |
+| [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
+## Union-Find
+|  |
+| ------- |
+| [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 <!---LeetCode Topics End-->

@@ -265,6 +265,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2833-furthest-point-from-origin](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2833-furthest-point-from-origin) |
 | [2839-check-if-strings-can-be-made-equal-with-operations-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2839-check-if-strings-can-be-made-equal-with-operations-i) |
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
+| [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 | [3617-find-the-original-typed-string-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3617-find-the-original-typed-string-i) |
 | [3872-find-most-frequent-vowel-and-consonant](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3872-find-most-frequent-vowel-and-consonant) |
 ## Counting
@@ -303,6 +304,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3336-water-bottles-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3336-water-bottles-ii) |
 | [3345-smallest-divisible-digit-product-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3345-smallest-divisible-digit-product-i) |
+| [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 | [3512-minimum-operations-to-make-array-sum-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3512-minimum-operations-to-make-array-sum-divisible-by-k) |
 | [3751-total-waviness-of-numbers-in-range-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3751-total-waviness-of-numbers-in-range-i) |
 | [3754-concatenate-non-zero-digits-and-multiply-by-sum-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3754-concatenate-non-zero-digits-and-multiply-by-sum-i) |
@@ -487,6 +489,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 | [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
+| [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 | [3633-earliest-finish-time-for-land-and-water-rides-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3633-earliest-finish-time-for-land-and-water-rides-i) |
 | [3635-earliest-finish-time-for-land-and-water-rides-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3635-earliest-finish-time-for-land-and-water-rides-ii) |
 | [3689-maximum-total-subarray-value-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3689-maximum-total-subarray-value-i) |
@@ -552,11 +555,13 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
+| [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 ## Backtracking
 |  |
 | ------- |
 | [0078-subsets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0078-subsets) |
 | [1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n) |
+| [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 ## Combinatorics
 |  |
 | ------- |

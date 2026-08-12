@@ -94,6 +94,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2574-left-and-right-sum-differences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2574-left-and-right-sum-differences) |
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
 | [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
+| [2958-length-of-longest-subarray-with-at-most-k-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2958-length-of-longest-subarray-with-at-most-k-frequency) |
 | [3070-count-submatrices-with-top-left-element-and-sum-less-than-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3070-count-submatrices-with-top-left-element-and-sum-less-than-k) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
 | [3251-maximum-area-of-longest-diagonal-rectangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3251-maximum-area-of-longest-diagonal-rectangle) |
@@ -190,6 +191,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2196-create-binary-tree-from-descriptions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2196-create-binary-tree-from-descriptions) |
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
+| [2958-length-of-longest-subarray-with-at-most-k-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2958-length-of-longest-subarray-with-at-most-k-frequency) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
 | [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
@@ -478,6 +480,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1423-maximum-points-you-can-obtain-from-cards](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1423-maximum-points-you-can-obtain-from-cards) |
+| [2958-length-of-longest-subarray-with-at-most-k-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2958-length-of-longest-subarray-with-at-most-k-frequency) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 ## Greedy
 |  |

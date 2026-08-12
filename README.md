@@ -95,6 +95,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
 | [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [2958-length-of-longest-subarray-with-at-most-k-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2958-length-of-longest-subarray-with-at-most-k-frequency) |
+| [2996-smallest-missing-integer-greater-than-sequential-prefix-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2996-smallest-missing-integer-greater-than-sequential-prefix-sum) |
 | [3070-count-submatrices-with-top-left-element-and-sum-less-than-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3070-count-submatrices-with-top-left-element-and-sum-less-than-k) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
 | [3251-maximum-area-of-longest-diagonal-rectangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3251-maximum-area-of-longest-diagonal-rectangle) |
@@ -192,6 +193,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2308-divide-array-into-equal-pairs](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2308-divide-array-into-equal-pairs) |
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
 | [2958-length-of-longest-subarray-with-at-most-k-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2958-length-of-longest-subarray-with-at-most-k-frequency) |
+| [2996-smallest-missing-integer-greater-than-sequential-prefix-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2996-smallest-missing-integer-greater-than-sequential-prefix-sum) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
 | [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
@@ -334,6 +336,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
+| [2996-smallest-missing-integer-greater-than-sequential-prefix-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2996-smallest-missing-integer-greater-than-sequential-prefix-sum) |
 | [3633-earliest-finish-time-for-land-and-water-rides-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3633-earliest-finish-time-for-land-and-water-rides-i) |
 | [3635-earliest-finish-time-for-land-and-water-rides-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3635-earliest-finish-time-for-land-and-water-rides-ii) |
 | [3731-find-missing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3731-find-missing-elements) |

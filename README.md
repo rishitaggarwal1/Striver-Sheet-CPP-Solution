@@ -416,6 +416,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
+| [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
 | [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 ## Binary Tree
@@ -588,6 +589,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
+| [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
 | [1765-map-of-highest-peak](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1765-map-of-highest-peak) |
@@ -604,6 +606,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
+| [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
 | [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 ## Union-Find
 |  |
@@ -611,4 +614,13 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0130-surrounded-regions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0130-surrounded-regions) |
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
+| [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
+## Graph Coloring
+|  |
+| ------- |
+| [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
+## Bipartite Graph
+|  |
+| ------- |
+| [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
 <!---LeetCode Topics End-->

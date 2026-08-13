@@ -45,6 +45,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
 | [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
 | [0128-longest-consecutive-sequence](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0128-longest-consecutive-sequence) |
+| [0130-surrounded-regions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0130-surrounded-regions) |
 | [0150-evaluate-reverse-polish-notation](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0150-evaluate-reverse-polish-notation) |
 | [0153-find-minimum-in-rotated-sorted-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0153-find-minimum-in-rotated-sorted-array) |
 | [0167-two-sum-ii-input-array-is-sorted](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0167-two-sum-ii-input-array-is-sorted) |
@@ -359,6 +360,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0054-spiral-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0054-spiral-matrix) |
 | [0073-set-matrix-zeroes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0073-set-matrix-zeroes) |
 | [0074-search-a-2d-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0074-search-a-2d-matrix) |
+| [0130-surrounded-regions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0130-surrounded-regions) |
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
@@ -408,6 +410,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0094-binary-tree-inorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0094-binary-tree-inorder-traversal) |
+| [0130-surrounded-regions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0130-surrounded-regions) |
 | [0144-binary-tree-preorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0144-binary-tree-preorder-traversal) |
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
@@ -580,6 +583,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Breadth-First Search
 |  |
 | ------- |
+| [0130-surrounded-regions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0130-surrounded-regions) |
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
@@ -604,6 +608,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 ## Union-Find
 |  |
 | ------- |
+| [0130-surrounded-regions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0130-surrounded-regions) |
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 <!---LeetCode Topics End-->

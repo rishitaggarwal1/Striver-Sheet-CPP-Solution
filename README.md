@@ -73,6 +73,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1018-binary-prefix-divisible-by-5](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1018-binary-prefix-divisible-by-5) |
+| [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
@@ -364,6 +365,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
+| [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
 | [1765-map-of-highest-peak](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1765-map-of-highest-peak) |
@@ -417,6 +419,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
+| [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
 | [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 ## Binary Tree
@@ -590,6 +593,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
+| [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
 | [1765-map-of-highest-peak](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1765-map-of-highest-peak) |
@@ -615,6 +619,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
+| [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 ## Graph Coloring
 |  |
 | ------- |

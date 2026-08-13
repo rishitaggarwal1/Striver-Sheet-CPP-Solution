@@ -60,6 +60,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
+| [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [0575-distribute-candies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0575-distribute-candies) |
 | [0704-binary-search](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0704-binary-search) |
@@ -141,6 +142,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
 | [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
 | [0396-rotate-function](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0396-rotate-function) |
+| [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
@@ -357,6 +359,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0073-set-matrix-zeroes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0073-set-matrix-zeroes) |
 | [0074-search-a-2d-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0074-search-a-2d-matrix) |
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
+| [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
@@ -576,6 +579,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
+| [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |

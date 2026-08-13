@@ -79,6 +79,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1423-maximum-points-you-can-obtain-from-cards](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1423-maximum-points-you-can-obtain-from-cards) |
 | [1498-number-of-subsequences-that-satisfy-the-given-sum-condition](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1498-number-of-subsequences-that-satisfy-the-given-sum-condition) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
+| [1765-map-of-highest-peak](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1765-map-of-highest-peak) |
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [1878-check-if-array-is-sorted-and-rotated](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1878-check-if-array-is-sorted-and-rotated) |
 | [1967-number-of-strings-that-appear-as-substrings-in-word](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1967-number-of-strings-that-appear-as-substrings-in-word) |
@@ -363,6 +364,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
+| [1765-map-of-highest-peak](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1765-map-of-highest-peak) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
 | [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
@@ -584,6 +586,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
+| [1765-map-of-highest-peak](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1765-map-of-highest-peak) |
 | [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 ## Graph
 |  |

@@ -199,6 +199,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
 | [2958-length-of-longest-subarray-with-at-most-k-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2958-length-of-longest-subarray-with-at-most-k-frequency) |
 | [2996-smallest-missing-integer-greater-than-sequential-prefix-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2996-smallest-missing-integer-greater-than-sequential-prefix-sum) |
+| [3090-maximum-length-substring-with-two-occurrences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3090-maximum-length-substring-with-two-occurrences) |
 | [3242-count-elements-with-maximum-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3242-count-elements-with-maximum-frequency) |
 | [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
@@ -274,6 +275,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2833-furthest-point-from-origin](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2833-furthest-point-from-origin) |
 | [2839-check-if-strings-can-be-made-equal-with-operations-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2839-check-if-strings-can-be-made-equal-with-operations-i) |
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
+| [3090-maximum-length-substring-with-two-occurrences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3090-maximum-length-substring-with-two-occurrences) |
 | [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 | [3617-find-the-original-typed-string-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3617-find-the-original-typed-string-i) |
 | [3872-find-most-frequent-vowel-and-consonant](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3872-find-most-frequent-vowel-and-consonant) |
@@ -496,6 +498,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1423-maximum-points-you-can-obtain-from-cards](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1423-maximum-points-you-can-obtain-from-cards) |
 | [2958-length-of-longest-subarray-with-at-most-k-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2958-length-of-longest-subarray-with-at-most-k-frequency) |
+| [3090-maximum-length-substring-with-two-occurrences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3090-maximum-length-substring-with-two-occurrences) |
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 ## Greedy
 |  |

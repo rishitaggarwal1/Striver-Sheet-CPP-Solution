@@ -423,6 +423,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0210-course-schedule-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0210-course-schedule-ii) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
+| [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
 | [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
@@ -556,6 +557,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0215-kth-largest-element-in-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0215-kth-largest-element-in-an-array) |
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
+| [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
 | [3691-maximum-total-subarray-value-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3691-maximum-total-subarray-value-ii) |
 ## Bucket Sort
 |  |
@@ -599,6 +601,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
+| [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
 | [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
@@ -618,6 +621,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0210-course-schedule-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0210-course-schedule-ii) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
+| [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
 | [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 ## Union-Find
@@ -640,4 +644,12 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0210-course-schedule-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0210-course-schedule-ii) |
+## Shortest Path
+|  |
+| ------- |
+| [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
+## Dijkstra's Algorithm
+|  |
+| ------- |
+| [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
 <!---LeetCode Topics End-->

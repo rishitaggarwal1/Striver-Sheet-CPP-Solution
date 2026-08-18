@@ -147,6 +147,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
 | [0396-rotate-function](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0396-rotate-function) |
 | [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
+| [0787-cheapest-flights-within-k-stops](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0787-cheapest-flights-within-k-stops) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
@@ -425,6 +426,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
+| [0787-cheapest-flights-within-k-stops](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0787-cheapest-flights-within-k-stops) |
 | [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
 | [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
@@ -558,6 +560,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
 | [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
+| [0787-cheapest-flights-within-k-stops](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0787-cheapest-flights-within-k-stops) |
 | [3691-maximum-total-subarray-value-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3691-maximum-total-subarray-value-ii) |
 ## Bucket Sort
 |  |
@@ -603,6 +606,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
+| [0787-cheapest-flights-within-k-stops](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0787-cheapest-flights-within-k-stops) |
 | [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
 | [1036-rotting-oranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1036-rotting-oranges) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
@@ -623,6 +627,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
 | [0785-is-graph-bipartite](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0785-is-graph-bipartite) |
+| [0787-cheapest-flights-within-k-stops](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0787-cheapest-flights-within-k-stops) |
 | [3310-remove-methods-from-project](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3310-remove-methods-from-project) |
 ## Union-Find
 |  |
@@ -648,6 +653,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
+| [0787-cheapest-flights-within-k-stops](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0787-cheapest-flights-within-k-stops) |
 ## Dijkstra's Algorithm
 |  |
 | ------- |

@@ -118,6 +118,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3691-maximum-total-subarray-value-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3691-maximum-total-subarray-value-ii) |
 | [3731-find-missing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3731-find-missing-elements) |
 | [3875-construct-uniform-parity-array-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3875-construct-uniform-parity-array-i) |
+| [3876-construct-uniform-parity-array-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3876-construct-uniform-parity-array-ii) |
 | [3903-smallest-stable-index-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3903-smallest-stable-index-i) |
 | [3904-smallest-stable-index-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3904-smallest-stable-index-ii) |
 ## Binary Search
@@ -327,6 +328,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3754-concatenate-non-zero-digits-and-multiply-by-sum-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3754-concatenate-non-zero-digits-and-multiply-by-sum-i) |
 | [3830-find-closest-person](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3830-find-closest-person) |
 | [3875-construct-uniform-parity-array-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3875-construct-uniform-parity-array-i) |
+| [3876-construct-uniform-parity-array-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3876-construct-uniform-parity-array-ii) |
 ## Sorting
 |  |
 | ------- |

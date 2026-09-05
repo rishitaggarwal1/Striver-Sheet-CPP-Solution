@@ -118,6 +118,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3691-maximum-total-subarray-value-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3691-maximum-total-subarray-value-ii) |
 | [3731-find-missing-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3731-find-missing-elements) |
 | [3875-construct-uniform-parity-array-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3875-construct-uniform-parity-array-i) |
+| [3903-smallest-stable-index-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3903-smallest-stable-index-i) |
 ## Binary Search
 |  |
 | ------- |
@@ -470,6 +471,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3475-minimum-operations-to-make-binary-array-elements-equal-to-one-i) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
 | [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
+| [3903-smallest-stable-index-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3903-smallest-stable-index-i) |
 ## Recursion
 |  |
 | ------- |

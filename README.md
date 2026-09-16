@@ -189,6 +189,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
 | [0242-valid-anagram](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0242-valid-anagram) |
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
+| [0424-longest-repeating-character-replacement](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0424-longest-repeating-character-replacement) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
@@ -264,6 +265,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0205-isomorphic-strings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0205-isomorphic-strings) |
 | [0242-valid-anagram](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0242-valid-anagram) |
 | [0345-reverse-vowels-of-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0345-reverse-vowels-of-a-string) |
+| [0424-longest-repeating-character-replacement](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0424-longest-repeating-character-replacement) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
 | [0696-count-binary-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0696-count-binary-substrings) |
 | [0796-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0796-rotate-string) |
@@ -510,6 +512,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0003-longest-substring-without-repeating-characters](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0003-longest-substring-without-repeating-characters) |
+| [0424-longest-repeating-character-replacement](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0424-longest-repeating-character-replacement) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1358-number-of-substrings-containing-all-three-characters](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1358-number-of-substrings-containing-all-three-characters) |

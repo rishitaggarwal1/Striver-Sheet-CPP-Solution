@@ -71,6 +71,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [0907-koko-eating-bananas](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-koko-eating-bananas) |
+| [0930-binary-subarrays-with-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0930-binary-subarrays-with-sum) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1018-binary-prefix-divisible-by-5](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1018-binary-prefix-divisible-by-5) |
 | [1020-number-of-enclaves](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1020-number-of-enclaves) |
@@ -194,6 +195,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
 | [0575-distribute-candies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0575-distribute-candies) |
+| [0930-binary-subarrays-with-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0930-binary-subarrays-with-sum) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [0981-time-based-key-value-store](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0981-time-based-key-value-store) |
 | [1015-smallest-integer-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1015-smallest-integer-divisible-by-k) |
@@ -469,6 +471,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0560-subarray-sum-equals-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0560-subarray-sum-equals-k) |
+| [0930-binary-subarrays-with-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0930-binary-subarrays-with-sum) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1423-maximum-points-you-can-obtain-from-cards](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1423-maximum-points-you-can-obtain-from-cards) |
 | [2574-left-and-right-sum-differences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2574-left-and-right-sum-differences) |
@@ -513,6 +516,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0003-longest-substring-without-repeating-characters](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0003-longest-substring-without-repeating-characters) |
 | [0424-longest-repeating-character-replacement](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0424-longest-repeating-character-replacement) |
+| [0930-binary-subarrays-with-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0930-binary-subarrays-with-sum) |
 | [0940-fruit-into-baskets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0940-fruit-into-baskets) |
 | [1046-max-consecutive-ones-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1046-max-consecutive-ones-iii) |
 | [1358-number-of-substrings-containing-all-three-characters](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1358-number-of-substrings-containing-all-three-characters) |

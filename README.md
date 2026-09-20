@@ -296,6 +296,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
 | [3090-maximum-length-substring-with-two-occurrences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3090-maximum-length-substring-with-two-occurrences) |
 | [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
+| [3498-reverse-degree-of-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3498-reverse-degree-of-a-string) |
 | [3617-find-the-original-typed-string-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3617-find-the-original-typed-string-i) |
 | [3872-find-most-frequent-vowel-and-consonant](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3872-find-most-frequent-vowel-and-consonant) |
 ## Counting
@@ -475,6 +476,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2324-find-triangular-sum-of-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2324-find-triangular-sum-of-an-array) |
 | [2946-matrix-similarity-after-cyclic-shifts](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2946-matrix-similarity-after-cyclic-shifts) |
 | [3336-water-bottles-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3336-water-bottles-ii) |
+| [3498-reverse-degree-of-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3498-reverse-degree-of-a-string) |
 ## Prefix Sum
 |  |
 | ------- |

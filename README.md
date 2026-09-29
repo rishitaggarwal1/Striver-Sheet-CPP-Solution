@@ -60,6 +60,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0287-find-the-duplicate-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0287-find-the-duplicate-number) |
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
 | [0396-rotate-function](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0396-rotate-function) |
+| [0435-non-overlapping-intervals](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0435-non-overlapping-intervals) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
@@ -157,6 +158,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0118-pascals-triangle](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0118-pascals-triangle) |
 | [0121-best-time-to-buy-and-sell-stock](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0121-best-time-to-buy-and-sell-stock) |
 | [0396-rotate-function](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0396-rotate-function) |
+| [0435-non-overlapping-intervals](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0435-non-overlapping-intervals) |
 | [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
 | [0787-cheapest-flights-within-k-stops](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0787-cheapest-flights-within-k-stops) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
@@ -364,6 +366,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
 | [0242-valid-anagram](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0242-valid-anagram) |
 | [0347-top-k-frequent-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0347-top-k-frequent-elements) |
+| [0435-non-overlapping-intervals](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0435-non-overlapping-intervals) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
@@ -551,6 +554,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | ------- |
 | [0011-container-with-most-water](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0011-container-with-most-water) |
 | [0055-jump-game](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0055-jump-game) |
+| [0435-non-overlapping-intervals](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0435-non-overlapping-intervals) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |

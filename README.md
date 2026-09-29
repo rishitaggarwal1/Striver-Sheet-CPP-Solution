@@ -161,6 +161,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0396-rotate-function](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0396-rotate-function) |
 | [0435-non-overlapping-intervals](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0435-non-overlapping-intervals) |
 | [0542-01-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0542-01-matrix) |
+| [0678-valid-parenthesis-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0678-valid-parenthesis-string) |
 | [0787-cheapest-flights-within-k-stops](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0787-cheapest-flights-within-k-stops) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1594-maximum-non-negative-product-in-a-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1594-maximum-non-negative-product-in-a-matrix) |
@@ -283,6 +284,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0345-reverse-vowels-of-a-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0345-reverse-vowels-of-a-string) |
 | [0424-longest-repeating-character-replacement](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0424-longest-repeating-character-replacement) |
 | [0451-sort-characters-by-frequency](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0451-sort-characters-by-frequency) |
+| [0678-valid-parenthesis-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0678-valid-parenthesis-string) |
 | [0696-count-binary-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0696-count-binary-substrings) |
 | [0796-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0796-rotate-string) |
 | [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
@@ -429,6 +431,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0234-palindrome-linked-list](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0234-palindrome-linked-list) |
 | [0496-next-greater-element-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0496-next-greater-element-i) |
 | [0503-next-greater-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0503-next-greater-element-ii) |
+| [0678-valid-parenthesis-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0678-valid-parenthesis-string) |
 | [0739-daily-temperatures](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0739-daily-temperatures) |
 | [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [1078-remove-outermost-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1078-remove-outermost-parentheses) |
@@ -557,6 +560,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0055-jump-game](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0055-jump-game) |
 | [0435-non-overlapping-intervals](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0435-non-overlapping-intervals) |
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
+| [0678-valid-parenthesis-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0678-valid-parenthesis-string) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
@@ -717,4 +721,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0056-merge-intervals](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0056-merge-intervals) |
+## Bracket Sequences
+|  |
+| ------- |
+| [0678-valid-parenthesis-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0678-valid-parenthesis-string) |
 <!---LeetCode Topics End-->

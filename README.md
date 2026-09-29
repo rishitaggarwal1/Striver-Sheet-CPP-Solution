@@ -713,4 +713,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 |  |
 | ------- |
 | [0239-sliding-window-maximum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0239-sliding-window-maximum) |
+## Quicksort
+|  |
+| ------- |
+| [0056-merge-intervals](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0056-merge-intervals) |
 <!---LeetCode Topics End-->

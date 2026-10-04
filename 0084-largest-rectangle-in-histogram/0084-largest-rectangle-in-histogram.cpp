@@ -2,34 +2,35 @@ class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
         int n = heights.size();
-        stack<pair<int,int>> st;
-        int ans = 0;
+        vector<int> ns(n,n), ps(n,-1);
+        stack<int> st,st1;
         for(int i=0;i<n;i++)
         {
-            if(st.empty())
-                st.push({i,heights[i]});
-            else if(st.top().second>heights[i])
+            while(!st.empty() && heights[st.top()]>=heights[i])
             {
-                int lastid;
-                while(!st.empty() && st.top().second > heights[i])
-                {
-                    int x = (i-st.top().first)*(st.top().second);
-                    lastid = st.top().first;
-                    if(x>ans)   ans =x;
-                    st.pop();
-                }
-                st.push({lastid,heights[i]});
+                st.pop();
             }
-            else
-            {
-                st.push({i,heights[i]});
-            }
+            if(!st.empty())
+                ps[i] = st.top();
+            st.push(i);
         }
-        while(!st.empty())
+        for(int i=n-1;i>=0;i--)
         {
-            int x = (n-st.top().first)*(st.top().second);
-            if(x>ans)   ans = x;
-            st.pop();
+            while(!st1.empty() && heights[st1.top()]>=heights[i])
+            {
+                st1.pop();
+            }
+            if(!st1.empty())
+                ns[i] = st1.top();
+            st1.push(i);
+        }
+        int ans = INT_MIN;
+        for(int i=0;i<n;i++)
+        {
+            int x = i-ps[i];
+            int y = ns[i]-i-1;
+            int z = (x+y)*heights[i];
+            ans = max(ans,z);
         }
         return ans;
     }

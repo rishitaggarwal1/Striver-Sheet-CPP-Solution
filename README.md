@@ -120,6 +120,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3512-minimum-operations-to-make-array-sum-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3512-minimum-operations-to-make-array-sum-divisible-by-k) |
 | [3546-equal-sum-grid-partition-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3546-equal-sum-grid-partition-i) |
 | [3548-equal-sum-grid-partition-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3548-equal-sum-grid-partition-ii) |
+| [3550-smallest-index-with-digit-sum-equal-to-index](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3550-smallest-index-with-digit-sum-equal-to-index) |
 | [3633-earliest-finish-time-for-land-and-water-rides-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3633-earliest-finish-time-for-land-and-water-rides-i) |
 | [3635-earliest-finish-time-for-land-and-water-rides-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3635-earliest-finish-time-for-land-and-water-rides-ii) |
 | [3637-trionic-array-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3637-trionic-array-i) |
@@ -360,6 +361,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [3345-smallest-divisible-digit-product-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3345-smallest-divisible-digit-product-i) |
 | [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 | [3512-minimum-operations-to-make-array-sum-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3512-minimum-operations-to-make-array-sum-divisible-by-k) |
+| [3550-smallest-index-with-digit-sum-equal-to-index](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3550-smallest-index-with-digit-sum-equal-to-index) |
 | [3751-total-waviness-of-numbers-in-range-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3751-total-waviness-of-numbers-in-range-i) |
 | [3754-concatenate-non-zero-digits-and-multiply-by-sum-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3754-concatenate-non-zero-digits-and-multiply-by-sum-i) |
 | [3830-find-closest-person](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3830-find-closest-person) |

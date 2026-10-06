@@ -301,6 +301,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0696-count-binary-substrings](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0696-count-binary-substrings) |
 | [0796-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0796-rotate-string) |
 | [0812-rotate-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0812-rotate-string) |
+| [0921-minimum-add-to-make-parentheses-valid](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0921-minimum-add-to-make-parentheses-valid) |
 | [0981-time-based-key-value-store](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0981-time-based-key-value-store) |
 | [1078-remove-outermost-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1078-remove-outermost-parentheses) |
 | [1189-maximum-number-of-balloons](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1189-maximum-number-of-balloons) |
@@ -453,6 +454,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0739-daily-temperatures](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0739-daily-temperatures) |
 | [0853-car-fleet](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0853-car-fleet) |
 | [0907-sum-of-subarray-minimums](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0907-sum-of-subarray-minimums) |
+| [0921-minimum-add-to-make-parentheses-valid](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0921-minimum-add-to-make-parentheses-valid) |
 | [1078-remove-outermost-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1078-remove-outermost-parentheses) |
 | [1737-maximum-nesting-depth-of-the-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1737-maximum-nesting-depth-of-the-parentheses) |
 | [2227-sum-of-subarray-ranges](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2227-sum-of-subarray-ranges) |
@@ -584,6 +586,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0455-assign-cookies](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0455-assign-cookies) |
 | [0678-valid-parenthesis-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0678-valid-parenthesis-string) |
 | [0890-lemonade-change](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0890-lemonade-change) |
+| [0921-minimum-add-to-make-parentheses-valid](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0921-minimum-add-to-make-parentheses-valid) |
 | [1262-greatest-sum-divisible-by-three](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1262-greatest-sum-divisible-by-three) |
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
@@ -753,4 +756,5 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0022-generate-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0022-generate-parentheses) |
 | [0032-longest-valid-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0032-longest-valid-parentheses) |
 | [0678-valid-parenthesis-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0678-valid-parenthesis-string) |
+| [0921-minimum-add-to-make-parentheses-valid](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0921-minimum-add-to-make-parentheses-valid) |
 <!---LeetCode Topics End-->

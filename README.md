@@ -465,6 +465,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0110-balanced-binary-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0110-balanced-binary-tree) |
 | [0144-binary-tree-preorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0144-binary-tree-preorder-traversal) |
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
+| [0543-diameter-of-binary-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0543-diameter-of-binary-tree) |
 | [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
 | [0784-insert-into-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0784-insert-into-a-binary-search-tree) |
 | [1376-time-needed-to-inform-all-employees](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1376-time-needed-to-inform-all-employees) |
@@ -479,6 +480,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0210-course-schedule-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0210-course-schedule-ii) |
+| [0543-diameter-of-binary-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0543-diameter-of-binary-tree) |
 | [0547-number-of-provinces](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0547-number-of-provinces) |
 | [0733-flood-fill](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0733-flood-fill) |
 | [0743-network-delay-time](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0743-network-delay-time) |
@@ -494,6 +496,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0110-balanced-binary-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0110-balanced-binary-tree) |
 | [0144-binary-tree-preorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0144-binary-tree-preorder-traversal) |
 | [0145-binary-tree-postorder-traversal](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0145-binary-tree-postorder-traversal) |
+| [0543-diameter-of-binary-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0543-diameter-of-binary-tree) |
 | [0783-search-in-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0783-search-in-a-binary-search-tree) |
 | [0784-insert-into-a-binary-search-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0784-insert-into-a-binary-search-tree) |
 | [2196-create-binary-tree-from-descriptions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2196-create-binary-tree-from-descriptions) |
@@ -760,4 +763,8 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0032-longest-valid-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0032-longest-valid-parentheses) |
 | [0678-valid-parenthesis-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0678-valid-parenthesis-string) |
 | [0921-minimum-add-to-make-parentheses-valid](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0921-minimum-add-to-make-parentheses-valid) |
+## DP on Trees
+|  |
+| ------- |
+| [0543-diameter-of-binary-tree](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0543-diameter-of-binary-tree) |
 <!---LeetCode Topics End-->

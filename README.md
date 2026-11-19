@@ -30,6 +30,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0035-search-insert-position](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0035-search-insert-position) |
 | [0036-valid-sudoku](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0036-valid-sudoku) |
 | [0039-combination-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0039-combination-sum) |
+| [0040-combination-sum-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0040-combination-sum-ii) |
 | [0042-trapping-rain-water](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0042-trapping-rain-water) |
 | [0048-rotate-image](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0048-rotate-image) |
 | [0049-group-anagrams](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0049-group-anagrams) |
@@ -689,6 +690,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0017-letter-combinations-of-a-phone-number](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0017-letter-combinations-of-a-phone-number) |
 | [0022-generate-parentheses](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0022-generate-parentheses) |
 | [0039-combination-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0039-combination-sum) |
+| [0040-combination-sum-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0040-combination-sum-ii) |
 | [0078-subsets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0078-subsets) |
 | [1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n) |
 | [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |

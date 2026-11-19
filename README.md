@@ -58,6 +58,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0200-number-of-islands](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0200-number-of-islands) |
 | [0204-count-primes](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0204-count-primes) |
 | [0215-kth-largest-element-in-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0215-kth-largest-element-in-an-array) |
+| [0216-combination-sum-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0216-combination-sum-iii) |
 | [0217-contains-duplicate](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0217-contains-duplicate) |
 | [0229-majority-element-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0229-majority-element-ii) |
 | [0239-sliding-window-maximum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0239-sliding-window-maximum) |
@@ -692,6 +693,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [0039-combination-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0039-combination-sum) |
 | [0040-combination-sum-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0040-combination-sum-ii) |
 | [0078-subsets](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0078-subsets) |
+| [0216-combination-sum-iii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/0216-combination-sum-iii) |
 | [1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1415-the-k-th-lexicographical-string-of-all-happy-strings-of-length-n) |
 | [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 ## Combinatorics

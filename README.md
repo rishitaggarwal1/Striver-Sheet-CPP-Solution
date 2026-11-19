@@ -107,6 +107,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [2324-find-triangular-sum-of-an-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2324-find-triangular-sum-of-an-array) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
 | [2435-paths-in-matrix-whose-sum-is-divisible-by-k](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2435-paths-in-matrix-whose-sum-is-divisible-by-k) |
+| [2567-minimum-score-by-changing-two-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2567-minimum-score-by-changing-two-elements) |
 | [2574-left-and-right-sum-differences](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2574-left-and-right-sum-differences) |
 | [2778-sum-of-squares-of-special-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2778-sum-of-squares-of-special-elements) |
 | [2906-construct-product-matrix](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2906-construct-product-matrix) |
@@ -401,6 +402,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
 | [2392-successful-pairs-of-spells-and-potions](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2392-successful-pairs-of-spells-and-potions) |
+| [2567-minimum-score-by-changing-two-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2567-minimum-score-by-changing-two-elements) |
 | [2840-check-if-strings-can-be-made-equal-with-operations-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2840-check-if-strings-can-be-made-equal-with-operations-ii) |
 | [2996-smallest-missing-integer-greater-than-sequential-prefix-sum](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2996-smallest-missing-integer-greater-than-sequential-prefix-sum) |
 | [3633-earliest-finish-time-for-land-and-water-rides-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3633-earliest-finish-time-for-land-and-water-rides-i) |
@@ -605,6 +607,7 @@ This repository contains my solutions to the Striver’s SDE Sheet problems, imp
 | [1877-minimize-maximum-pair-sum-in-array](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/1877-minimize-maximum-pair-sum-in-array) |
 | [2032-largest-odd-number-in-string](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2032-largest-odd-number-in-string) |
 | [2144-minimum-cost-of-buying-candies-with-discount](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2144-minimum-cost-of-buying-candies-with-discount) |
+| [2567-minimum-score-by-changing-two-elements](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/2567-minimum-score-by-changing-two-elements) |
 | [3348-smallest-divisible-digit-product-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3348-smallest-divisible-digit-product-ii) |
 | [3633-earliest-finish-time-for-land-and-water-rides-i](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3633-earliest-finish-time-for-land-and-water-rides-i) |
 | [3635-earliest-finish-time-for-land-and-water-rides-ii](https://github.com/rishitaggarwal1/Striver-Sheet-CPP-Solution/tree/master/3635-earliest-finish-time-for-land-and-water-rides-ii) |

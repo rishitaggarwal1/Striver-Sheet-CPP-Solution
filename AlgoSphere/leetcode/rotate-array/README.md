@@ -2,7 +2,7 @@
 
 **LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/rotate-array/) · ✅ Solved in C++
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution) · [Test cases](#test-cases)
 
 ## Problem
 
@@ -125,3 +125,26 @@ public:
     }
 };
 ```
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| nums = [1,2,3,4,5]<br>k = 2 | [4,5,1,2,3] | Basic rotation of odd-length array by 2. |
+| nums = [10,20,30,40,50,60]<br>k = 4 | [30,40,50,60,10,20] | Rotation where k shares a common factor with n (cyclic replacement check). |
+| nums = [3,-2,7,0,5]<br>k = 1 | [5,3,-2,7,0] | Single-step rotation with mixed signs and zero. |
+| nums = [1,2,3,4,5,6,7,8]<br>k = 5 | [4,5,6,7,8,1,2,3] | Rotation by more than half the length. |
+| nums = [9,8,7]<br>k = 7 | [8,7,9] | k larger than length requires k mod n (7 mod 3 = 1). |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single element | nums = [42]<br>k = 100000 | [42] | Any k leaves array unchanged. |
+| Zero steps | nums = [1,2,3,4]<br>k = 0 | [1,2,3,4] | Array unchanged. |
+| k equals length | nums = [1,2,3,4]<br>k = 4 | [1,2,3,4] | Full rotation returns original. |
+| Extreme values | nums = [-2147483648,2147483647]<br>k = 1 | [2147483647,-2147483648] | 32-bit min and max swapped. |
+| All equal | nums = [5,5,5,5]<br>k = 3 | [5,5,5,5] | Rotation has no visible effect. |
+| Maximum k | nums = [1,2,3,4,5,6]<br>k = 100000 | [3,4,5,6,1,2] | 100000 mod 6 = 4; a huge n=10^5 array with k=10^5 should also be tested for O(n) time. |

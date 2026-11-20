@@ -4,7 +4,7 @@
   "slug": "rotate-array",
   "title": "Rotate Array",
   "url": "https://leetcode.com/problems/rotate-array/",
-  "updatedAt": "2026-11-20T15:04:33.304Z",
+  "updatedAt": "2026-11-20T15:04:42.345Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.\n\nExample 1:\n\nInput: nums = [1,2,3,4,5,6,7], k = 3\nOutput: [5,6,7,1,2,3,4]\nExplanation:\nrotate 1 steps to the right: [7,1,2,3,4,5,6]\nrotate 2 steps to the right: [6,7,1,2,3,4,5]\nrotate 3 steps to the right: [5,6,7,1,2,3,4]\n\nExample 2:\n\nInput: nums = [-1,-100,3,99], k = 2\nOutput: [3,99,-1,-100]\nExplanation:\nrotate 1 steps to the right: [99,-1,-100,3]\nrotate 2 steps to the right: [3,99,-1,-100]\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- -2^31 <= nums[i] <= 2^31 - 1\n\n- 0 <= k <= 10^5\n\nFollow up:\n\n- Try to come up with as many solutions as you can. There are at least three different ways to solve this problem.\n\n- Could you do it in-place with O(1) extra space?"
@@ -33,5 +33,165 @@
     "Track only the effective shift `k = k mod n`, plus two indices `left` and `right` for each reversal, which swap toward each other until they meet. The three ranges to reverse are `[0, n-1]`, `[0, k-1]`, and `[k, n-1]`.",
     "Let n be the array length and set k = k mod n.\nIf k is 0, stop; the array is already correct.\nReverse the whole array from index 0 to n-1.\nReverse the first k elements, indices 0 to k-1.\nReverse the remaining elements, indices k to n-1.\nThe array is now rotated in place.",
     "The trickiest step is remembering `k mod n`: when `k > n` (for example `n = 1`, `k = 5`), the reversal ranges become invalid without it. Check single-element arrays, `k = 0`, and `k` equal to a multiple of `n`, all of which should leave the array unchanged. Each element is swapped a constant number of times, so time is `O(n)` and extra space is `O(1)`."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[1,2,3,4,5]"
+          },
+          {
+            "name": "k",
+            "value": "2"
+          }
+        ],
+        "output": "[4,5,1,2,3]",
+        "note": "Basic rotation of odd-length array by 2."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[10,20,30,40,50,60]"
+          },
+          {
+            "name": "k",
+            "value": "4"
+          }
+        ],
+        "output": "[30,40,50,60,10,20]",
+        "note": "Rotation where k shares a common factor with n (cyclic replacement check)."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[3,-2,7,0,5]"
+          },
+          {
+            "name": "k",
+            "value": "1"
+          }
+        ],
+        "output": "[5,3,-2,7,0]",
+        "note": "Single-step rotation with mixed signs and zero."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[1,2,3,4,5,6,7,8]"
+          },
+          {
+            "name": "k",
+            "value": "5"
+          }
+        ],
+        "output": "[4,5,6,7,8,1,2,3]",
+        "note": "Rotation by more than half the length."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[9,8,7]"
+          },
+          {
+            "name": "k",
+            "value": "7"
+          }
+        ],
+        "output": "[8,7,9]",
+        "note": "k larger than length requires k mod n (7 mod 3 = 1)."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[42]"
+          },
+          {
+            "name": "k",
+            "value": "100000"
+          }
+        ],
+        "output": "[42]",
+        "note": "Single element: any k leaves array unchanged."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[1,2,3,4]"
+          },
+          {
+            "name": "k",
+            "value": "0"
+          }
+        ],
+        "output": "[1,2,3,4]",
+        "note": "Zero steps: array unchanged."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[1,2,3,4]"
+          },
+          {
+            "name": "k",
+            "value": "4"
+          }
+        ],
+        "output": "[1,2,3,4]",
+        "note": "k equals length: full rotation returns original."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[-2147483648,2147483647]"
+          },
+          {
+            "name": "k",
+            "value": "1"
+          }
+        ],
+        "output": "[2147483647,-2147483648]",
+        "note": "Extreme values: 32-bit min and max swapped."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[5,5,5,5]"
+          },
+          {
+            "name": "k",
+            "value": "3"
+          }
+        ],
+        "output": "[5,5,5,5]",
+        "note": "All equal: rotation has no visible effect."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[1,2,3,4,5,6]"
+          },
+          {
+            "name": "k",
+            "value": "100000"
+          }
+        ],
+        "output": "[3,4,5,6,1,2]",
+        "note": "Maximum k: 100000 mod 6 = 4; a huge n=10^5 array with k=10^5 should also be tested for O(n) time."
+      }
+    ]
+  }
 }

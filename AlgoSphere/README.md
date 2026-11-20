@@ -2,7 +2,7 @@
 
 Problem-by-problem notes. Each folder walks through one problem: progressive hints, the intuition behind it, every approach from brute force to optimal with a complexity breakdown and a step-by-step dry run, a commented C++ solution, and test cases.
 
-**18 problems** · 2 solved · Easy 2 · Medium 10 · Hard 6 · 13 patterns
+**19 problems** · 2 solved · Easy 2 · Medium 11 · Hard 6 · 13 patterns
 
 **How to use these notes:** try the problem first, then open the hints one at a time. Read the intuition and the approaches only after you've made an attempt.
 
@@ -26,7 +26,8 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 16 | [Triangle](leetcode/triangle/) | LeetCode | Medium | 2D grid DP on a triangle, filled bottom-up | `O(n^2)` time, `O(n)` space | [C++](leetcode/triangle/triangle.cpp) |   |
 | 17 | [Unique Paths](leetcode/unique-paths/) | LeetCode | Medium | Grid DP for counting paths, which collapses to a binomial coefficient | `O(min(m, n))` time, `O(1)` space | [C++](leetcode/unique-paths/unique-paths.cpp) |   |
 | 18 | [Unique Paths II](leetcode/unique-paths-ii/) | LeetCode | Medium | 2D grid DP (counting paths) | `O(m·n)` time, `O(n)` space | [C++](leetcode/unique-paths-ii/unique-paths-ii.cpp) |   |
+| 19 | [Zigzag Conversion](leetcode/zigzag-conversion/) | LeetCode | Medium |   |   |   |   |
 
 ---
 
-<sub>Notes made with **AlgoSphere**, designed and built by **Rishit Aggarwal** · [LinkedIn](https://www.linkedin.com/in/rishit-aggarwal/) · [GitHub](https://github.com/rishitaggarwal1) · [Medium](https://medium.com/@rishitaggarwal1)</sub>
+<sub>Notes made with **AlgoSphere**, designed and built by **Rishit** · [LinkedIn](https://www.linkedin.com/in/rishit-aggarwal/) · [GitHub](https://github.com/rishitaggarwal1) · [Medium](https://medium.com/@rishitaggarwal1)</sub>

@@ -1,0 +1,22 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "zigzag-conversion",
+  "title": "Zigzag Conversion",
+  "url": "https://leetcode.com/problems/zigzag-conversion/",
+  "updatedAt": "2026-11-20T17:18:45.302Z",
+  "problem": {
+    "difficulty": "Medium",
+    "description": "The string \"PAYPALISHIRING\" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)\n\nP   A   H   N\nA P L S I I G\nY   I   R\n\nAnd then read line by line: \"PAHNAPLSIIGYIR\"\n\nWrite the code that will take a string and make this conversion given a number of rows:\n\nstring convert(string s, int numRows);\n\nExample 1:\n\nInput: s = \"PAYPALISHIRING\", numRows = 3\nOutput: \"PAHNAPLSIIGYIR\"\n\nExample 2:\n\nInput: s = \"PAYPALISHIRING\", numRows = 4\nOutput: \"PINALSIGYAHRPI\"\nExplanation:\nP     I    N\nA   L S  I G\nY A   H R\nP     I\n\nExample 3:\n\nInput: s = \"A\", numRows = 1\nOutput: \"A\"\n\nConstraints:\n\n- 1 <= s.length <= 1000\n\n- s consists of English letters (lower-case and upper-case), ',' and '.'.\n\n- 1 <= numRows <= 1000"
+  },
+  "hints": [
+    "You write the characters one by one, moving down through the rows and then diagonally back up, over and over. The answer is every character in row 0 in the order written, then every character in row 1, and so on to the last row.",
+    "Only the row each character lands in matters; the horizontal spacing in the picture is irrelevant. With 3 rows the row numbers go 0,1,2,1,0,1,2,1,... so they bounce between the top row and the bottom row.",
+    "Both the string length and `numRows` are at most 1000, so even an `O(n * numRows)` grid simulation would pass. Still, a clean `O(n)` solution exists in which every character is touched a constant number of times.",
+    "This is a simulation problem: walk through the string once, track a position that moves back and forth, and group characters into buckets. A direct index formula based on the cycle length `2*numRows - 2` is an alternative way to do the same thing.",
+    "You never need a 2D grid. Keep a current row and a direction, add each character to its row's bucket, and flip the direction whenever you reach the top or bottom row.",
+    "Store one growing string (or list of characters) per row, a current row index starting at 0, and a step of +1 or -1. Bucket `i` holds the characters of row `i` in left-to-right order, and the step says whether you are moving down or up.",
+    "If `numRows` is 1 or at least the string length, return `s` unchanged.\nCreate `numRows` empty buckets, set row = 0 and step = +1.\nFor each character, append it to the bucket for the current row.\nIf row is 0, set step to +1; if row is `numRows-1`, set step to -1.\nAdd step to row.\nConcatenate all buckets from top to bottom and return the result.",
+    "The trickiest case is `numRows = 1`: the top and bottom rows are the same, so the direction flips every step and the row index goes out of range unless you return early. Also handle strings shorter than `numRows`, where some buckets stay empty, and update the direction before you move the row. Time is `O(n)` and extra space is `O(n)` for the buckets, or `O(1)` beyond the output if you use the cycle formula `2*numRows-2` and read each row directly."
+  ]
+}

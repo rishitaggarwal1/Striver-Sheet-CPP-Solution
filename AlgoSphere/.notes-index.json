@@ -183,5 +183,18 @@
     "solution": "",
     "mine": null,
     "updatedAt": "2026-11-20T15:06:29.942Z"
+  },
+  "leetcode/expression-add-operators": {
+    "title": "Expression Add Operators",
+    "site": "leetcode",
+    "slug": "expression-add-operators",
+    "difficulty": "Hard",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/expression-add-operators",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-20T15:07:01.798Z"
   }
 }

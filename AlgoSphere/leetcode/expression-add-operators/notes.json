@@ -1,0 +1,22 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "expression-add-operators",
+  "title": "Expression Add Operators",
+  "url": "https://leetcode.com/problems/expression-add-operators/",
+  "updatedAt": "2026-11-20T15:07:01.798Z",
+  "problem": {
+    "difficulty": "Hard",
+    "description": "Given a string num that contains only digits and an integer target, return all possibilities to insert the binary operators '+', '-', and/or '*' between the digits of num so that the resultant expression evaluates to the target value.\n\nNote that operands in the returned expressions should not contain leading zeros.\n\nNote that a number can contain multiple digits.\n\nExample 1:\n\nInput: num = \"123\", target = 6\nOutput: [\"1*2*3\",\"1+2+3\"]\nExplanation: Both \"1*2*3\" and \"1+2+3\" evaluate to 6.\n\nExample 2:\n\nInput: num = \"232\", target = 8\nOutput: [\"2*3+2\",\"2+3*2\"]\nExplanation: Both \"2*3+2\" and \"2+3*2\" evaluate to 8.\n\nExample 3:\n\nInput: num = \"3456237490\", target = 9191\nOutput: []\nExplanation: There are no expressions that can be created from \"3456237490\" to evaluate to 9191.\n\nConstraints:\n\n- 1 <= num.length <= 10\n\n- num consists of only digits.\n\n- -2^31 <= target <= 2^31 - 1"
+  },
+  "hints": [
+    "You must split the digit string into consecutive numbers, put `+`, `-` or `*` between each pair of neighbouring numbers, and list every resulting expression whose value equals `target`. Numbers like `05` are not allowed, though a lone `0` is.",
+    "Multiplication binds tighter than addition and subtraction, so in `2+3*2` the `*` acts only on the `3`, not on the running total `5`. Evaluating strictly left to right would give the wrong answer, so you need a way to undo part of the running value when a `*` appears.",
+    "With at most 10 digits there are 9 gaps, and each gap can hold one of three operators or nothing (digits joined), giving about `4^9`, roughly 262k, expressions. Enumerating them all is fine. What is too slow is building each full string and re-parsing it from scratch with precedence; the value should be updated incrementally as you go.",
+    "This is backtracking (DFS) over choices. At each position you choose how many digits the next operand takes and which operator goes before it, then recurse on the rest of the string. It fits because the task asks for all valid configurations, and every configuration must be explored anyway.",
+    "Track the value of the last multiplicative term separately from the total. When you apply `*` with operand `x`, the new total is `total - last + last * x` and the new last term is `last * x`. For `+` the last term becomes `x`; for `-` it becomes `-x`.",
+    "Keep five things: the current index into `num`, the expression string built so far, the evaluated total so far, the signed value of the last term (so it can be undone for `*`), and the result list. Use 64-bit integers, because operands of up to 10 digits and their products can overflow 32 bits.",
+    "Start the DFS at index 0 with an empty expression, total 0 and last term 0.\nIf the index reaches the end and the total equals `target`, record the expression.\nOtherwise, for each end position `j`, take `num[index..j]` as the operand `x`.\nIf the operand has more than one digit and starts with `0`, stop extending it.\nAt index 0, just place `x` with total = `x` and last = `x`, with no operator.\nOtherwise recurse three times: with `+` (total + `x`, last `x`), with `-` (total - `x`, last `-x`), and with `*` (total - last + last*`x`, last last*`x`).\nReturn the collected list.",
+    "The trickiest parts are the `*` undo, which must use the signed last term so that `a-b*c` is handled correctly, and the leading-zero rule: allow `0` as an operand but break the loop as soon as a multi-digit operand would begin with `0`. Other edge cases are a single-digit input (no operators placed), the first operand which gets no operator, and large values that need 64-bit math. Time is `O(n * 4^n)` counting the string building, and extra space is `O(n)` for recursion depth and the current expression, not counting the output."
+  ]
+}

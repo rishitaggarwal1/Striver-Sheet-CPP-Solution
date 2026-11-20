@@ -4,7 +4,7 @@
   "slug": "maximize-consecutive-elements-in-an-array-after-modification",
   "title": "Maximize Consecutive Elements in an Array After Modification",
   "url": "https://leetcode.com/problems/maximize-consecutive-elements-in-an-array-after-modification/",
-  "updatedAt": "2026-11-20T12:00:45.107Z",
+  "updatedAt": "2026-11-20T12:04:18.171Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given a 0-indexed array nums consisting of positive integers.\n\nInitially, you can increase the value of any element in the array by at most 1.\n\nAfter that, you need to select one or more elements from the final array such that those elements are consecutive when sorted in increasing order. For example, the elements [3, 4, 5] are consecutive while [3, 4, 6] and [1, 1, 2, 3] are not.\n\nReturn the maximum number of elements that you can select.\n\nExample 1:\n\nInput: nums = [2,1,5,1,1]\nOutput: 3\nExplanation: We can increase the elements at indices 0 and 3. The resulting array is nums = [3,1,5,2,1].\nWe select the elements [3,1,5,2,1] and we sort them to obtain [1,2,3], which are consecutive.\nIt can be shown that we cannot select more than 3 consecutive elements.\n\nExample 2:\n\nInput: nums = [1,4,7,10]\nOutput: 1\nExplanation: The maximum consecutive elements that we can select is 1.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^6"
@@ -930,7 +930,518 @@
         "time": "O(n log n)",
         "space": "O(n)",
         "complexity": "Sorting `nums` in `O(n log n)` dominates the running time, since the DP loop performs `O(1)` expected hash map lookups and updates per element (`O(n)` total). The `dp` hash map stores at most `2n` keys, using `O(n)` auxiliary space.",
-        "tradeoff": "Uses `O(n)` space for the DP table and requires sorting; if `max(nums)` were much smaller than `n`, counting sort could achieve `O(n + max(nums))`, though `O(n log n)` is already optimal for comparison-based processing and independent of the value range."
+        "tradeoff": "Uses `O(n)` space for the DP table and requires sorting; if `max(nums)` were much smaller than `n`, counting sort could achieve `O(n + max(nums))`, though `O(n log n)` is already optimal for comparison-based processing and independent of the value range.",
+        "deep": {
+          "pseudocode": [
+            "function maxSelectedElements(nums)",
+            "  n ← length(nums)",
+            "  sort(nums)  // ensure elements <= x are processed before x + 1",
+            "  dp ← empty hash map with default value 0  // dp[v] = longest consecutive chain ending at v",
+            "  for i ← 0 to n - 1",
+            "    x ← nums[i]",
+            "    dp[x + 1] ← max(dp[x + 1], dp[x] + 1)  // try incrementing x first so dp[x] excludes x itself",
+            "    dp[x] ← max(dp[x], dp[x - 1] + 1)  // try keeping x unchanged to extend chain from x - 1",
+            "  best ← 0",
+            "  for each (val, len) in dp",
+            "    if len > best",
+            "      best ← len",
+            "  return best"
+          ],
+          "time": {
+            "total": "O(n log n)",
+            "parts": [
+              {
+                "part": "Sorting nums (line 3)",
+                "cost": "O(n log n)",
+                "why": "Comparison-based sorting of n integers takes O(n log n) time."
+              },
+              {
+                "part": "DP transition loop (lines 5-8)",
+                "cost": "n iterations × O(1) expected",
+                "why": "Each element performs a constant number of hash map lookups and updates."
+              },
+              {
+                "part": "Maximum scan over dp (lines 9-12)",
+                "cost": "at most 2n iterations × O(1)",
+                "why": "Each of the n numbers can create at most two keys (x and x + 1) in dp."
+              }
+            ],
+            "sum": "O(n log n) + O(n) + O(n) = O(n log n); sorting dominates the linear-time DP loop and final scan.",
+            "cases": "",
+            "feel": "n = 10^5 → roughly 1.7·10^6 comparison operations plus 2·10^5 hash updates, finishing in ~20–40 ms in C++.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Hash map dp (line 4)",
+                "cost": "O(n) space",
+                "why": "Each element inserts at most two entries (x and x + 1), so dp stores at most 2n key-value pairs."
+              },
+              {
+                "part": "Sorting recursion stack (line 3)",
+                "cost": "O(log n) space",
+                "why": "In-place introsort uses logarithmic auxiliary stack space."
+              }
+            ],
+            "sum": "O(n) + O(log n) = O(n); the hash map dominates the sorting stack.",
+            "cases": "",
+            "feel": "",
+            "note": "The input array nums is sorted in place and not counted toward auxiliary space; the output is a single integer."
+          },
+          "dryRun": {
+            "input": "nums = [2, 1, 5, 1, 1]",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "Sort nums in non-decreasing order so smaller values are always available before larger ones; nums becomes [1, 1, 1, 2, 5].",
+                "vars": {
+                  "n": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3,
+                      4
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 4,
+                "explain": "Initialize an empty hash map dp where any missing key defaults to 0.",
+                "vars": {
+                  "n": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": []
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Iteration i = 0, x = 1: try incrementing 1 to 2, setting dp[2] = max(0, dp[1] + 1) = 1.",
+                "vars": {
+                  "n": "5",
+                  "i": "0",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "2→1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "Still at i = 0, x = 1: try keeping 1 unchanged, setting dp[1] = max(0, dp[0] + 1) = 1.",
+                "vars": {
+                  "n": "5",
+                  "i": "0",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Iteration i = 1, x = 1: increment this second 1 to 2, extending dp[1] = 1 so dp[2] = max(1, 1 + 1) = 2.",
+                "vars": {
+                  "n": "5",
+                  "i": "1",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "Still at i = 1, x = 1: keeping 1 gives dp[1] = max(1, dp[0] + 1) = 1, leaving dp[1] = 1.",
+                "vars": {
+                  "n": "5",
+                  "i": "1",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Iteration i = 2, x = 1: incrementing the third 1 to 2 yields max(2, 1 + 1) = 2, so dp[2] stays 2.",
+                "vars": {
+                  "n": "5",
+                  "i": "2",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "Still at i = 2, x = 1: keeping 1 yields max(1, 0 + 1) = 1, so dp[1] stays 1.",
+                "vars": {
+                  "n": "5",
+                  "i": "2",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Iteration i = 3, x = 2: increment 2 to 3, extending dp[2] = 2 to dp[3] = max(0, 2 + 1) = 3.",
+                "vars": {
+                  "n": "5",
+                  "i": "3",
+                  "x": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2",
+                      "3→3"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "Still at i = 3, x = 2: keeping 2 gives dp[2] = max(2, dp[1] + 1) = 2, so dp[2] remains 2.",
+                "vars": {
+                  "n": "5",
+                  "i": "3",
+                  "x": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2",
+                      "3→3"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Iteration i = 4, x = 5: increment 5 to 6, setting dp[6] = max(0, dp[5] + 1) = 1.",
+                "vars": {
+                  "n": "5",
+                  "i": "4",
+                  "x": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2",
+                      "3→3",
+                      "6→1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "Still at i = 4, x = 5: keeping 5 sets dp[5] = max(0, dp[4] + 1) = 1.",
+                "vars": {
+                  "n": "5",
+                  "i": "4",
+                  "x": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2",
+                      "3→3",
+                      "5→1",
+                      "6→1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "Lines 9–12 scan all entries in dp and find the maximum length best = 3 (at key 3); line 13 returns 3.",
+                "vars": {
+                  "n": "5",
+                  "best": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "dp": {
+                    "type": "map",
+                    "items": [
+                      "1→1",
+                      "2→2",
+                      "3→3",
+                      "5→1",
+                      "6→1"
+                    ]
+                  }
+                }
+              }
+            ],
+            "result": "3 — Two of the 1s form [1, 2] (keeping one and incrementing one), and incrementing 2 to 3 extends that chain to [1, 2, 3] of length 3."
+          },
+          "solution": "class Solution {\npublic:\n    int maxSelectedElements(vector<int>& nums) {\n        // Sort so all elements <= x are processed before x + 1\n        sort(nums.begin(), nums.end());\n        // dp[v] stores the longest consecutive sequence ending at value v\n        unordered_map<int, int> dp;\n        for (int x : nums) {\n            // Read existing chain lengths before updating dp so x cannot extend itself\n            int prevSame = dp.count(x) ? dp[x] : 0;\n            int prevLess = dp.count(x - 1) ? dp[x - 1] : 0;\n            // Option 1: increment x to x + 1, extending any chain ending at x\n            dp[x + 1] = max(dp[x + 1], prevSame + 1);\n            // Option 2: keep x unchanged, extending any chain ending at x - 1\n            dp[x] = max(prevSame, prevLess + 1);\n        }\n        int best = 0;\n        // Scan all reachable ending values to find the maximum sequence length\n        for (const auto& [val, len] : dp) {\n            best = max(best, len);\n        }\n        return best;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<int> nums1 = {2, 1, 5, 1, 1};\n    cout << \"Example 1: \" << sol.maxSelectedElements(nums1) << \" (expected 3)\\n\";\n\n    vector<int> nums2 = {1, 4, 7, 10};\n    cout << \"Example 2: \" << sol.maxSelectedElements(nums2) << \" (expected 1)\\n\";\n\n    return 0;\n}"
+        }
       }
     ],
     "mistakes": [

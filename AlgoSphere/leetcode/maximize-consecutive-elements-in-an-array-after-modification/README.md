@@ -400,7 +400,140 @@ int main() {
 4. Next, update `dp[x] = max(dp[x], dp[x - 1] + 1)`.
 5. Return the maximum value stored in `dp`.
 
-**Complexity:** time `O(n log n)`, space `O(n)`. Sorting `nums` in `O(n log n)` dominates the running time, since the DP loop performs `O(1)` expected hash map lookups and updates per element (`O(n)` total). The `dp` hash map stores at most `2n` keys, using `O(n)` auxiliary space.
+**Pseudocode**
+
+```text
+ 1 │ function maxSelectedElements(nums)
+ 2 │   n ← length(nums)
+ 3 │   sort(nums)  // ensure elements <= x are processed before x + 1
+ 4 │   dp ← empty hash map with default value 0  // dp[v] = longest consecutive chain ending at v
+ 5 │   for i ← 0 to n - 1
+ 6 │     x ← nums[i]
+ 7 │     dp[x + 1] ← max(dp[x + 1], dp[x] + 1)  // try incrementing x first so dp[x] excludes x itself
+ 8 │     dp[x] ← max(dp[x], dp[x - 1] + 1)  // try keeping x unchanged to extend chain from x - 1
+ 9 │   best ← 0
+10 │   for each (val, len) in dp
+11 │     if len > best
+12 │       best ← len
+13 │   return best
+```
+
+**Time complexity: `O(n log n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Sorting nums (line 3) | O(n log n) | Comparison-based sorting of n integers takes O(n log n) time. |
+| DP transition loop (lines 5-8) | n iterations × O(1) expected | Each element performs a constant number of hash map lookups and updates. |
+| Maximum scan over dp (lines 9-12) | at most 2n iterations × O(1) | Each of the n numbers can create at most two keys (x and x + 1) in dp. |
+
+- **Adding it up:** O(n log n) + O(n) + O(n) = O(n log n); sorting dominates the linear-time DP loop and final scan.
+- **At the maximum input:** n = 10^5 → roughly 1.7·10^6 comparison operations plus 2·10^5 hash updates, finishing in ~20–40 ms in C++.
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Hash map dp (line 4) | O(n) space | Each element inserts at most two entries (x and x + 1), so dp stores at most 2n key-value pairs. |
+| Sorting recursion stack (line 3) | O(log n) space | In-place introsort uses logarithmic auxiliary stack space. |
+
+- **Adding it up:** O(n) + O(log n) = O(n); the hash map dominates the sorting stack.
+- **Not counted:** The input array nums is sorted in place and not counted toward auxiliary space; the output is a single integer.
+
+**Dry run** on `nums = [2, 1, 5, 1, 1]`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 3 | Sort nums in non-decreasing order so smaller values are always available before larger ones; nums becomes [1, 1, 1, 2, 5]. | `n = 5`<br>`nums = [1, 1, 1, 2, 5]` |
+| 2 | 4 | Initialize an empty hash map dp where any missing key defaults to 0. | `dp = {}` |
+| 3 | 7 | Iteration i = 0, x = 1: try incrementing 1 to 2, setting dp[2] = max(0, dp[1] + 1) = 1. | `i = 0`<br>`x = 1`<br>`nums = [1, 1, 1, 2, 5]` (i→0)<br>`dp = {2→1}` |
+| 4 | 8 | Still at i = 0, x = 1: try keeping 1 unchanged, setting dp[1] = max(0, dp[0] + 1) = 1. | `dp = {1→1, 2→1}` |
+| 5 | 7 | Iteration i = 1, x = 1: increment this second 1 to 2, extending dp[1] = 1 so dp[2] = max(1, 1 + 1) = 2. | `i = 1`<br>`nums = [1, 1, 1, 2, 5]` (i→1)<br>`dp = {1→1, 2→2}` |
+| 6 | 8 | Still at i = 1, x = 1: keeping 1 gives dp[1] = max(1, dp[0] + 1) = 1, leaving dp[1] = 1. | (no change) |
+| 7 | 7 | Iteration i = 2, x = 1: incrementing the third 1 to 2 yields max(2, 1 + 1) = 2, so dp[2] stays 2. | `i = 2`<br>`nums = [1, 1, 1, 2, 5]` (i→2) |
+| 8 | 8 | Still at i = 2, x = 1: keeping 1 yields max(1, 0 + 1) = 1, so dp[1] stays 1. | (no change) |
+| 9 | 7 | Iteration i = 3, x = 2: increment 2 to 3, extending dp[2] = 2 to dp[3] = max(0, 2 + 1) = 3. | `i = 3`<br>`x = 2`<br>`nums = [1, 1, 1, 2, 5]` (i→3)<br>`dp = {1→1, 2→2, 3→3}` |
+| 10 | 8 | Still at i = 3, x = 2: keeping 2 gives dp[2] = max(2, dp[1] + 1) = 2, so dp[2] remains 2. | (no change) |
+| 11 | 7 | Iteration i = 4, x = 5: increment 5 to 6, setting dp[6] = max(0, dp[5] + 1) = 1. | `i = 4`<br>`x = 5`<br>`nums = [1, 1, 1, 2, 5]` (i→4)<br>`dp = {1→1, 2→2, 3→3, 6→1}` |
+| 12 | 8 | Still at i = 4, x = 5: keeping 5 sets dp[5] = max(0, dp[4] + 1) = 1. | `dp = {1→1, 2→2, 3→3, 5→1, 6→1}` |
+| 13 | 13 | Lines 9–12 scan all entries in dp and find the maximum length best = 3 (at key 3); line 13 returns 3. | `best = 3`<br>`nums = [1, 1, 1, 2, 5]` |
+
+**Result:** 3 — Two of the 1s form [1, 2] (keeping one and incrementing one), and incrementing 2 to 3 extends that chain to [1, 2, 3] of length 3.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    int maxSelectedElements(vector<int>& nums) {
+        // Sort so all elements <= x are processed before x + 1
+        sort(nums.begin(), nums.end());
+        // dp[v] stores the longest consecutive sequence ending at value v
+        unordered_map<int, int> dp;
+        for (int x : nums) {
+            // Read existing chain lengths before updating dp so x cannot extend itself
+            int prevSame = dp.count(x) ? dp[x] : 0;
+            int prevLess = dp.count(x - 1) ? dp[x - 1] : 0;
+            // Option 1: increment x to x + 1, extending any chain ending at x
+            dp[x + 1] = max(dp[x + 1], prevSame + 1);
+            // Option 2: keep x unchanged, extending any chain ending at x - 1
+            dp[x] = max(prevSame, prevLess + 1);
+        }
+        int best = 0;
+        // Scan all reachable ending values to find the maximum sequence length
+        for (const auto& [val, len] : dp) {
+            best = max(best, len);
+        }
+        return best;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int maxSelectedElements(vector<int>& nums) {
+        // Sort so all elements <= x are processed before x + 1
+        sort(nums.begin(), nums.end());
+        // dp[v] stores the longest consecutive sequence ending at value v
+        unordered_map<int, int> dp;
+        for (int x : nums) {
+            // Read existing chain lengths before updating dp so x cannot extend itself
+            int prevSame = dp.count(x) ? dp[x] : 0;
+            int prevLess = dp.count(x - 1) ? dp[x - 1] : 0;
+            // Option 1: increment x to x + 1, extending any chain ending at x
+            dp[x + 1] = max(dp[x + 1], prevSame + 1);
+            // Option 2: keep x unchanged, extending any chain ending at x - 1
+            dp[x] = max(prevSame, prevLess + 1);
+        }
+        int best = 0;
+        // Scan all reachable ending values to find the maximum sequence length
+        for (const auto& [val, len] : dp) {
+            best = max(best, len);
+        }
+        return best;
+    }
+};
+
+int main() {
+    Solution sol;
+
+    vector<int> nums1 = {2, 1, 5, 1, 1};
+    cout << "Example 1: " << sol.maxSelectedElements(nums1) << " (expected 3)\n";
+
+    vector<int> nums2 = {1, 4, 7, 10};
+    cout << "Example 2: " << sol.maxSelectedElements(nums2) << " (expected 1)\n";
+
+    return 0;
+}
+```
+
+</details>
 
 **Why this is the best:** Uses `O(n)` space for the DP table and requires sorting; if `max(nums)` were much smaller than `n`, counting sort could achieve `O(n + max(nums))`, though `O(n log n)` is already optimal for comparison-based processing and independent of the value range.
 

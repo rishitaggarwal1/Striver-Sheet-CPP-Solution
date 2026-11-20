@@ -202,7 +202,156 @@ Dijkstra: repeatedly pop the closest unfinalised node from a min-heap, finalise 
 5. Call DFS(k, 0).
 6. If any `best` is infinity return -1, else return the max of `best`.
 
-**Complexity:** time `Exponential worst case`, space `O(n + E)`. Each improvement of a node re-expands its whole subtree. Bad edge orderings cause a cascade of repeated improvements, so the running time is dominated by these re-expansions. Memory is the adjacency list, `best`, and a recursion stack of depth up to n.
+**Pseudocode**
+
+```text
+ 1 │ function networkDelayTime(times, n, k)
+ 2 │   adj ← array of n+1 empty lists
+ 3 │   for each (u, v, w) in times
+ 4 │     append (v, w) to adj[u]   // directed edge u → v only
+ 5 │   for u ← 1 to n
+ 6 │     sort adj[u] by w ascending   // heuristic: try cheap edges first so later paths get pruned more
+ 7 │   best ← array[0..n] filled with INF   // best[x] = fastest arrival time found so far
+ 8 │   dfs(k, 0)
+ 9 │   answer ← 0
+10 │   for node ← 1 to n
+11 │     if best[node] = INF
+12 │       return -1   // node was never reached
+13 │     answer ← max(answer, best[node])   // the last node to hear the signal decides the answer
+14 │   return answer
+15 │ function dfs(node, t)
+16 │   if t ≥ best[node]
+17 │     return   // a path at least as fast already reached node, so this one cannot help
+18 │   best[node] ← t
+19 │   for each (v, w) in adj[node]
+20 │     dfs(v, t + w)   // extend the current path by edge node → v
+```
+
+**Time complexity: `Exponential worst case (O(E log E) setup + number of DFS expansions × degree)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Build adjacency list (lines 2-4) | E iterations × O(1) | Each edge is appended exactly once. |
+| Sort neighbour lists (lines 5-6) | O(E log E) in total | Sorting all the lists together costs at most as much as sorting E items. |
+| DFS (lines 8, 15-20) | (number of times a node's best improves) × O(out-degree) per improvement | A node is re-expanded every time a strictly faster path reaches it. In an adversarial graph the fast paths are found last, so this can happen exponentially many times. |
+| Final scan (lines 9-14) | n iterations × O(1) | One look at each best value. |
+
+- **Adding it up:** O(E) + O(E log E) + (expansions × degree) + O(n). The DFS term dominates. It is O(E) when every node is settled on its first visit, and it can blow up exponentially in n when nodes keep getting improved.
+- **Best vs worst case:** Best case: a tree, or any graph where the first path found to each node is already the shortest. Each node is then expanded once, giving O(E log E). Worst case: a layered or dense graph where expensive paths are explored first and cheaper ones keep arriving later. Every improvement re-expands the whole subtree below that node.
+- **At the maximum input:** n = 100, E = 6000. The theoretical worst case is astronomically large. With the cheap-edges-first sort, LeetCode's tests still run in a few milliseconds. Dijkstra is the safe choice when guarantees matter.
+
+**Space complexity: `O(n + E)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Adjacency list adj (lines 2-4) | O(n + E) | n+1 list headers plus one entry per edge. |
+| best array (line 7) | O(n) | One slot per node. |
+| Recursion stack (lines 15-20) | O(n) | A recursive call only goes deeper when t < best[node]. A revisited node on the current path already holds a smaller or equal time, so every active path is simple and has at most n frames. |
+
+- **Adding it up:** O(n + E) + O(n) + O(n) = O(n + E).
+- **Not counted:** The input times array is not counted. Recursion depth is at most n = 100.
+
+**Dry run** on `times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 4 | All 3 edges have been added as directed lists (iterations collapsed). Node 2 points to 1 and 3, and node 3 points to 4. Sorting on lines 5-6 changes nothing because all weights are 1. | `n = 4`<br>`k = 2`<br>`adj = {1→[], 2→[(1,1),(3,1)], 3→[(4,1)], 4→[]}`<br>`network: 4 nodes` |
+| 2 | 7 | best is filled with INF. Index 0 is unused because nodes are labelled 1..4. | `best = [-, INF, INF, INF, INF]` |
+| 3 | 18 | dfs(2, 0) is called. Since 0 < INF, the check on line 16 passes and best[2] becomes 0, because the source hears the signal at time 0. | `node = 2`<br>`t = 0`<br>`best = [-, INF, 0, INF, INF]` (node→2)<br>`callStack = [dfs(2,0)] ← top`<br>`network: node→2` |
+| 4 | 18 | The first neighbour of 2 is (1,1), so dfs(1, 0+1) runs. Since 1 < INF, best[1] becomes 1. Node 1 has no outgoing edges, so this call returns right away. | `node = 1`<br>`t = 1`<br>`best = [-, 1, 0, INF, INF]` (node→1)<br>`callStack = [dfs(2,0), dfs(1,1)] ← top`<br>`network: node→1; visited {2}; edge 2→1` |
+| 5 | 18 | Back in dfs(2,0), the next neighbour is (3,1), so dfs(3, 1) runs. Since 1 < INF, best[3] becomes 1. | `node = 3`<br>`best = [-, 1, 0, 1, INF]` (node→3)<br>`callStack = [dfs(2,0), dfs(3,1)] ← top`<br>`network: node→3; visited {2, 1}; edge 2→3` |
+| 6 | 18 | From 3, the edge (4,1) leads to dfs(4, 1+1). Since 2 < INF, best[4] becomes 2. Node 4 has no outgoing edges. | `node = 4`<br>`t = 2`<br>`best = [-, 1, 0, 1, 2]` (node→4)<br>`callStack = [dfs(2,0), dfs(3,1), dfs(4,2)] ← top`<br>`network: node→4; visited {2, 1, 3}; edge 3→4` |
+| 7 | 8 | All recursive calls have returned, so dfs(2,0) is finished. No node was ever improved twice, so nothing was re-expanded. | `best = [-, 1, 0, 1, 2]`<br>`callStack = []`<br>`network: visited {1, 2, 3, 4}` |
+| 8 | 13 | Scan with node = 1. best[1] = 1 is not INF, so answer = max(0, 1) = 1. | `node = 1`<br>`answer = 1`<br>`best = [-, 1, 0, 1, 2]` (node→1)<br>`network: node→1; visited {1, 2, 3, 4}` |
+| 9 | 13 | Nodes 2 and 3 have times 0 and 1, so answer stays 1 (iterations collapsed). At node = 4, best[4] = 2, so answer = max(1, 2) = 2. | `node = 4`<br>`answer = 2`<br>`best = [-, 1, 0, 1, 2]` (node→4)<br>`network: node→4; visited {1, 2, 3, 4}` |
+| 10 | 14 | Every node was reached, so the function returns answer = 2. | `best = [-, 1, 0, 1, 2]`<br>`network: visited {1, 2, 3, 4}` |
+
+**Result:** 2. Node 4 is the farthest node, reached via 2→3→4 at time 2. Every other node hears the signal no later than that.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // adjacency list: adj[u] holds (v, w) pairs for directed edges u -> v
+        vector<vector<pair<int,int>>> adj(n + 1);
+        for (auto& e : times) adj[e[0]].push_back({e[1], e[2]});
+        // heuristic: explore cheap edges first so faster paths are found early and prune more
+        for (int u = 1; u <= n; ++u)
+            sort(adj[u].begin(), adj[u].end(),
+                 [](const pair<int,int>& a, const pair<int,int>& b) { return a.second < b.second; });
+        best.assign(n + 1, INT_MAX); // INT_MAX means 'not reached yet'
+        dfs(k, 0, adj);              // signal starts at k at time 0
+        int answer = 0;
+        for (int node = 1; node <= n; ++node) {
+            if (best[node] == INT_MAX) return -1;   // some node never got the signal
+            answer = max(answer, best[node]);      // the slowest node decides the total time
+        }
+        return answer;
+    }
+private:
+    vector<int> best; // best[x] = fastest arrival time found so far for node x
+
+    void dfs(int node, int t, const vector<vector<pair<int,int>>>& adj) {
+        if (t >= best[node]) return; // an equally fast or faster path already reached node: prune
+        best[node] = t;              // record the improvement
+        for (auto& [v, w] : adj[node])
+            dfs(v, t + w, adj);      // extend the path along edge node -> v
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        // adjacency list: adj[u] holds (v, w) pairs for directed edges u -> v
+        vector<vector<pair<int,int>>> adj(n + 1);
+        for (auto& e : times) adj[e[0]].push_back({e[1], e[2]});
+        // heuristic: explore cheap edges first so faster paths are found early and prune more
+        for (int u = 1; u <= n; ++u)
+            sort(adj[u].begin(), adj[u].end(),
+                 [](const pair<int,int>& a, const pair<int,int>& b) { return a.second < b.second; });
+        best.assign(n + 1, INT_MAX); // INT_MAX means 'not reached yet'
+        dfs(k, 0, adj);              // signal starts at k at time 0
+        int answer = 0;
+        for (int node = 1; node <= n; ++node) {
+            if (best[node] == INT_MAX) return -1;   // some node never got the signal
+            answer = max(answer, best[node]);      // the slowest node decides the total time
+        }
+        return answer;
+    }
+private:
+    vector<int> best; // best[x] = fastest arrival time found so far for node x
+
+    void dfs(int node, int t, const vector<vector<pair<int,int>>>& adj) {
+        if (t >= best[node]) return; // an equally fast or faster path already reached node: prune
+        best[node] = t;              // record the improvement
+        for (auto& [v, w] : adj[node])
+            dfs(v, t + w, adj);      // extend the path along edge node -> v
+    }
+};
+
+int main() {
+    vector<vector<int>> t1 = {{2,1,1},{2,3,1},{3,4,1}};
+    vector<vector<int>> t2 = {{1,2,1}};
+    vector<vector<int>> t3 = {{1,2,1}};
+    Solution s1, s2, s3;
+    cout << "Example 1: " << s1.networkDelayTime(t1, 4, 2) << " (expected 2)" << endl;
+    cout << "Example 2: " << s2.networkDelayTime(t2, 2, 1) << " (expected 1)" << endl;
+    cout << "Example 3: " << s3.networkDelayTime(t3, 2, 2) << " (expected -1)" << endl;
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** Exploration order is arbitrary, so the same node may be finalised many times. On dense graphs with 6000 edges this can blow up.
 

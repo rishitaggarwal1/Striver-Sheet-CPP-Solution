@@ -219,11 +219,11 @@
     "time": "O(E log E), i.e. O(E log n)",
     "space": "O(n + E)",
     "dir": "leetcode/network-delay-time",
-    "solution": "",
+    "solution": "leetcode/network-delay-time/network-delay-time.cpp",
     "mine": {
       "lang": "C++",
       "path": "leetcode/network-delay-time/my-solution.cpp"
     },
-    "updatedAt": "2026-11-20T15:16:35.644Z"
+    "updatedAt": "2026-11-20T15:16:42.968Z"
   }
 }

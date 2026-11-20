@@ -4,7 +4,7 @@
   "slug": "network-delay-time",
   "title": "Network Delay Time",
   "url": "https://leetcode.com/problems/network-delay-time/",
-  "updatedAt": "2026-11-20T15:16:35.644Z",
+  "updatedAt": "2026-11-20T15:16:42.968Z",
   "problem": {
     "difficulty": "Medium",
     "description": "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (u_i, v_i, w_i), where u_i is the source node, v_i is the target node, and w_i is the time it takes for a signal to travel from source to target.\n\nWe will send a signal from a given node k. Return the minimum time it takes for all the n nodes to receive the signal. If it is impossible for all the n nodes to receive the signal, return -1.\n\nExample 1:\n\nInput: times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2\nOutput: 2\n\nExample 2:\n\nInput: times = [[1,2,1]], n = 2, k = 1\nOutput: 1\n\nExample 3:\n\nInput: times = [[1,2,1]], n = 2, k = 2\nOutput: -1\n\nConstraints:\n\n- 1 <= k <= n <= 100\n\n- 1 <= times.length <= 6000\n\n- times[i].length == 3\n\n- 1 <= u_i, v_i <= n\n\n- u_i != v_i\n\n- 0 <= w_i <= 100\n\n- All the pairs (u_i, v_i) are unique. (i.e., no multiple edges.)"
@@ -70,7 +70,803 @@
         "time": "Exponential worst case",
         "space": "O(n + E)",
         "complexity": "Each improvement of a node re-expands its whole subtree. Bad edge orderings cause a cascade of repeated improvements, so the running time is dominated by these re-expansions. Memory is the adjacency list, `best`, and a recursion stack of depth up to n.",
-        "tradeoff": "Exploration order is arbitrary, so the same node may be finalised many times. On dense graphs with 6000 edges this can blow up."
+        "tradeoff": "Exploration order is arbitrary, so the same node may be finalised many times. On dense graphs with 6000 edges this can blow up.",
+        "deep": {
+          "pseudocode": [
+            "function networkDelayTime(times, n, k)",
+            "  adj ← array of n+1 empty lists",
+            "  for each (u, v, w) in times",
+            "    append (v, w) to adj[u]   // directed edge u → v only",
+            "  for u ← 1 to n",
+            "    sort adj[u] by w ascending   // heuristic: try cheap edges first so later paths get pruned more",
+            "  best ← array[0..n] filled with INF   // best[x] = fastest arrival time found so far",
+            "  dfs(k, 0)",
+            "  answer ← 0",
+            "  for node ← 1 to n",
+            "    if best[node] = INF",
+            "      return -1   // node was never reached",
+            "    answer ← max(answer, best[node])   // the last node to hear the signal decides the answer",
+            "  return answer",
+            "function dfs(node, t)",
+            "  if t ≥ best[node]",
+            "    return   // a path at least as fast already reached node, so this one cannot help",
+            "  best[node] ← t",
+            "  for each (v, w) in adj[node]",
+            "    dfs(v, t + w)   // extend the current path by edge node → v"
+          ],
+          "time": {
+            "total": "Exponential worst case (O(E log E) setup + number of DFS expansions × degree)",
+            "parts": [
+              {
+                "part": "Build adjacency list (lines 2-4)",
+                "cost": "E iterations × O(1)",
+                "why": "Each edge is appended exactly once."
+              },
+              {
+                "part": "Sort neighbour lists (lines 5-6)",
+                "cost": "O(E log E) in total",
+                "why": "Sorting all the lists together costs at most as much as sorting E items."
+              },
+              {
+                "part": "DFS (lines 8, 15-20)",
+                "cost": "(number of times a node's best improves) × O(out-degree) per improvement",
+                "why": "A node is re-expanded every time a strictly faster path reaches it. In an adversarial graph the fast paths are found last, so this can happen exponentially many times."
+              },
+              {
+                "part": "Final scan (lines 9-14)",
+                "cost": "n iterations × O(1)",
+                "why": "One look at each best value."
+              }
+            ],
+            "sum": "O(E) + O(E log E) + (expansions × degree) + O(n). The DFS term dominates. It is O(E) when every node is settled on its first visit, and it can blow up exponentially in n when nodes keep getting improved.",
+            "cases": "Best case: a tree, or any graph where the first path found to each node is already the shortest. Each node is then expanded once, giving O(E log E). Worst case: a layered or dense graph where expensive paths are explored first and cheaper ones keep arriving later. Every improvement re-expands the whole subtree below that node.",
+            "feel": "n = 100, E = 6000. The theoretical worst case is astronomically large. With the cheap-edges-first sort, LeetCode's tests still run in a few milliseconds. Dijkstra is the safe choice when guarantees matter.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n + E)",
+            "parts": [
+              {
+                "part": "Adjacency list adj (lines 2-4)",
+                "cost": "O(n + E)",
+                "why": "n+1 list headers plus one entry per edge."
+              },
+              {
+                "part": "best array (line 7)",
+                "cost": "O(n)",
+                "why": "One slot per node."
+              },
+              {
+                "part": "Recursion stack (lines 15-20)",
+                "cost": "O(n)",
+                "why": "A recursive call only goes deeper when t < best[node]. A revisited node on the current path already holds a smaller or equal time, so every active path is simple and has at most n frames."
+              }
+            ],
+            "sum": "O(n + E) + O(n) + O(n) = O(n + E).",
+            "cases": "",
+            "feel": "",
+            "note": "The input times array is not counted. Recursion depth is at most n = 100."
+          },
+          "dryRun": {
+            "input": "times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "All 3 edges have been added as directed lists (iterations collapsed). Node 2 points to 1 and 3, and node 3 points to 4. Sorting on lines 5-6 changes nothing because all weights are 1.",
+                "vars": {
+                  "n": "4",
+                  "k": "2"
+                },
+                "arrays": {},
+                "structures": {
+                  "adj": {
+                    "type": "map",
+                    "items": [
+                      "1→[]",
+                      "2→[(1,1),(3,1)]",
+                      "3→[(4,1)]",
+                      "4→[]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "best is filled with INF. Index 0 is unused because nodes are labelled 1..4.",
+                "vars": {
+                  "n": "4",
+                  "k": "2"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "INF",
+                      "INF",
+                      "INF",
+                      "INF"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "adj": {
+                    "type": "map",
+                    "items": [
+                      "1→[]",
+                      "2→[(1,1),(3,1)]",
+                      "3→[(4,1)]",
+                      "4→[]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "dfs(2, 0) is called. Since 0 < INF, the check on line 16 passes and best[2] becomes 0, because the source hears the signal at time 0.",
+                "vars": {
+                  "n": "4",
+                  "k": "2",
+                  "node": "2",
+                  "t": "0"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "INF",
+                      "0",
+                      "INF",
+                      "INF"
+                    ],
+                    "pointers": {
+                      "node": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "callStack": {
+                    "type": "stack",
+                    "items": [
+                      "dfs(2,0)"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "node": "2"
+                    },
+                    "highlight": [
+                      "2"
+                    ],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "The first neighbour of 2 is (1,1), so dfs(1, 0+1) runs. Since 1 < INF, best[1] becomes 1. Node 1 has no outgoing edges, so this call returns right away.",
+                "vars": {
+                  "n": "4",
+                  "k": "2",
+                  "node": "1",
+                  "t": "1"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "1",
+                      "0",
+                      "INF",
+                      "INF"
+                    ],
+                    "pointers": {
+                      "node": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "callStack": {
+                    "type": "stack",
+                    "items": [
+                      "dfs(2,0)",
+                      "dfs(1,1)"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "node": "1"
+                    },
+                    "highlight": [
+                      "1"
+                    ],
+                    "visited": [
+                      "2"
+                    ],
+                    "activeEdges": [
+                      [
+                        "2",
+                        "1"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "Back in dfs(2,0), the next neighbour is (3,1), so dfs(3, 1) runs. Since 1 < INF, best[3] becomes 1.",
+                "vars": {
+                  "n": "4",
+                  "k": "2",
+                  "node": "3",
+                  "t": "1"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "1",
+                      "0",
+                      "1",
+                      "INF"
+                    ],
+                    "pointers": {
+                      "node": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "callStack": {
+                    "type": "stack",
+                    "items": [
+                      "dfs(2,0)",
+                      "dfs(3,1)"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "node": "3"
+                    },
+                    "highlight": [
+                      "3"
+                    ],
+                    "visited": [
+                      "2",
+                      "1"
+                    ],
+                    "activeEdges": [
+                      [
+                        "2",
+                        "3"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "From 3, the edge (4,1) leads to dfs(4, 1+1). Since 2 < INF, best[4] becomes 2. Node 4 has no outgoing edges.",
+                "vars": {
+                  "n": "4",
+                  "k": "2",
+                  "node": "4",
+                  "t": "2"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {
+                      "node": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {
+                  "callStack": {
+                    "type": "stack",
+                    "items": [
+                      "dfs(2,0)",
+                      "dfs(3,1)",
+                      "dfs(4,2)"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "node": "4"
+                    },
+                    "highlight": [
+                      "4"
+                    ],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3"
+                    ],
+                    "activeEdges": [
+                      [
+                        "3",
+                        "4"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "All recursive calls have returned, so dfs(2,0) is finished. No node was ever improved twice, so nothing was re-expanded.",
+                "vars": {
+                  "n": "4",
+                  "k": "2"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "callStack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "Scan with node = 1. best[1] = 1 is not INF, so answer = max(0, 1) = 1.",
+                "vars": {
+                  "n": "4",
+                  "k": "2",
+                  "node": "1",
+                  "answer": "1"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {
+                      "node": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "node": "1"
+                    },
+                    "highlight": [
+                      "1"
+                    ],
+                    "visited": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "Nodes 2 and 3 have times 0 and 1, so answer stays 1 (iterations collapsed). At node = 4, best[4] = 2, so answer = max(1, 2) = 2.",
+                "vars": {
+                  "n": "4",
+                  "k": "2",
+                  "node": "4",
+                  "answer": "2"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {
+                      "node": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "node": "4"
+                    },
+                    "highlight": [
+                      "4"
+                    ],
+                    "visited": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "Every node was reached, so the function returns answer = 2.",
+                "vars": {
+                  "n": "4",
+                  "k": "2",
+                  "answer": "2"
+                },
+                "arrays": {
+                  "best": {
+                    "values": [
+                      "-",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "network": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              }
+            ],
+            "result": "2. Node 4 is the farthest node, reached via 2→3→4 at time 2. Every other node hears the signal no later than that."
+          },
+          "solution": "class Solution {\npublic:\n    int networkDelayTime(vector<vector<int>>& times, int n, int k) {\n        // adjacency list: adj[u] holds (v, w) pairs for directed edges u -> v\n        vector<vector<pair<int,int>>> adj(n + 1);\n        for (auto& e : times) adj[e[0]].push_back({e[1], e[2]});\n        // heuristic: explore cheap edges first so faster paths are found early and prune more\n        for (int u = 1; u <= n; ++u)\n            sort(adj[u].begin(), adj[u].end(),\n                 [](const pair<int,int>& a, const pair<int,int>& b) { return a.second < b.second; });\n        best.assign(n + 1, INT_MAX); // INT_MAX means 'not reached yet'\n        dfs(k, 0, adj);              // signal starts at k at time 0\n        int answer = 0;\n        for (int node = 1; node <= n; ++node) {\n            if (best[node] == INT_MAX) return -1;   // some node never got the signal\n            answer = max(answer, best[node]);      // the slowest node decides the total time\n        }\n        return answer;\n    }\nprivate:\n    vector<int> best; // best[x] = fastest arrival time found so far for node x\n\n    void dfs(int node, int t, const vector<vector<pair<int,int>>>& adj) {\n        if (t >= best[node]) return; // an equally fast or faster path already reached node: prune\n        best[node] = t;              // record the improvement\n        for (auto& [v, w] : adj[node])\n            dfs(v, t + w, adj);      // extend the path along edge node -> v\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    vector<vector<int>> t1 = {{2,1,1},{2,3,1},{3,4,1}};\n    vector<vector<int>> t2 = {{1,2,1}};\n    vector<vector<int>> t3 = {{1,2,1}};\n    Solution s1, s2, s3;\n    cout << \"Example 1: \" << s1.networkDelayTime(t1, 4, 2) << \" (expected 2)\" << endl;\n    cout << \"Example 2: \" << s2.networkDelayTime(t2, 2, 1) << \" (expected 1)\" << endl;\n    cout << \"Example 3: \" << s3.networkDelayTime(t3, 2, 2) << \" (expected -1)\" << endl;\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

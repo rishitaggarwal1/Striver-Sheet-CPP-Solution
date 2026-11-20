@@ -382,7 +382,140 @@ int main() {
 4. Scan `x` in sorted `nums`: if `x == need` or `x + 1 == need`, increment `need` by `1`.
 5. Record `need - start` as the chain length for this `start`, and return the maximum length across all candidates.
 
-**Complexity:** time `O(n^2)`, space `O(n)`. Sorting takes `O(n log n)`, while collecting up to `2n` candidate starts and running an `O(n)` scan for each takes `O(n^2)` time, which dominates. Storing the candidate set uses `O(n)` auxiliary space.
+**Pseudocode**
+
+```text
+ 1 │ function maxSelectedElements(nums)
+ 2 │   sort(nums) // non-decreasing order so greedy picks earliest valid element
+ 3 │   candidates ← empty ordered set // distinct possible starting values
+ 4 │   for i ← 0 to length(nums) - 1
+ 5 │     add nums[i] to candidates // chain starting without incrementing nums[i]
+ 6 │     add nums[i] + 1 to candidates // chain starting by incrementing nums[i]
+ 7 │   best ← 0
+ 8 │   for each start in candidates
+ 9 │     need ← start // next consecutive integer needed in the chain
+10 │     for i ← 0 to length(nums) - 1
+11 │       x ← nums[i]
+12 │       if x = need or x + 1 = need // earliest element that can form need
+13 │         need ← need + 1 // greedily claim x for need
+14 │     best ← max(best, need - start) // chain length formed is need - start
+15 │   return best
+```
+
+**Time complexity: `O(n^2)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Sorting nums (line 2) | O(n log n) | Comparison-based sorting of n elements takes O(n log n) time. |
+| Collecting candidates (lines 3-6) | n iterations × O(log n) = O(n log n) | Each element inserts at most two values into an ordered set of size at most 2n. |
+| Greedy scan per candidate (lines 8-14) | at most 2n candidates × n iterations = O(n^2) | Each distinct starting value scans all n elements of the sorted array in O(n) time. |
+
+- **Adding it up:** O(n log n) + O(n log n) + O(n^2) = O(n^2); the nested candidate-and-array scan dominates sorting and candidate collection.
+- **Best vs worst case:** Best case is O(n log n) when all elements are equal (e.g., [1, 1, ..., 1]), producing only 2 candidates so lines 8-14 take O(n) and sorting dominates. Worst case is O(n^2) when elements are spaced by at least 2 (e.g., [1, 3, 5, ..., 2n-1]), producing 2n candidates that each scan n elements.
+- **At the maximum input:** n = 10^5 -> up to 2·10^10 steps in the worst case, which exceeds a 1-second limit and explains why an O(n log n) DP approach is needed to pass all constraints.
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Candidate set (line 3) | up to 2n integers = O(n) | Stores at most two distinct starting values (nums[i] and nums[i] + 1) per input element. |
+| Sorting auxiliary stack/buffer (line 2) | O(log n) | In-place introsort uses O(log n) recursion stack space. |
+
+- **Adding it up:** O(n) + O(log n) = O(n) auxiliary space.
+- **Not counted:** The input array nums is modified in place and not counted toward auxiliary space; the output is a single scalar integer.
+
+**Dry run** on `nums = [2, 1, 5, 1, 1]`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 2 | Sort nums in non-decreasing order so the greedy scan encounters smaller values first. | `nums = [1, 1, 1, 2, 5]` |
+| 2 | 6 | At i = 0 (nums[0] = 1), add 1 and 2 as candidate starting values. | `i = 0`<br>`nums = [1, 1, 1, 2, 5]` (i→0)<br>`candidates = {1, 2}` |
+| 3 | 6 | Skipping repetitive i = 1..3 (which add duplicate 1, 2 and new 3), at i = 4 (nums[4] = 5) we add 5 and 6 to candidates. | `i = 4`<br>`nums = [1, 1, 1, 2, 5]` (i→4)<br>`candidates = {1, 2, 3, 5, 6}` |
+| 4 | 9 | Initialize best = 0 and test the first candidate start = 1 with need = 1. | `best = 0`<br>`start = 1`<br>`need = 1`<br>`nums = [1, 1, 1, 2, 5]` |
+| 5 | 13 | At i = 0, x = 1 equals need = 1, so we use it without incrementing and advance need to 2. | `need = 2`<br>`i = 0`<br>`x = 1`<br>`nums = [1, 1, 1, 2, 5]` (i→0) |
+| 6 | 13 | At i = 1, x = 1 satisfies x + 1 = 2 = need, so we increment it to 2 and advance need to 3. | `need = 3`<br>`i = 1`<br>`nums = [1, 1, 1, 2, 5]` (i→1) |
+| 7 | 12 | At i = 2, x = 1 can only form 1 or 2, neither of which equals need = 3, so we skip it. | `i = 2`<br>`nums = [1, 1, 1, 2, 5]` (i→2) |
+| 8 | 13 | At i = 3, x = 2 satisfies x + 1 = 3 = need, so we increment it to 3 and advance need to 4. | `need = 4`<br>`i = 3`<br>`x = 2`<br>`nums = [1, 1, 1, 2, 5]` (i→3) |
+| 9 | 14 | At i = 4, x = 5 cannot form 4. The chain for start = 1 has length 4 - 1 = 3, updating best to 3. | `best = 3`<br>`nums = [1, 1, 1, 2, 5]` |
+| 10 | 9 | Test the next candidate start = 2 with need = 2. | `start = 2`<br>`need = 2` |
+| 11 | 14 | For start = 2, nums[0] = 1 forms 2 and nums[3] = 2 forms 3, ending with need = 4 (length 4 - 2 = 2); best stays 3. | `need = 4` |
+| 12 | 14 | Skipping remaining scans for start = 3, 5, and 6: each achieves chain length 1 (need = start + 1), leaving best = 3. | `start = 6`<br>`need = 7` |
+| 13 | 15 | All candidate starting values have been tested, so return best = 3. | (no change) |
+
+**Result:** 3 — Starting at 1, we greedily form [1, 2, 3] using nums[0]=1, nums[1]=1 (+1), and nums[3]=2 (+1), which is the longest possible consecutive sequence.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    int maxSelectedElements(vector<int>& nums) {
+        int n = nums.size(); // number of elements in the array
+        sort(nums.begin(), nums.end()); // sort non-decreasingly so greedy picks earliest valid element
+        set<int> candidates; // ordered set of distinct candidate starting values
+        for (int i = 0; i < n; i++) {
+            candidates.insert(nums[i]); // sequence can start at unmodified nums[i]
+            candidates.insert(nums[i] + 1); // sequence can start at incremented nums[i] + 1
+        }
+        int best = 0; // maximum consecutive sequence length found
+        for (int start : candidates) {
+            int need = start; // next consecutive integer needed in the chain
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                if (x == need || x + 1 == need) { // greedily claim earliest element that can form need
+                    need++; // advance to the next required consecutive integer
+                }
+            }
+            best = max(best, need - start); // need - start is the count of elements matched
+        }
+        return best;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int maxSelectedElements(vector<int>& nums) {
+        int n = nums.size(); // number of elements in the array
+        sort(nums.begin(), nums.end()); // sort non-decreasingly so greedy picks earliest valid element
+        set<int> candidates; // ordered set of distinct candidate starting values
+        for (int i = 0; i < n; i++) {
+            candidates.insert(nums[i]); // sequence can start at unmodified nums[i]
+            candidates.insert(nums[i] + 1); // sequence can start at incremented nums[i] + 1
+        }
+        int best = 0; // maximum consecutive sequence length found
+        for (int start : candidates) {
+            int need = start; // next consecutive integer needed in the chain
+            for (int i = 0; i < n; i++) {
+                int x = nums[i];
+                if (x == need || x + 1 == need) { // greedily claim earliest element that can form need
+                    need++; // advance to the next required consecutive integer
+                }
+            }
+            best = max(best, need - start); // need - start is the count of elements matched
+        }
+        return best;
+    }
+};
+
+int main() {
+    Solution sol;
+    vector<int> nums1 = {2, 1, 5, 1, 1};
+    cout << "Example 1: output = " << sol.maxSelectedElements(nums1) << ", expected = 3\n";
+    vector<int> nums2 = {1, 4, 7, 10};
+    cout << "Example 2: output = " << sol.maxSelectedElements(nums2) << ", expected = 1\n";
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** Re-scans `nums` from scratch for every candidate `start`, resulting in ~`10^10` operations when `n = 10^5` and timing out.
 

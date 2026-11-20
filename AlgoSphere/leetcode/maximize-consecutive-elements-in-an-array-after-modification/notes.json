@@ -4,7 +4,7 @@
   "slug": "maximize-consecutive-elements-in-an-array-after-modification",
   "title": "Maximize Consecutive Elements in an Array After Modification",
   "url": "https://leetcode.com/problems/maximize-consecutive-elements-in-an-array-after-modification/",
-  "updatedAt": "2026-11-20T12:04:18.171Z",
+  "updatedAt": "2026-11-20T12:21:45.286Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given a 0-indexed array nums consisting of positive integers.\n\nInitially, you can increase the value of any element in the array by at most 1.\n\nAfter that, you need to select one or more elements from the final array such that those elements are consecutive when sorted in increasing order. For example, the elements [3, 4, 5] are consecutive while [3, 4, 6] and [1, 1, 2, 3] are not.\n\nReturn the maximum number of elements that you can select.\n\nExample 1:\n\nInput: nums = [2,1,5,1,1]\nOutput: 3\nExplanation: We can increase the elements at indices 0 and 3. The resulting array is nums = [3,1,5,2,1].\nWe select the elements [3,1,5,2,1] and we sort them to obtain [1,2,3], which are consecutive.\nIt can be shown that we cannot select more than 3 consecutive elements.\n\nExample 2:\n\nInput: nums = [1,4,7,10]\nOutput: 1\nExplanation: The maximum consecutive elements that we can select is 1.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^6"
@@ -913,7 +913,534 @@
         "time": "O(n^2)",
         "space": "O(n)",
         "complexity": "Sorting takes `O(n log n)`, while collecting up to `2n` candidate starts and running an `O(n)` scan for each takes `O(n^2)` time, which dominates. Storing the candidate set uses `O(n)` auxiliary space.",
-        "tradeoff": "Re-scans `nums` from scratch for every candidate `start`, resulting in ~`10^10` operations when `n = 10^5` and timing out."
+        "tradeoff": "Re-scans `nums` from scratch for every candidate `start`, resulting in ~`10^10` operations when `n = 10^5` and timing out.",
+        "deep": {
+          "pseudocode": [
+            "function maxSelectedElements(nums)",
+            "  sort(nums) // non-decreasing order so greedy picks earliest valid element",
+            "  candidates ← empty ordered set // distinct possible starting values",
+            "  for i ← 0 to length(nums) - 1",
+            "    add nums[i] to candidates // chain starting without incrementing nums[i]",
+            "    add nums[i] + 1 to candidates // chain starting by incrementing nums[i]",
+            "  best ← 0",
+            "  for each start in candidates",
+            "    need ← start // next consecutive integer needed in the chain",
+            "    for i ← 0 to length(nums) - 1",
+            "      x ← nums[i]",
+            "      if x = need or x + 1 = need // earliest element that can form need",
+            "        need ← need + 1 // greedily claim x for need",
+            "    best ← max(best, need - start) // chain length formed is need - start",
+            "  return best"
+          ],
+          "time": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Sorting nums (line 2)",
+                "cost": "O(n log n)",
+                "why": "Comparison-based sorting of n elements takes O(n log n) time."
+              },
+              {
+                "part": "Collecting candidates (lines 3-6)",
+                "cost": "n iterations × O(log n) = O(n log n)",
+                "why": "Each element inserts at most two values into an ordered set of size at most 2n."
+              },
+              {
+                "part": "Greedy scan per candidate (lines 8-14)",
+                "cost": "at most 2n candidates × n iterations = O(n^2)",
+                "why": "Each distinct starting value scans all n elements of the sorted array in O(n) time."
+              }
+            ],
+            "sum": "O(n log n) + O(n log n) + O(n^2) = O(n^2); the nested candidate-and-array scan dominates sorting and candidate collection.",
+            "cases": "Best case is O(n log n) when all elements are equal (e.g., [1, 1, ..., 1]), producing only 2 candidates so lines 8-14 take O(n) and sorting dominates. Worst case is O(n^2) when elements are spaced by at least 2 (e.g., [1, 3, 5, ..., 2n-1]), producing 2n candidates that each scan n elements.",
+            "feel": "n = 10^5 -> up to 2·10^10 steps in the worst case, which exceeds a 1-second limit and explains why an O(n log n) DP approach is needed to pass all constraints.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Candidate set (line 3)",
+                "cost": "up to 2n integers = O(n)",
+                "why": "Stores at most two distinct starting values (nums[i] and nums[i] + 1) per input element."
+              },
+              {
+                "part": "Sorting auxiliary stack/buffer (line 2)",
+                "cost": "O(log n)",
+                "why": "In-place introsort uses O(log n) recursion stack space."
+              }
+            ],
+            "sum": "O(n) + O(log n) = O(n) auxiliary space.",
+            "cases": "",
+            "feel": "",
+            "note": "The input array nums is modified in place and not counted toward auxiliary space; the output is a single scalar integer."
+          },
+          "dryRun": {
+            "input": "nums = [2, 1, 5, 1, 1]",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "Sort nums in non-decreasing order so the greedy scan encounters smaller values first.",
+                "vars": {},
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3,
+                      4
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "At i = 0 (nums[0] = 1), add 1 and 2 as candidate starting values.",
+                "vars": {
+                  "i": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "Skipping repetitive i = 1..3 (which add duplicate 1, 2 and new 3), at i = 4 (nums[4] = 5) we add 5 and 6 to candidates.",
+                "vars": {
+                  "i": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Initialize best = 0 and test the first candidate start = 1 with need = 1.",
+                "vars": {
+                  "best": "0",
+                  "start": "1",
+                  "need": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "At i = 0, x = 1 equals need = 1, so we use it without incrementing and advance need to 2.",
+                "vars": {
+                  "best": "0",
+                  "start": "1",
+                  "need": "2",
+                  "i": "0",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "At i = 1, x = 1 satisfies x + 1 = 2 = need, so we increment it to 2 and advance need to 3.",
+                "vars": {
+                  "best": "0",
+                  "start": "1",
+                  "need": "3",
+                  "i": "1",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "At i = 2, x = 1 can only form 1 or 2, neither of which equals need = 3, so we skip it.",
+                "vars": {
+                  "best": "0",
+                  "start": "1",
+                  "need": "3",
+                  "i": "2",
+                  "x": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "At i = 3, x = 2 satisfies x + 1 = 3 = need, so we increment it to 3 and advance need to 4.",
+                "vars": {
+                  "best": "0",
+                  "start": "1",
+                  "need": "4",
+                  "i": "3",
+                  "x": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "At i = 4, x = 5 cannot form 4. The chain for start = 1 has length 4 - 1 = 3, updating best to 3.",
+                "vars": {
+                  "best": "3",
+                  "start": "1",
+                  "need": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Test the next candidate start = 2 with need = 2.",
+                "vars": {
+                  "best": "3",
+                  "start": "2",
+                  "need": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "For start = 2, nums[0] = 1 forms 2 and nums[3] = 2 forms 3, ending with need = 4 (length 4 - 2 = 2); best stays 3.",
+                "vars": {
+                  "best": "3",
+                  "start": "2",
+                  "need": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "Skipping remaining scans for start = 3, 5, and 6: each achieves chain length 1 (need = start + 1), leaving best = 3.",
+                "vars": {
+                  "best": "3",
+                  "start": "6",
+                  "need": "7"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 15,
+                "explain": "All candidate starting values have been tested, so return best = 3.",
+                "vars": {
+                  "best": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "candidates": {
+                    "type": "set",
+                    "items": [
+                      "1",
+                      "2",
+                      "3",
+                      "5",
+                      "6"
+                    ]
+                  }
+                }
+              }
+            ],
+            "result": "3 — Starting at 1, we greedily form [1, 2, 3] using nums[0]=1, nums[1]=1 (+1), and nums[3]=2 (+1), which is the longest possible consecutive sequence."
+          },
+          "solution": "class Solution {\npublic:\n    int maxSelectedElements(vector<int>& nums) {\n        int n = nums.size(); // number of elements in the array\n        sort(nums.begin(), nums.end()); // sort non-decreasingly so greedy picks earliest valid element\n        set<int> candidates; // ordered set of distinct candidate starting values\n        for (int i = 0; i < n; i++) {\n            candidates.insert(nums[i]); // sequence can start at unmodified nums[i]\n            candidates.insert(nums[i] + 1); // sequence can start at incremented nums[i] + 1\n        }\n        int best = 0; // maximum consecutive sequence length found\n        for (int start : candidates) {\n            int need = start; // next consecutive integer needed in the chain\n            for (int i = 0; i < n; i++) {\n                int x = nums[i];\n                if (x == need || x + 1 == need) { // greedily claim earliest element that can form need\n                    need++; // advance to the next required consecutive integer\n                }\n            }\n            best = max(best, need - start); // need - start is the count of elements matched\n        }\n        return best;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n    vector<int> nums1 = {2, 1, 5, 1, 1};\n    cout << \"Example 1: output = \" << sol.maxSelectedElements(nums1) << \", expected = 3\\n\";\n    vector<int> nums2 = {1, 4, 7, 10};\n    cout << \"Example 2: output = \" << sol.maxSelectedElements(nums2) << \", expected = 1\\n\";\n    return 0;\n}"
+        }
       },
       {
         "level": "Optimal",

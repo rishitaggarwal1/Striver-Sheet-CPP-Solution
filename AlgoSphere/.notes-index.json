@@ -11,5 +11,18 @@
     "solution": "leetcode/maximize-consecutive-elements-in-an-array-after-modification/maximize-consecutive-elements-in-an-array-after-modification.cpp",
     "mine": null,
     "updatedAt": "2026-11-20T12:21:45.286Z"
+  },
+  "gfg/max-circular-subarray-sum-1587115620": {
+    "title": "Max Circular Subarray Sum",
+    "site": "gfg",
+    "slug": "max-circular-subarray-sum-1587115620",
+    "difficulty": "Hard",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "gfg/max-circular-subarray-sum-1587115620",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-20T12:53:10.265Z"
   }
 }

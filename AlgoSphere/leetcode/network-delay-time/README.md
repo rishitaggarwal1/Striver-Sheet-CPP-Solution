@@ -369,7 +369,152 @@ int main() {
 4. If any `dist` is infinity return -1.
 5. Otherwise return the max of `dist`.
 
-**Complexity:** time `O(n·E)`, space `O(n)`. The double loop of n-1 rounds over E edges dominates: about 100·6000 = 6·10^5 relaxations. Only the `dist` array is extra memory, since the edge list is used directly.
+**Pseudocode**
+
+```text
+ 1 │ function networkDelayTime(times, n, k)
+ 2 │   INF ← 10^9  // marks a node the signal has not reached yet
+ 3 │   dist ← array of size n+1 filled with INF  // index 0 unused, nodes are 1..n
+ 4 │   dist[k] ← 0  // the signal starts at k at time 0
+ 5 │   for round ← 1 to n-1  // a shortest path uses at most n-1 edges
+ 6 │     changed ← false
+ 7 │     for each (u, v, w) in times
+ 8 │       if dist[u] ≠ INF and dist[u] + w < dist[v]  // skip unreached u; relax only if it improves v
+ 9 │         dist[v] ← dist[u] + w
+10 │         changed ← true
+11 │     if changed = false
+12 │       break  // nothing improved, so all distances are final
+13 │   ans ← 0
+14 │   for i ← 1 to n
+15 │     if dist[i] = INF
+16 │       return -1  // node i can never receive the signal
+17 │     ans ← max(ans, dist[i])  // the last node to be reached decides the answer
+18 │   return ans
+```
+
+**Time complexity: `O(n·E)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Initialisation (lines 2-4) | n+1 cells × O(1) | Every entry of dist is filled once. |
+| Relaxation rounds (lines 5-12) | at most n-1 rounds × E edges × O(1) | Each round looks at every edge exactly once, and each relaxation is a constant-time compare and assign. |
+| Final scan (lines 13-18) | n iterations × O(1) | Each node's distance is checked once to find the maximum. |
+
+- **Adding it up:** O(n) + (n−1)·E + O(n) = O(n·E); the nested relaxation loops dominate the two linear passes
+- **Best vs worst case:** Best case O(E): the edges happen to be listed in path order (as in Example 1), so round 1 settles everything and round 2 breaks early. Worst case O(n·E): a chain whose edges are listed in reverse order, so each round fixes only one more node.
+- **At the maximum input:** n = 100, E = 6000 → about 99 × 6000 ≈ 6·10^5 relaxations, well under a millisecond
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| dist array (line 3) | n+1 integers | It stores one best-known arrival time per node. |
+| Scalars (round, changed, ans, i, u, v, w) | O(1) | These are a fixed number of variables, whatever the input size. |
+
+- **Adding it up:** O(n) + O(1) = O(n)
+- **Not counted:** The input list times (E edges) is not counted. No adjacency list is built, because Bellman-Ford reads the edge list directly.
+
+**Dry run** on `times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 4 | dist starts with every node at INF, then dist[2] is set to 0 because the signal begins at node k = 2. Index 0 is unused. | `INF = 10^9`<br>`n = 4`<br>`k = 2`<br>`dist = [INF, INF, 0, INF, INF]`<br>`g: 4 nodes` |
+| 2 | 6 | Round 1 of at most n-1 = 3 begins, and changed is reset to false. | `round = 1`<br>`changed = false`<br>`g: visited {2}` |
+| 3 | 10 | Edge (2,1,1): dist[2] = 0 is finite and 0 + 1 = 1 < INF. So dist[1] becomes 1 and changed becomes true. | `changed = true`<br>`u = 2`<br>`v = 1`<br>`w = 1`<br>`dist = [INF, 1, 0, INF, INF]` (u→2, v→1)<br>`g: u→2; visited {2}; edge 2→1` |
+| 4 | 10 | Edge (2,3,1): 0 + 1 = 1 < INF, so dist[3] becomes 1. | `v = 3`<br>`dist = [INF, 1, 0, 1, INF]` (u→2, v→3)<br>`g: u→2; visited {2, 1}; edge 2→3` |
+| 5 | 10 | Edge (3,4,1): dist[3] was just set to 1 in this same round, so 1 + 1 = 2 < INF and dist[4] becomes 2. The edges are listed in path order, so one round reaches every node. | `u = 3`<br>`v = 4`<br>`dist = [INF, 1, 0, 1, 2]` (u→3, v→4)<br>`g: u→3; visited {2, 1, 3}; edge 3→4` |
+| 6 | 6 | Round 1 changed something, so there is no early stop. Round 2 begins with changed = false. | `round = 2`<br>`changed = false`<br>`dist = [INF, 1, 0, 1, 2]`<br>`g: visited {2, 1, 3, 4}` |
+| 7 | 8 | Round 2 checks all three edges: 0+1 is not < 1, 0+1 is not < 1, and 1+1 is not < 2. No relaxation happens, and this snapshot shows the last check, edge (3,4,1). | `u = 3`<br>`v = 4`<br>`w = 1`<br>`dist = [INF, 1, 0, 1, 2]` (u→3, v→4)<br>`g: u→3; visited {2, 1, 3, 4}; edge 3→4` |
+| 8 | 12 | changed is still false after a full round, so every distance is final. The loop breaks early and skips round 3. | `dist = [INF, 1, 0, 1, 2]`<br>`g: visited {2, 1, 3, 4}` |
+| 9 | 13 | Start the final scan with ans = 0. | `ans = 0` |
+| 10 | 17 | i = 1: dist[1] = 1 is finite, so ans = max(0, 1) = 1. | `ans = 1`<br>`i = 1`<br>`dist = [INF, 1, 0, 1, 2]` (i→1)<br>`g: i→1; visited {2, 1, 3, 4}` |
+| 11 | 17 | i = 2 and i = 3 give 0 and 1, which leave ans at 1 (those iterations are skipped here). At i = 4, dist[4] = 2, so ans = max(1, 2) = 2. | `ans = 2`<br>`i = 4`<br>`dist = [INF, 1, 0, 1, 2]` (i→4)<br>`g: i→4; visited {2, 1, 3, 4}` |
+| 12 | 18 | No node was INF, so the function returns ans = 2. | `dist = [INF, 1, 0, 1, 2]`<br>`g: visited {2, 1, 3, 4}` |
+
+**Result:** 2. Every node is reachable from node 2, and the farthest one, node 4 via 2→3→4, has shortest arrival time 2, so all nodes have the signal at time 2.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        const int INF = 1e9;                    // sentinel meaning 'not reached yet'
+        vector<int> dist(n + 1, INF);           // dist[i] = best known arrival time at node i (index 0 unused)
+        dist[k] = 0;                            // signal starts at k at time 0
+        for (int round = 1; round <= n - 1; round++) {   // a shortest path has at most n-1 edges
+            bool changed = false;               // tracks whether this round improved anything
+            for (int i = 0; i < (int)times.size(); i++) {
+                int u = times[i][0];
+                int v = times[i][1];
+                int w = times[i][2];
+                // relax only from reached nodes, and only if it gives a shorter time
+                if (dist[u] != INF && dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    changed = true;
+                }
+            }
+            if (!changed) break;                // no update means all distances are final
+        }
+        int ans = 0;
+        for (int i = 1; i <= n; i++) {
+            if (dist[i] == INF) return -1;      // some node never gets the signal
+            ans = max(ans, dist[i]);            // the slowest node determines the total time
+        }
+        return ans;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        const int INF = 1e9;                    // sentinel meaning 'not reached yet'
+        vector<int> dist(n + 1, INF);           // dist[i] = best known arrival time at node i (index 0 unused)
+        dist[k] = 0;                            // signal starts at k at time 0
+        for (int round = 1; round <= n - 1; round++) {   // a shortest path has at most n-1 edges
+            bool changed = false;               // tracks whether this round improved anything
+            for (int i = 0; i < (int)times.size(); i++) {
+                int u = times[i][0];
+                int v = times[i][1];
+                int w = times[i][2];
+                // relax only from reached nodes, and only if it gives a shorter time
+                if (dist[u] != INF && dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    changed = true;
+                }
+            }
+            if (!changed) break;                // no update means all distances are final
+        }
+        int ans = 0;
+        for (int i = 1; i <= n; i++) {
+            if (dist[i] == INF) return -1;      // some node never gets the signal
+            ans = max(ans, dist[i]);            // the slowest node determines the total time
+        }
+        return ans;
+    }
+};
+
+int main() {
+    Solution s;
+    vector<vector<int>> t1 = {{2,1,1},{2,3,1},{3,4,1}};
+    cout << "Example 1: " << s.networkDelayTime(t1, 4, 2) << " (expected 2)" << endl;
+    vector<vector<int>> t2 = {{1,2,1}};
+    cout << "Example 2: " << s.networkDelayTime(t2, 2, 1) << " (expected 1)" << endl;
+    vector<vector<int>> t3 = {{1,2,1}};
+    cout << "Example 3: " << s.networkDelayTime(t3, 2, 2) << " (expected -1)" << endl;
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** It fits these limits easily. But it rescans edges from nodes whose distance has not changed, so it does not scale: with n = 10^5 and E = 10^5 it would need 10^10 operations.
 

@@ -4,7 +4,7 @@
   "slug": "network-delay-time",
   "title": "Network Delay Time",
   "url": "https://leetcode.com/problems/network-delay-time/",
-  "updatedAt": "2026-11-20T15:43:56.655Z",
+  "updatedAt": "2026-11-20T16:15:41.763Z",
   "problem": {
     "difficulty": "Medium",
     "description": "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (u_i, v_i, w_i), where u_i is the source node, v_i is the target node, and w_i is the time it takes for a signal to travel from source to target.\n\nWe will send a signal from a given node k. Return the minimum time it takes for all the n nodes to receive the signal. If it is impossible for all the n nodes to receive the signal, return -1.\n\nExample 1:\n\nInput: times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2\nOutput: 2\n\nExample 2:\n\nInput: times = [[1,2,1]], n = 2, k = 1\nOutput: 1\n\nExample 3:\n\nInput: times = [[1,2,1]], n = 2, k = 2\nOutput: -1\n\nConstraints:\n\n- 1 <= k <= n <= 100\n\n- 1 <= times.length <= 6000\n\n- times[i].length == 3\n\n- 1 <= u_i, v_i <= n\n\n- u_i != v_i\n\n- 0 <= w_i <= 100\n\n- All the pairs (u_i, v_i) are unique. (i.e., no multiple edges.)"
@@ -883,7 +883,920 @@
         "time": "O(n·E)",
         "space": "O(n)",
         "complexity": "The double loop of n-1 rounds over E edges dominates: about 100·6000 = 6·10^5 relaxations. Only the `dist` array is extra memory, since the edge list is used directly.",
-        "tradeoff": "It fits these limits easily. But it rescans edges from nodes whose distance has not changed, so it does not scale: with n = 10^5 and E = 10^5 it would need 10^10 operations."
+        "tradeoff": "It fits these limits easily. But it rescans edges from nodes whose distance has not changed, so it does not scale: with n = 10^5 and E = 10^5 it would need 10^10 operations.",
+        "deep": {
+          "pseudocode": [
+            "function networkDelayTime(times, n, k)",
+            "  INF ← 10^9  // marks a node the signal has not reached yet",
+            "  dist ← array of size n+1 filled with INF  // index 0 unused, nodes are 1..n",
+            "  dist[k] ← 0  // the signal starts at k at time 0",
+            "  for round ← 1 to n-1  // a shortest path uses at most n-1 edges",
+            "    changed ← false",
+            "    for each (u, v, w) in times",
+            "      if dist[u] ≠ INF and dist[u] + w < dist[v]  // skip unreached u; relax only if it improves v",
+            "        dist[v] ← dist[u] + w",
+            "        changed ← true",
+            "    if changed = false",
+            "      break  // nothing improved, so all distances are final",
+            "  ans ← 0",
+            "  for i ← 1 to n",
+            "    if dist[i] = INF",
+            "      return -1  // node i can never receive the signal",
+            "    ans ← max(ans, dist[i])  // the last node to be reached decides the answer",
+            "  return ans"
+          ],
+          "time": {
+            "total": "O(n·E)",
+            "parts": [
+              {
+                "part": "Initialisation (lines 2-4)",
+                "cost": "n+1 cells × O(1)",
+                "why": "Every entry of dist is filled once."
+              },
+              {
+                "part": "Relaxation rounds (lines 5-12)",
+                "cost": "at most n-1 rounds × E edges × O(1)",
+                "why": "Each round looks at every edge exactly once, and each relaxation is a constant-time compare and assign."
+              },
+              {
+                "part": "Final scan (lines 13-18)",
+                "cost": "n iterations × O(1)",
+                "why": "Each node's distance is checked once to find the maximum."
+              }
+            ],
+            "sum": "O(n) + (n−1)·E + O(n) = O(n·E); the nested relaxation loops dominate the two linear passes",
+            "cases": "Best case O(E): the edges happen to be listed in path order (as in Example 1), so round 1 settles everything and round 2 breaks early. Worst case O(n·E): a chain whose edges are listed in reverse order, so each round fixes only one more node.",
+            "feel": "n = 100, E = 6000 → about 99 × 6000 ≈ 6·10^5 relaxations, well under a millisecond",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "dist array (line 3)",
+                "cost": "n+1 integers",
+                "why": "It stores one best-known arrival time per node."
+              },
+              {
+                "part": "Scalars (round, changed, ans, i, u, v, w)",
+                "cost": "O(1)",
+                "why": "These are a fixed number of variables, whatever the input size."
+              }
+            ],
+            "sum": "O(n) + O(1) = O(n)",
+            "cases": "",
+            "feel": "",
+            "note": "The input list times (E edges) is not counted. No adjacency list is built, because Bellman-Ford reads the edge list directly."
+          },
+          "dryRun": {
+            "input": "times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "dist starts with every node at INF, then dist[2] is set to 0 because the signal begins at node k = 2. Index 0 is unused.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "INF",
+                      "0",
+                      "INF",
+                      "INF"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [
+                      "2"
+                    ],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "Round 1 of at most n-1 = 3 begins, and changed is reset to false.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "round": "1",
+                  "changed": "false"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "INF",
+                      "0",
+                      "INF",
+                      "INF"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "2"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "Edge (2,1,1): dist[2] = 0 is finite and 0 + 1 = 1 < INF. So dist[1] becomes 1 and changed becomes true.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "round": "1",
+                  "changed": "true",
+                  "u": "2",
+                  "v": "1",
+                  "w": "1"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "INF",
+                      "INF"
+                    ],
+                    "pointers": {
+                      "u": 2,
+                      "v": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "u": "2"
+                    },
+                    "highlight": [
+                      "1"
+                    ],
+                    "visited": [
+                      "2"
+                    ],
+                    "activeEdges": [
+                      [
+                        "2",
+                        "1"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "Edge (2,3,1): 0 + 1 = 1 < INF, so dist[3] becomes 1.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "round": "1",
+                  "changed": "true",
+                  "u": "2",
+                  "v": "3",
+                  "w": "1"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "INF"
+                    ],
+                    "pointers": {
+                      "u": 2,
+                      "v": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "u": "2"
+                    },
+                    "highlight": [
+                      "3"
+                    ],
+                    "visited": [
+                      "2",
+                      "1"
+                    ],
+                    "activeEdges": [
+                      [
+                        "2",
+                        "3"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "Edge (3,4,1): dist[3] was just set to 1 in this same round, so 1 + 1 = 2 < INF and dist[4] becomes 2. The edges are listed in path order, so one round reaches every node.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "round": "1",
+                  "changed": "true",
+                  "u": "3",
+                  "v": "4",
+                  "w": "1"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {
+                      "u": 3,
+                      "v": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "u": "3"
+                    },
+                    "highlight": [
+                      "4"
+                    ],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3"
+                    ],
+                    "activeEdges": [
+                      [
+                        "3",
+                        "4"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "Round 1 changed something, so there is no early stop. Round 2 begins with changed = false.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "round": "2",
+                  "changed": "false"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "Round 2 checks all three edges: 0+1 is not < 1, 0+1 is not < 1, and 1+1 is not < 2. No relaxation happens, and this snapshot shows the last check, edge (3,4,1).",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "round": "2",
+                  "changed": "false",
+                  "u": "3",
+                  "v": "4",
+                  "w": "1"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {
+                      "u": 3,
+                      "v": 4
+                    },
+                    "highlight": [
+                      3,
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "u": "3"
+                    },
+                    "highlight": [
+                      "4"
+                    ],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": [
+                      [
+                        "3",
+                        "4"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "changed is still false after a full round, so every distance is final. The loop breaks early and skips round 3.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "round": "2",
+                  "changed": "false"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "Start the final scan with ans = 0.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "ans": "0"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 17,
+                "explain": "i = 1: dist[1] = 1 is finite, so ans = max(0, 1) = 1.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "ans": "1",
+                  "i": "1"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "i": "1"
+                    },
+                    "highlight": [
+                      "1"
+                    ],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 17,
+                "explain": "i = 2 and i = 3 give 0 and 1, which leave ans at 1 (those iterations are skipped here). At i = 4, dist[4] = 2, so ans = max(1, 2) = 2.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "ans": "2",
+                  "i": "4"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {
+                      "i": "4"
+                    },
+                    "highlight": [
+                      "4"
+                    ],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "No node was INF, so the function returns ans = 2.",
+                "vars": {
+                  "INF": "10^9",
+                  "n": "4",
+                  "k": "2",
+                  "ans": "2"
+                },
+                "arrays": {
+                  "dist": {
+                    "values": [
+                      "INF",
+                      "1",
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "g": {
+                    "nodes": [
+                      "1",
+                      "2",
+                      "3",
+                      "4"
+                    ],
+                    "edges": [
+                      [
+                        "2",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "2",
+                        "3",
+                        "1"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "1"
+                      ]
+                    ],
+                    "directed": true,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "2",
+                      "1",
+                      "3",
+                      "4"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              }
+            ],
+            "result": "2. Every node is reachable from node 2, and the farthest one, node 4 via 2→3→4, has shortest arrival time 2, so all nodes have the signal at time 2."
+          },
+          "solution": "class Solution {\npublic:\n    int networkDelayTime(vector<vector<int>>& times, int n, int k) {\n        const int INF = 1e9;                    // sentinel meaning 'not reached yet'\n        vector<int> dist(n + 1, INF);           // dist[i] = best known arrival time at node i (index 0 unused)\n        dist[k] = 0;                            // signal starts at k at time 0\n        for (int round = 1; round <= n - 1; round++) {   // a shortest path has at most n-1 edges\n            bool changed = false;               // tracks whether this round improved anything\n            for (int i = 0; i < (int)times.size(); i++) {\n                int u = times[i][0];\n                int v = times[i][1];\n                int w = times[i][2];\n                // relax only from reached nodes, and only if it gives a shorter time\n                if (dist[u] != INF && dist[u] + w < dist[v]) {\n                    dist[v] = dist[u] + w;\n                    changed = true;\n                }\n            }\n            if (!changed) break;                // no update means all distances are final\n        }\n        int ans = 0;\n        for (int i = 1; i <= n; i++) {\n            if (dist[i] == INF) return -1;      // some node never gets the signal\n            ans = max(ans, dist[i]);            // the slowest node determines the total time\n        }\n        return ans;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution s;\n    vector<vector<int>> t1 = {{2,1,1},{2,3,1},{3,4,1}};\n    cout << \"Example 1: \" << s.networkDelayTime(t1, 4, 2) << \" (expected 2)\" << endl;\n    vector<vector<int>> t2 = {{1,2,1}};\n    cout << \"Example 2: \" << s.networkDelayTime(t2, 2, 1) << \" (expected 1)\" << endl;\n    vector<vector<int>> t3 = {{1,2,1}};\n    cout << \"Example 3: \" << s.networkDelayTime(t3, 2, 2) << \" (expected -1)\" << endl;\n    return 0;\n}"
+        }
       },
       {
         "level": "Optimal",

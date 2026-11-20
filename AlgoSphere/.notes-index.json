@@ -170,5 +170,18 @@
       "path": "leetcode/rotate-array/my-solution.cpp"
     },
     "updatedAt": "2026-11-20T15:05:04.103Z"
+  },
+  "leetcode/n-queens": {
+    "title": "N-Queens",
+    "site": "leetcode",
+    "slug": "n-queens",
+    "difficulty": "Hard",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/n-queens",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-20T15:06:29.942Z"
   }
 }

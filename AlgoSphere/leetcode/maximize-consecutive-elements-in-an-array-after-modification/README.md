@@ -2,6 +2,8 @@
 
 **LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/maximize-consecutive-elements-in-an-array-after-modification/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -104,3 +106,26 @@ Return `ans` after processing all elements.
 The trickiest detail is update order: computing `dp[x + 1]` before `dp[x]` prevents `x` from extending a chain that `x` itself just created, and handles duplicates like `[1, 1, 1]` (answer `2`) naturally alongside single-element or wide-gap inputs. Sorting takes `O(n log n)` time and the DP pass takes `O(n)` time, for `O(n log n)` total time and `O(n)` extra space for `dp`.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| nums = [8,10,6,12,9,11] | 6 | Bridges a single gap by incrementing the smallest element so all 6 elements form [7,8,9,10,11,12]. |
+| nums = [3,3,4,4,6,6] | 5 | Uses duplicates to extend upward and bridge a gap of 2 between 4 and 6 to form [3,4,5,6,7]. |
+| nums = [10,12,13,15,17] | 3 | Multiple candidate consecutive runs where incrementing cannot merge everything into one long sequence. |
+| nums = [5,2,2,4,1,8,7] | 5 | Unsorted input with duplicates where the optimal sequence [1,2,3,4,5] beats the disjoint upper cluster. |
+| nums = [4,1,3,1,3,5,8,7,7] | 9 | Cascading increments across multiple duplicate pairs allow all 9 elements to form [1,2,3,4,5,6,7,8,9]. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single element | nums = [1] | 1 | Minimum array length and minimum possible element value. |
+| All equal | nums = [5,5,5,5] | 2 | More than two identical elements can still yield at most two consecutive values [5,6]. |
+| Already consecutive | nums = [1,2,3,4,5] | 5 | No modifications needed to select the entire array. |
+| Reverse-sorted step-2 gaps | nums = [9,7,5,3,1] | 2 | Adjacent pairs can connect to length 2, but cannot chain further without duplicates. |
+| Maximum value boundary | nums = [1000000,999999,1000000] | 3 | Incrementing 10^6 produces 1000001; a full-scale 10^5-element array also tests O(n log n) time. |
+| Large gaps | nums = [1,10,100,1000] | 1 | No two elements are within distance 2 so the longest consecutive sequence has length 1. |

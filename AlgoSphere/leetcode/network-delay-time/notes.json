@@ -4,7 +4,7 @@
   "slug": "network-delay-time",
   "title": "Network Delay Time",
   "url": "https://leetcode.com/problems/network-delay-time/",
-  "updatedAt": "2026-11-20T15:19:01.817Z",
+  "updatedAt": "2026-11-20T15:41:52.459Z",
   "problem": {
     "difficulty": "Medium",
     "description": "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (u_i, v_i, w_i), where u_i is the source node, v_i is the target node, and w_i is the time it takes for a signal to travel from source to target.\n\nWe will send a signal from a given node k. Return the minimum time it takes for all the n nodes to receive the signal. If it is impossible for all the n nodes to receive the signal, return -1.\n\nExample 1:\n\nInput: times = [[2,1,1],[2,3,1],[3,4,1]], n = 4, k = 2\nOutput: 2\n\nExample 2:\n\nInput: times = [[1,2,1]], n = 2, k = 1\nOutput: 1\n\nExample 3:\n\nInput: times = [[1,2,1]], n = 2, k = 2\nOutput: -1\n\nConstraints:\n\n- 1 <= k <= n <= 100\n\n- 1 <= times.length <= 6000\n\n- times[i].length == 3\n\n- 1 <= u_i, v_i <= n\n\n- u_i != v_i\n\n- 0 <= w_i <= 100\n\n- All the pairs (u_i, v_i) are unique. (i.e., no multiple edges.)"
@@ -1161,6 +1161,19 @@
     ]
   },
   "mySolutions": [
+    {
+      "code": "class Solution {\npublic:\n    int networkDelayTime(vector<vector<int>>& times, int n, int k) {\n        vector<vector<pair<int,int>>> adj(n+1);\n        for(int i=0;i<times.size();i++)\n        {\n            int u = times[i][0];\n            int v = times[i][1];\n            int w = times[i][2];\n            adj[u].push_back({v,w});\n        }\n        vector<int> dist(n+1,1e9);\n        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;\n        dist[k]=0;\n        pq.push({0,k});\n        while(!pq.empty())\n        {\n            int wt = pq.top().first;\n            int node = pq.top().second;\n            pq.pop();\n            for(auto it: adj[node])\n            {\n                int x = it.first;\n                int w = it.second;\n                if(dist[x]>wt + w)\n                {\n                    dist[x] = wt+w;\n                    pq.push({dist[x],x});\n                }\n            }\n        }\n        int ans = -1;\n        for(int i = 1;i<=n;i++)\n        {\n            if(dist[i]==1e9)    return -1;\n            if(dist[i]>ans) ans = dist[i];\n        }\n        return ans;\n    }\n};",
+      "lang": "C++",
+      "runtime": "",
+      "memory": "",
+      "runtimePercentile": null,
+      "memoryPercentile": null,
+      "passed": "",
+      "attempts": 3,
+      "hintsUsed": 2,
+      "acceptedAt": "2026-11-20T15:41:49.508Z",
+      "platform": "LeetCode"
+    },
     {
       "code": "class Solution {\npublic:\n    int networkDelayTime(vector<vector<int>>& times, int n, int k) {\n        Hello\n    }\n};",
       "lang": "C++",

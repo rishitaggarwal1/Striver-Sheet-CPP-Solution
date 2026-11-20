@@ -4,7 +4,7 @@
 
 > In a directed graph with non-negative edge weights, find the largest shortest-path distance from node `k` to any node, or return -1 if some node cannot be reached.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -242,6 +242,29 @@ Dijkstra: repeatedly pop the closest unfinalised node from a min-heap, finalise 
 **Complexity:** time `O(E log E), i.e. O(E log n)`, space `O(n + E)`. Each edge causes at most one push, and each push or pop costs log of the heap size, so about 6000·13 operations. Memory holds the adjacency list (E entries), the heap (up to E entries) and the finalised set (n entries).
 
 **Why this is the best:** Every edge must be read at least once, so the bound is optimal up to the log factor. The price is the heap and the requirement of non-negative weights; a negative weight would break it, and that is guaranteed not to happen here.
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| times = [[1,2,4],[1,3,1],[3,2,1],[2,4,1]]<br>n = 4<br>k = 1 | 3 | Indirect path 1->3->2 is shorter than the direct edge 1->2. |
+| times = [[1,2,1],[2,3,2],[1,3,4]]<br>n = 3<br>k = 1 | 3 | The relaxed path 1->2->3 (cost 3) beats the direct edge (cost 4). |
+| times = [[3,1,5],[3,2,2],[2,1,2],[1,4,1],[2,5,10],[4,5,1]]<br>n = 5<br>k = 3 | 6 | Distances from 3 are 1:4, 2:2, 4:5, 5:6, so the maximum is 6. |
+| times = [[1,2,1],[2,3,1],[3,4,1],[4,5,1]]<br>n = 5<br>k = 1 | 4 | Chain graph where the answer is the full path length. |
+| times = [[2,1,3],[2,3,7],[1,3,2],[3,4,1],[4,1,10]]<br>n = 4<br>k = 2 | 6 | A cycle is present and node 3 is reached via 2->1->3 with cost 5. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single node | times = [[1,2,1]]<br>n = 1<br>k = 1 | 0 | No travel is needed, so the answer is 0. The edge references a node outside 1..n, so this violates the constraints and is only an illustrative extreme. |
+| Zero weights | times = [[1,2,0],[2,3,0]]<br>n = 3<br>k = 1 | 0 | Every node is reached at time 0. |
+| Disconnected | times = [[1,2,1],[3,4,1]]<br>n = 4<br>k = 1 | -1 | Nodes 3 and 4 are unreachable from 1. |
+| Edge direction | times = [[2,1,1],[3,1,1]]<br>n = 3<br>k = 1 | -1 | Edges only point into the source, so nothing else is reachable. |
+| Max weights | times = [[1,2,100],[2,3,100]]<br>n = 3<br>k = 1 | 200 | The path accumulates weight-100 edges. |
+| Two-cycle | times = [[1,2,1],[2,1,1]]<br>n = 2<br>k = 2 | 1 | The source is the last label and both directions exist. |
 
 ## Mistakes and edge cases
 

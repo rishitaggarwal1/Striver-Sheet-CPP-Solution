@@ -8,4 +8,4 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 
 | # | Problem | Platform | Difficulty | Pattern | Optimal | Solution | Solved |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | [Maximize Consecutive Elements in an Array After Modification](leetcode/maximize-consecutive-elements-in-an-array-after-modification/) | LeetCode | Hard | Sorting + Dynamic Programming | `O(n log n)` time, `O(n)` space |   |   |
+| 1 | [Maximize Consecutive Elements in an Array After Modification](leetcode/maximize-consecutive-elements-in-an-array-after-modification/) | LeetCode | Hard | Sorting + Dynamic Programming | `O(n log n)` time, `O(n)` space | [C++](leetcode/maximize-consecutive-elements-in-an-array-after-modification/maximize-consecutive-elements-in-an-array-after-modification.cpp) |   |

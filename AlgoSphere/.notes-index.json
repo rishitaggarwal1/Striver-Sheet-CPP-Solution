@@ -8,8 +8,8 @@
     "time": "O(n log n)",
     "space": "O(n)",
     "dir": "leetcode/maximize-consecutive-elements-in-an-array-after-modification",
-    "solution": "",
+    "solution": "leetcode/maximize-consecutive-elements-in-an-array-after-modification/maximize-consecutive-elements-in-an-array-after-modification.cpp",
     "mine": null,
-    "updatedAt": "2026-11-20T11:59:43.680Z"
+    "updatedAt": "2026-11-20T12:00:45.107Z"
   }
 }

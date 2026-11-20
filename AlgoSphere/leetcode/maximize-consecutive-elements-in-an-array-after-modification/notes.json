@@ -4,7 +4,7 @@
   "slug": "maximize-consecutive-elements-in-an-array-after-modification",
   "title": "Maximize Consecutive Elements in an Array After Modification",
   "url": "https://leetcode.com/problems/maximize-consecutive-elements-in-an-array-after-modification/",
-  "updatedAt": "2026-11-20T11:59:43.680Z",
+  "updatedAt": "2026-11-20T12:00:45.107Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given a 0-indexed array nums consisting of positive integers.\n\nInitially, you can increase the value of any element in the array by at most 1.\n\nAfter that, you need to select one or more elements from the final array such that those elements are consecutive when sorted in increasing order. For example, the elements [3, 4, 5] are consecutive while [3, 4, 6] and [1, 1, 2, 3] are not.\n\nReturn the maximum number of elements that you can select.\n\nExample 1:\n\nInput: nums = [2,1,5,1,1]\nOutput: 3\nExplanation: We can increase the elements at indices 0 and 3. The resulting array is nums = [3,1,5,2,1].\nWe select the elements [3,1,5,2,1] and we sort them to obtain [1,2,3], which are consecutive.\nIt can be shown that we cannot select more than 3 consecutive elements.\n\nExample 2:\n\nInput: nums = [1,4,7,10]\nOutput: 1\nExplanation: The maximum consecutive elements that we can select is 1.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^6"
@@ -183,7 +183,720 @@
         "time": "O(2^n * n log n)",
         "space": "O(n)",
         "complexity": "There are `2^n` leaf states in the recursion tree, and each leaf takes `O(n log n)` to sort (or `O(n)` with a hash set) to measure the longest consecutive sequence. Extra space is `O(n)` for the recursion stack and the temporary modified array.",
-        "tradeoff": "Completely infeasible beyond `n ≈ 20` because `2^n` explodes exponentially against the `n <= 10^5` constraint."
+        "tradeoff": "Completely infeasible beyond `n ≈ 20` because `2^n` explodes exponentially against the `n <= 10^5` constraint.",
+        "deep": {
+          "pseudocode": [
+            "function maxSelectedElements(nums)",
+            "  n ← length(nums)",
+            "  best ← 1  // at least one element can always be selected",
+            "  cur ← array of size n initialized to 0  // holds current +0/+1 modified array",
+            "  function dfs(i)",
+            "    if i = n",
+            "      sorted ← unique sorted copy of cur  // consecutive elements must be distinct",
+            "      run ← 1",
+            "      for j ← 1 to length(sorted) - 1",
+            "        if sorted[j] = sorted[j - 1] + 1",
+            "          run ← run + 1",
+            "          if run > best",
+            "            best ← run",
+            "        else",
+            "          run ← 1  // reset streak when gap exceeds 1",
+            "      return",
+            "    cur[i] ← nums[i]  // branch 1: keep nums[i] unchanged (+0)",
+            "    dfs(i + 1)",
+            "    cur[i] ← nums[i] + 1  // branch 2: increment nums[i] by 1 (+1)",
+            "    dfs(i + 1)",
+            "  dfs(0)",
+            "  return best"
+          ],
+          "time": {
+            "total": "O(2^n * n log n)",
+            "parts": [
+              {
+                "part": "Setup (lines 2-4)",
+                "cost": "1 × O(n)",
+                "why": "Allocates the working array cur of size n once before recursion begins."
+              },
+              {
+                "part": "DFS internal nodes (lines 5-6, 17-20)",
+                "cost": "(2^n - 1) calls × O(1)",
+                "why": "Each of the 2^n - 1 non-leaf recursive calls assigns cur[i] twice and makes two recursive calls."
+              },
+              {
+                "part": "Leaf sorting and deduplication (line 7)",
+                "cost": "2^n leaves × O(n log n)",
+                "why": "Every one of the 2^n complete +0/+1 arrays is copied, sorted, and deduplicated."
+              },
+              {
+                "part": "Leaf consecutive-run scan (lines 8-15)",
+                "cost": "2^n leaves × O(n)",
+                "why": "Each deduplicated sorted array has at most n elements and is scanned once linearly."
+              }
+            ],
+            "sum": "O(n) + O(2^n) + 2^n · O(n log n) + 2^n · O(n) = O(2^n * n log n); sorting at every leaf dominates the recursion tree and linear scans",
+            "cases": "",
+            "feel": "n = 10^5 is far beyond reach (2^100000 is astronomical); this brute-force approach is only practical up to about n = 20 (2^20 · 20 log2(20) ≈ 9·10^7 steps, roughly 0.5 s)",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Working array cur (line 4)",
+                "cost": "O(n)",
+                "why": "Stores one modified value per index and is overwritten in place across branches."
+              },
+              {
+                "part": "Recursion call stack (lines 5, 18, 20)",
+                "cost": "O(n)",
+                "why": "The DFS goes at most n levels deep before hitting the base case i = n."
+              },
+              {
+                "part": "Leaf sorted copy (line 7)",
+                "cost": "O(n)",
+                "why": "Holds at most n elements for the current leaf and is freed on return before the next leaf."
+              }
+            ],
+            "sum": "O(n) + O(n) + O(n) = O(n) auxiliary space",
+            "cases": "",
+            "feel": "",
+            "note": "The input array nums is not counted toward auxiliary space; the O(n) bound includes the recursion stack depth."
+          },
+          "dryRun": {
+            "input": "nums = [2, 1, 5, 1, 1]",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "Initialize n = 5, best = 1, and working array cur of 5 zeros before starting dfs(0).",
+                "vars": {
+                  "n": "5",
+                  "best": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "0",
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 17,
+                "explain": "Enter dfs(0) and take the +0 branch for index 0, setting cur[0] = nums[0] = 2.",
+                "vars": {
+                  "n": "5",
+                  "best": "1",
+                  "i": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 17,
+                "explain": "Continue taking the +0 branch down through indices 1, 2, 3, and 4; at i = 4, cur[4] becomes nums[4] = 1.",
+                "vars": {
+                  "n": "5",
+                  "best": "1",
+                  "i": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 7,
+                "explain": "Reach the base case i = 5 for the all-+0 choice; copy, sort, and deduplicate cur into sorted = [1, 2, 5].",
+                "vars": {
+                  "n": "5",
+                  "best": "1",
+                  "i": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "sorted": {
+                    "values": [
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 13,
+                "explain": "At j = 1, sorted[1] (2) equals sorted[0] + 1 (1 + 1), so run increments to 2 and best updates from 1 to 2.",
+                "vars": {
+                  "n": "5",
+                  "best": "2",
+                  "i": "5",
+                  "run": "2",
+                  "j": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "sorted": {
+                    "values": [
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "j": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 15,
+                "explain": "At j = 2, sorted[2] (5) is not 2 + 1, so the streak breaks and run resets to 1 before returning.",
+                "vars": {
+                  "n": "5",
+                  "best": "2",
+                  "i": "5",
+                  "run": "1",
+                  "j": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "sorted": {
+                    "values": [
+                      "1",
+                      "2",
+                      "5"
+                    ],
+                    "pointers": {
+                      "j": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 19,
+                "explain": "Skip the remaining 15 leaves under cur[0] = 2 (none exceed best = 2, ending on [2, 2, 6, 2, 2]). Back at i = 0, take the +1 branch and set cur[0] = 3.",
+                "vars": {
+                  "n": "5",
+                  "best": "2",
+                  "i": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "3",
+                      "2",
+                      "6",
+                      "2",
+                      "2"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 19,
+                "explain": "After taking +0 at i = 1 (cur[1] = 1) and +0 at i = 2 (cur[2] = 5), skip the +0 branch at i = 3 and take +1 at i = 3, setting cur[3] = 2.",
+                "vars": {
+                  "n": "5",
+                  "best": "2",
+                  "i": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "3",
+                      "1",
+                      "5",
+                      "2",
+                      "2"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 17,
+                "explain": "At i = 4, take the +0 branch and set cur[4] = nums[4] = 1, forming [3, 1, 5, 2, 1].",
+                "vars": {
+                  "n": "5",
+                  "best": "2",
+                  "i": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "3",
+                      "1",
+                      "5",
+                      "2",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 7,
+                "explain": "Reach the base case i = 5; sorting and deduplicating cur = [3, 1, 5, 2, 1] produces sorted = [1, 2, 3, 5].",
+                "vars": {
+                  "n": "5",
+                  "best": "2",
+                  "i": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "3",
+                      "1",
+                      "5",
+                      "2",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "sorted": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "At j = 1, sorted[1] (2) equals sorted[0] + 1, increasing run to 2; best remains 2 because 2 > 2 is false.",
+                "vars": {
+                  "n": "5",
+                  "best": "2",
+                  "i": "5",
+                  "run": "2",
+                  "j": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "3",
+                      "1",
+                      "5",
+                      "2",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "sorted": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "5"
+                    ],
+                    "pointers": {
+                      "j": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 13,
+                "explain": "At j = 2, sorted[2] (3) equals sorted[1] + 1, so run increases to 3 and best updates to 3.",
+                "vars": {
+                  "n": "5",
+                  "best": "3",
+                  "i": "5",
+                  "run": "3",
+                  "j": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "3",
+                      "1",
+                      "5",
+                      "2",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "sorted": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "5"
+                    ],
+                    "pointers": {
+                      "j": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 15,
+                "explain": "At j = 3, sorted[3] (5) is not 3 + 1, so run resets to 1 before returning from this leaf.",
+                "vars": {
+                  "n": "5",
+                  "best": "3",
+                  "i": "5",
+                  "run": "1",
+                  "j": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "3",
+                      "1",
+                      "5",
+                      "2",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "sorted": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "5"
+                    ],
+                    "pointers": {
+                      "j": 3
+                    },
+                    "highlight": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 22,
+                "explain": "Skip the remaining branches (none yield more than 3 consecutive values). All 32 combinations are complete, so return best = 3.",
+                "vars": {
+                  "n": "5",
+                  "best": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "2",
+                      "1",
+                      "5",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "3",
+                      "2",
+                      "6",
+                      "2",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "3 — incrementing indices 0 and 3 yields [3, 1, 5, 2, 1], whose distinct sorted values [1, 2, 3, 5] contain the longest possible consecutive run of length 3 across all 2^5 = 32 choices."
+          },
+          "solution": "class Solution {\npublic:\n    int maxSelectedElements(vector<int>& nums) {\n        int n = nums.size();\n        int best = 1; // At least one element can always be selected\n        vector<int> cur(n); // Holds the current +0/+1 modified array\n\n        // Enumerate all 2^n +0/+1 modification choices recursively\n        function<void(int)> dfs = [&](int i) {\n            if (i == n) {\n                vector<int> vals = cur; // Copy cur so backtracking can overwrite cur safely\n                sort(vals.begin(), vals.end()); // Order values to detect consecutive streaks\n                vals.erase(unique(vals.begin(), vals.end()), vals.end()); // Remove duplicates because consecutive elements must be distinct\n\n                int run = 1; // Current consecutive streak length\n                for (int j = 1; j < (int)vals.size(); ++j) {\n                    if (vals[j] == vals[j - 1] + 1) {\n                        ++run; // Extend the streak when adjacent distinct values differ by 1\n                        best = max(best, run); // Update the global maximum streak length\n                    } else {\n                        run = 1; // Reset streak when a gap larger than 1 occurs\n                    }\n                }\n                return;\n            }\n\n            cur[i] = nums[i]; // Branch 1: keep nums[i] unchanged (+0)\n            dfs(i + 1);\n\n            cur[i] = nums[i] + 1; // Branch 2: increase nums[i] by 1 (+1)\n            dfs(i + 1);\n        };\n\n        dfs(0); // Start exploring choices from index 0\n        return best;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<int> ex1 = {2, 1, 5, 1, 1};\n    cout << \"Example 1: output = \" << sol.maxSelectedElements(ex1) << \" (expected: 3)\\n\";\n\n    vector<int> ex2 = {1, 4, 7, 10};\n    cout << \"Example 2: output = \" << sol.maxSelectedElements(ex2) << \" (expected: 1)\\n\";\n\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

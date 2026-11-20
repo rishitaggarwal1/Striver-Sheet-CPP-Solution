@@ -193,7 +193,178 @@ If we updated `dp[x]` before `dp[x + 1]`, then `dp[x + 1]` could read the newly 
 3. Scan the distinct sorted values to find the longest contiguous run where `val[j] == val[j - 1] + 1`.
 4. Return the maximum run length seen across all `2^n` branches.
 
-**Complexity:** time `O(2^n * n log n)`, space `O(n)`. There are `2^n` leaf states in the recursion tree, and each leaf takes `O(n log n)` to sort (or `O(n)` with a hash set) to measure the longest consecutive sequence. Extra space is `O(n)` for the recursion stack and the temporary modified array.
+**Pseudocode**
+
+```text
+ 1 │ function maxSelectedElements(nums)
+ 2 │   n ← length(nums)
+ 3 │   best ← 1  // at least one element can always be selected
+ 4 │   cur ← array of size n initialized to 0  // holds current +0/+1 modified array
+ 5 │   function dfs(i)
+ 6 │     if i = n
+ 7 │       sorted ← unique sorted copy of cur  // consecutive elements must be distinct
+ 8 │       run ← 1
+ 9 │       for j ← 1 to length(sorted) - 1
+10 │         if sorted[j] = sorted[j - 1] + 1
+11 │           run ← run + 1
+12 │           if run > best
+13 │             best ← run
+14 │         else
+15 │           run ← 1  // reset streak when gap exceeds 1
+16 │       return
+17 │     cur[i] ← nums[i]  // branch 1: keep nums[i] unchanged (+0)
+18 │     dfs(i + 1)
+19 │     cur[i] ← nums[i] + 1  // branch 2: increment nums[i] by 1 (+1)
+20 │     dfs(i + 1)
+21 │   dfs(0)
+22 │   return best
+```
+
+**Time complexity: `O(2^n * n log n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Setup (lines 2-4) | 1 × O(n) | Allocates the working array cur of size n once before recursion begins. |
+| DFS internal nodes (lines 5-6, 17-20) | (2^n - 1) calls × O(1) | Each of the 2^n - 1 non-leaf recursive calls assigns cur[i] twice and makes two recursive calls. |
+| Leaf sorting and deduplication (line 7) | 2^n leaves × O(n log n) | Every one of the 2^n complete +0/+1 arrays is copied, sorted, and deduplicated. |
+| Leaf consecutive-run scan (lines 8-15) | 2^n leaves × O(n) | Each deduplicated sorted array has at most n elements and is scanned once linearly. |
+
+- **Adding it up:** O(n) + O(2^n) + 2^n · O(n log n) + 2^n · O(n) = O(2^n * n log n); sorting at every leaf dominates the recursion tree and linear scans
+- **At the maximum input:** n = 10^5 is far beyond reach (2^100000 is astronomical); this brute-force approach is only practical up to about n = 20 (2^20 · 20 log2(20) ≈ 9·10^7 steps, roughly 0.5 s)
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Working array cur (line 4) | O(n) | Stores one modified value per index and is overwritten in place across branches. |
+| Recursion call stack (lines 5, 18, 20) | O(n) | The DFS goes at most n levels deep before hitting the base case i = n. |
+| Leaf sorted copy (line 7) | O(n) | Holds at most n elements for the current leaf and is freed on return before the next leaf. |
+
+- **Adding it up:** O(n) + O(n) + O(n) = O(n) auxiliary space
+- **Not counted:** The input array nums is not counted toward auxiliary space; the O(n) bound includes the recursion stack depth.
+
+**Dry run** on `nums = [2, 1, 5, 1, 1]`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 4 | Initialize n = 5, best = 1, and working array cur of 5 zeros before starting dfs(0). | `n = 5`<br>`best = 1`<br>`nums = [2, 1, 5, 1, 1]`<br>`cur = [0, 0, 0, 0, 0]` |
+| 2 | 17 | Enter dfs(0) and take the +0 branch for index 0, setting cur[0] = nums[0] = 2. | `i = 0`<br>`nums = [2, 1, 5, 1, 1]` (i→0)<br>`cur = [2, 0, 0, 0, 0]` (i→0) |
+| 3 | 17 | Continue taking the +0 branch down through indices 1, 2, 3, and 4; at i = 4, cur[4] becomes nums[4] = 1. | `i = 4`<br>`nums = [2, 1, 5, 1, 1]` (i→4)<br>`cur = [2, 1, 5, 1, 1]` (i→4) |
+| 4 | 7 | Reach the base case i = 5 for the all-+0 choice; copy, sort, and deduplicate cur into sorted = [1, 2, 5]. | `i = 5`<br>`nums = [2, 1, 5, 1, 1]`<br>`cur = [2, 1, 5, 1, 1]`<br>`sorted = [1, 2, 5]` |
+| 5 | 13 | At j = 1, sorted[1] (2) equals sorted[0] + 1 (1 + 1), so run increments to 2 and best updates from 1 to 2. | `best = 2`<br>`run = 2`<br>`j = 1`<br>`sorted = [1, 2, 5]` (j→1) |
+| 6 | 15 | At j = 2, sorted[2] (5) is not 2 + 1, so the streak breaks and run resets to 1 before returning. | `run = 1`<br>`j = 2`<br>`sorted = [1, 2, 5]` (j→2) |
+| 7 | 19 | Skip the remaining 15 leaves under cur[0] = 2 (none exceed best = 2, ending on [2, 2, 6, 2, 2]). Back at i = 0, take the +1 branch and set cur[0] = 3. | `i = 0`<br>`nums = [2, 1, 5, 1, 1]` (i→0)<br>`cur = [3, 2, 6, 2, 2]` (i→0) |
+| 8 | 19 | After taking +0 at i = 1 (cur[1] = 1) and +0 at i = 2 (cur[2] = 5), skip the +0 branch at i = 3 and take +1 at i = 3, setting cur[3] = 2. | `i = 3`<br>`nums = [2, 1, 5, 1, 1]` (i→3)<br>`cur = [3, 1, 5, 2, 2]` (i→3) |
+| 9 | 17 | At i = 4, take the +0 branch and set cur[4] = nums[4] = 1, forming [3, 1, 5, 2, 1]. | `i = 4`<br>`nums = [2, 1, 5, 1, 1]` (i→4)<br>`cur = [3, 1, 5, 2, 1]` (i→4) |
+| 10 | 7 | Reach the base case i = 5; sorting and deduplicating cur = [3, 1, 5, 2, 1] produces sorted = [1, 2, 3, 5]. | `i = 5`<br>`nums = [2, 1, 5, 1, 1]`<br>`cur = [3, 1, 5, 2, 1]`<br>`sorted = [1, 2, 3, 5]` |
+| 11 | 11 | At j = 1, sorted[1] (2) equals sorted[0] + 1, increasing run to 2; best remains 2 because 2 > 2 is false. | `run = 2`<br>`j = 1`<br>`sorted = [1, 2, 3, 5]` (j→1) |
+| 12 | 13 | At j = 2, sorted[2] (3) equals sorted[1] + 1, so run increases to 3 and best updates to 3. | `best = 3`<br>`run = 3`<br>`j = 2`<br>`sorted = [1, 2, 3, 5]` (j→2) |
+| 13 | 15 | At j = 3, sorted[3] (5) is not 3 + 1, so run resets to 1 before returning from this leaf. | `run = 1`<br>`j = 3`<br>`sorted = [1, 2, 3, 5]` (j→3) |
+| 14 | 22 | Skip the remaining branches (none yield more than 3 consecutive values). All 32 combinations are complete, so return best = 3. | `cur = [3, 2, 6, 2, 2]` |
+
+**Result:** 3 — incrementing indices 0 and 3 yields [3, 1, 5, 2, 1], whose distinct sorted values [1, 2, 3, 5] contain the longest possible consecutive run of length 3 across all 2^5 = 32 choices.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    int maxSelectedElements(vector<int>& nums) {
+        int n = nums.size();
+        int best = 1; // At least one element can always be selected
+        vector<int> cur(n); // Holds the current +0/+1 modified array
+
+        // Enumerate all 2^n +0/+1 modification choices recursively
+        function<void(int)> dfs = [&](int i) {
+            if (i == n) {
+                vector<int> vals = cur; // Copy cur so backtracking can overwrite cur safely
+                sort(vals.begin(), vals.end()); // Order values to detect consecutive streaks
+                vals.erase(unique(vals.begin(), vals.end()), vals.end()); // Remove duplicates because consecutive elements must be distinct
+
+                int run = 1; // Current consecutive streak length
+                for (int j = 1; j < (int)vals.size(); ++j) {
+                    if (vals[j] == vals[j - 1] + 1) {
+                        ++run; // Extend the streak when adjacent distinct values differ by 1
+                        best = max(best, run); // Update the global maximum streak length
+                    } else {
+                        run = 1; // Reset streak when a gap larger than 1 occurs
+                    }
+                }
+                return;
+            }
+
+            cur[i] = nums[i]; // Branch 1: keep nums[i] unchanged (+0)
+            dfs(i + 1);
+
+            cur[i] = nums[i] + 1; // Branch 2: increase nums[i] by 1 (+1)
+            dfs(i + 1);
+        };
+
+        dfs(0); // Start exploring choices from index 0
+        return best;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int maxSelectedElements(vector<int>& nums) {
+        int n = nums.size();
+        int best = 1; // At least one element can always be selected
+        vector<int> cur(n); // Holds the current +0/+1 modified array
+
+        // Enumerate all 2^n +0/+1 modification choices recursively
+        function<void(int)> dfs = [&](int i) {
+            if (i == n) {
+                vector<int> vals = cur; // Copy cur so backtracking can overwrite cur safely
+                sort(vals.begin(), vals.end()); // Order values to detect consecutive streaks
+                vals.erase(unique(vals.begin(), vals.end()), vals.end()); // Remove duplicates because consecutive elements must be distinct
+
+                int run = 1; // Current consecutive streak length
+                for (int j = 1; j < (int)vals.size(); ++j) {
+                    if (vals[j] == vals[j - 1] + 1) {
+                        ++run; // Extend the streak when adjacent distinct values differ by 1
+                        best = max(best, run); // Update the global maximum streak length
+                    } else {
+                        run = 1; // Reset streak when a gap larger than 1 occurs
+                    }
+                }
+                return;
+            }
+
+            cur[i] = nums[i]; // Branch 1: keep nums[i] unchanged (+0)
+            dfs(i + 1);
+
+            cur[i] = nums[i] + 1; // Branch 2: increase nums[i] by 1 (+1)
+            dfs(i + 1);
+        };
+
+        dfs(0); // Start exploring choices from index 0
+        return best;
+    }
+};
+
+int main() {
+    Solution sol;
+
+    vector<int> ex1 = {2, 1, 5, 1, 1};
+    cout << "Example 1: output = " << sol.maxSelectedElements(ex1) << " (expected: 3)\n";
+
+    vector<int> ex2 = {1, 4, 7, 10};
+    cout << "Example 2: output = " << sol.maxSelectedElements(ex2) << " (expected: 1)\n";
+
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** Completely infeasible beyond `n ≈ 20` because `2^n` explodes exponentially against the `n <= 10^5` constraint.
 

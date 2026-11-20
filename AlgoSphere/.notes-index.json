@@ -225,5 +225,18 @@
       "path": "leetcode/network-delay-time/my-solution.cpp"
     },
     "updatedAt": "2026-11-20T16:15:41.763Z"
+  },
+  "leetcode/median-of-two-sorted-arrays": {
+    "title": "Median of Two Sorted Arrays",
+    "site": "leetcode",
+    "slug": "median-of-two-sorted-arrays",
+    "difficulty": "Hard",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/median-of-two-sorted-arrays",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-20T16:50:29.380Z"
   }
 }

@@ -2,7 +2,7 @@
 
 Problem-by-problem notes. Each folder walks through one problem: progressive hints, the intuition behind it, every approach from brute force to optimal with a complexity breakdown and a step-by-step dry run, a commented C++ solution, and test cases.
 
-**17 problems** · 2 solved · Easy 2 · Medium 10 · Hard 5 · 13 patterns
+**18 problems** · 2 solved · Easy 2 · Medium 10 · Hard 6 · 13 patterns
 
 **How to use these notes:** try the problem first, then open the hints one at a time. Read the intuition and the approaches only after you've made an attempt.
 
@@ -18,10 +18,15 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 8 | [K-th of Two Sorted Arrays](gfg/k-th-element-of-two-sorted-array1317/) | GeeksforGeeks | Medium |   |   |   |   |
 | 9 | [Max Circular Subarray Sum](gfg/max-circular-subarray-sum-1587115620/) | GeeksforGeeks | Hard |   |   |   |   |
 | 10 | [Maximize Consecutive Elements in an Array After Modification](leetcode/maximize-consecutive-elements-in-an-array-after-modification/) | LeetCode | Hard | Sorting + Dynamic Programming | `O(n log n)` time, `O(n)` space | [C++](leetcode/maximize-consecutive-elements-in-an-array-after-modification/maximize-consecutive-elements-in-an-array-after-modification.cpp) |   |
-| 11 | [Minimum Falling Path Sum](leetcode/minimum-falling-path-sum/) | LeetCode | Medium | Grid DP, row by row (free start and end) | `O(n^2)` time, `O(n)` space | [C++](leetcode/minimum-falling-path-sum/minimum-falling-path-sum.cpp) |   |
-| 12 | [N-Queens](leetcode/n-queens/) | LeetCode | Hard |   |   |   |   |
-| 13 | [Network Delay Time](leetcode/network-delay-time/) | LeetCode | Medium | Single-source shortest paths (Dijkstra) | `O(E log E), i.e. O(E log n)` time, `O(n + E)` space | [C++](leetcode/network-delay-time/network-delay-time.cpp) | ✅ [C++](leetcode/network-delay-time/my-solution.cpp) |
-| 14 | [Rotate Array](leetcode/rotate-array/) | LeetCode | Medium | Array reversal (three reverses) | `O(n)` time, `O(1)` space |   | ✅ [C++](leetcode/rotate-array/my-solution.cpp) |
-| 15 | [Triangle](leetcode/triangle/) | LeetCode | Medium | 2D grid DP on a triangle, filled bottom-up | `O(n^2)` time, `O(n)` space | [C++](leetcode/triangle/triangle.cpp) |   |
-| 16 | [Unique Paths](leetcode/unique-paths/) | LeetCode | Medium | Grid DP for counting paths, which collapses to a binomial coefficient | `O(min(m, n))` time, `O(1)` space | [C++](leetcode/unique-paths/unique-paths.cpp) |   |
-| 17 | [Unique Paths II](leetcode/unique-paths-ii/) | LeetCode | Medium | 2D grid DP (counting paths) | `O(m·n)` time, `O(n)` space | [C++](leetcode/unique-paths-ii/unique-paths-ii.cpp) |   |
+| 11 | [Median of Two Sorted Arrays](leetcode/median-of-two-sorted-arrays/) | LeetCode | Hard |   |   |   |   |
+| 12 | [Minimum Falling Path Sum](leetcode/minimum-falling-path-sum/) | LeetCode | Medium | Grid DP, row by row (free start and end) | `O(n^2)` time, `O(n)` space | [C++](leetcode/minimum-falling-path-sum/minimum-falling-path-sum.cpp) |   |
+| 13 | [N-Queens](leetcode/n-queens/) | LeetCode | Hard |   |   |   |   |
+| 14 | [Network Delay Time](leetcode/network-delay-time/) | LeetCode | Medium | Single-source shortest paths (Dijkstra) | `O(E log E), i.e. O(E log n)` time, `O(n + E)` space | [C++](leetcode/network-delay-time/network-delay-time.cpp) | ✅ [C++](leetcode/network-delay-time/my-solution.cpp) |
+| 15 | [Rotate Array](leetcode/rotate-array/) | LeetCode | Medium | Array reversal (three reverses) | `O(n)` time, `O(1)` space |   | ✅ [C++](leetcode/rotate-array/my-solution.cpp) |
+| 16 | [Triangle](leetcode/triangle/) | LeetCode | Medium | 2D grid DP on a triangle, filled bottom-up | `O(n^2)` time, `O(n)` space | [C++](leetcode/triangle/triangle.cpp) |   |
+| 17 | [Unique Paths](leetcode/unique-paths/) | LeetCode | Medium | Grid DP for counting paths, which collapses to a binomial coefficient | `O(min(m, n))` time, `O(1)` space | [C++](leetcode/unique-paths/unique-paths.cpp) |   |
+| 18 | [Unique Paths II](leetcode/unique-paths-ii/) | LeetCode | Medium | 2D grid DP (counting paths) | `O(m·n)` time, `O(n)` space | [C++](leetcode/unique-paths-ii/unique-paths-ii.cpp) |   |
+
+---
+
+<sub>Notes made with **AlgoSphere**, designed and built by **Rishit Aggarwal** · [LinkedIn](https://www.linkedin.com/in/rishit-aggarwal/) · [GitHub](https://github.com/rishitaggarwal1) · [Medium](https://medium.com/@rishitaggarwal1)</sub>

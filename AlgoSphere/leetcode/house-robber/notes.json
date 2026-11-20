@@ -1,0 +1,1663 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "house-robber",
+  "title": "House Robber",
+  "url": "https://leetcode.com/problems/house-robber/",
+  "updatedAt": "2026-11-20T14:58:07.458Z",
+  "problem": {
+    "difficulty": "Medium",
+    "description": "You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security systems connected and it will automatically contact the police if two adjacent houses were broken into on the same night.\n\nGiven an integer array nums representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.\n\nExample 1:\n\nInput: nums = [1,2,3,1]\nOutput: 4\nExplanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).\nTotal amount you can rob = 1 + 3 = 4.\n\nExample 2:\n\nInput: nums = [2,7,9,3,1]\nOutput: 12\nExplanation: Rob house 1 (money = 2), rob house 3 (money = 9) and rob house 5 (money = 1).\nTotal amount you can rob = 2 + 9 + 1 = 12.\n\nConstraints:\n\n- 1 <= nums.length <= 100\n\n- 0 <= nums[i] <= 400"
+  },
+  "hints": [
+    "You choose some houses along a line so that no two chosen houses are next to each other, and you want the largest possible total of the money in the chosen houses.",
+    "In Example 2, `[2,7,9,3,1]`, the best plan robs houses 0, 2 and 4 for 12, but the best plan does not always alternate: in `[2,1,1,2]` you should rob the first and last houses for 4, leaving two houses in a row untouched.",
+    "With `nums.length` up to 100 there are up to `2^100` subsets of houses, so trying them all is impossible, while anything `O(n)` or even `O(n^2)` is instant. Totals never exceed `50 × 400 = 20000`, so `int` is enough.",
+    "This is one-dimensional DP on prefixes, the pick / not-pick pattern: the best answer for the first `i + 1` houses can be built from the best answers for shorter prefixes, because a choice at house `i` only affects its neighbour.",
+    "Look at the last house `i` of a prefix: either you rob it, so house `i − 1` is off-limits and you add `nums[i]` to the best for houses `0..i − 2`, or you skip it and take the best for houses `0..i − 1`. The answer is the larger of those two.",
+    "Let `dp[i]` be the most money from houses `0..i`, whether or not house `i` itself is robbed. Since `dp[i]` reads only `dp[i − 1]` and `dp[i − 2]`, keep just `prev1` (best through house `i − 1`) and `prev2` (best through house `i − 2`).",
+    "Set `prev2` to 0 (nothing before house 0) and `prev1` to `nums[0]`.\nFor each house `i` from 1 to the last:\nThe pick option is `nums[i] + prev2`.\nThe skip option is `prev1`.\nLet `curr` be the larger of the two.\nMove `prev1` into `prev2`, then `curr` into `prev1`.\nAt the end, `prev1` is the answer.",
+    "The trickiest part is the base case: with one house the loop never runs and the answer is `nums[0]`, so never read `nums[1]` unconditionally; also slide `prev1` into `prev2` before overwriting `prev1`. Zeros and equal values need no special handling. Time is `O(n)` and extra space is `O(1)`."
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[2,1,1,2]"
+          }
+        ],
+        "output": "4",
+        "note": "Rob the first and last houses (2 + 2); both pure alternations give only 3."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[5,3,4,11,2]"
+          }
+        ],
+        "output": "16",
+        "note": "Rob 5 and 11, skipping two houses in between; greedy alternation from either end does worse."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[6,7,1,30,8,2,4]"
+          }
+        ],
+        "output": "41",
+        "note": "Rob 7, 30 and 4; starting with the smaller first house loses to starting at house 1."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[4,1,2,7,5,3,1]"
+          }
+        ],
+        "output": "14",
+        "note": "Rob 4, 7 and 3; checks that a big middle value (7) forces skipping its neighbours 2 and 5."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[1,3,1,3,100]"
+          }
+        ],
+        "output": "103",
+        "note": "A huge last house: the best plan must end with 100 and pick 3 from the front."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[5]"
+          }
+        ],
+        "output": "5",
+        "note": "Single house: the loop never runs and the answer is nums[0]; code must not read nums[1]."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[3,8]"
+          }
+        ],
+        "output": "8",
+        "note": "Two houses: they are adjacent, so only the larger one can be robbed."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[0,0,0,0]"
+          }
+        ],
+        "output": "0",
+        "note": "All zeros: the minimum value everywhere, so the best loot is 0."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[400,400,400,400,400]"
+          }
+        ],
+        "output": "1200",
+        "note": "All equal at the maximum value: rob houses 0, 2 and 4; at 100 such houses the answer is 20000, still within int."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[1,2,3,4,5,6]"
+          }
+        ],
+        "output": "12",
+        "note": "Strictly increasing, even length: rob the odd indices 2 + 4 + 6, ending at the last house."
+      },
+      {
+        "args": [
+          {
+            "name": "nums",
+            "value": "[400,0,0,400]"
+          }
+        ],
+        "output": "800",
+        "note": "Zeros between two big houses: skipping two houses in a row gives 800."
+      }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Choose houses with no two next to each other so that the sum of `nums` over the chosen houses is as large as possible.",
+    "pattern": "1D DP on prefixes (pick / skip)",
+    "signals": [
+      "\"adjacent houses ... will automatically contact the police\" → robbing house `i` only rules out houses `i − 1` and `i + 1`, so each decision depends on just the neighbour, a pick / skip choice per house.",
+      "\"return the maximum amount of money\" → we optimise over exponentially many valid subsets, which points to DP over prefixes rather than enumeration.",
+      "Example 2 picks houses 0, 2 and 4, but `[2,1,1,2]` is best with houses 0 and 3 → the answer is not simply \"even indices or odd indices\", so a real recurrence is needed.",
+      "\"1 <= nums.length <= 100\" and \"0 <= nums[i] <= 400\" → `O(n)` is trivial, and the total is at most 20000, so `int` cannot overflow."
+    ],
+    "constraints": "`nums.length ≤ 100`: checking every subset is `2^100 ≈ 1.3·10^30` and the pick / skip recursion still makes about `1.1·10^21` calls, both hopeless, while an `O(n)` DP needs about 100 steps. The largest possible total is `50 · 400 = 20000`, so `int` is safe; the target is `O(n)` time, ideally with `O(1)` space.",
+    "thinking": [
+      {
+        "q": "Why not just compare the sum of even-indexed houses with the sum of odd-indexed houses?",
+        "a": "Because the best plan can leave two houses in a row: for `[2,1,1,2]` both alternations give 3, but robbing houses 0 and 3 gives 4."
+      },
+      {
+        "q": "Would greedily robbing the richest remaining house work?",
+        "a": "No. In `[2,3,2]` the richest house is 3, which blocks both 2s, but robbing the two 2s gives 4. A single local choice can block a better combination."
+      },
+      {
+        "q": "What decision can I make about the last house `n − 1` without knowing the rest?",
+        "a": "Either it is robbed, in which case house `n − 2` is not and the rest is the best plan for `0..n − 3`, or it is not robbed and the rest is the best plan for `0..n − 2`."
+      },
+      {
+        "q": "So what recurrence describes the best loot for a prefix?",
+        "a": "`best(i) = max(nums[i] + best(i − 2), best(i − 1))`, with `best(0) = nums[0]` and `best(i) = 0` for `i < 0`. For Example 1 this gives 1, 2, 4, 4."
+      },
+      {
+        "q": "Why is that recursion slow, and how do I fix it?",
+        "a": "`best(i − 2)` is reached both directly and through `best(i − 1)`, so the call tree grows like Fibonacci, about `10^21` calls for 100 houses. There are only `n` distinct arguments, so store them in a `dp` array filled from left to right."
+      },
+      {
+        "q": "Do I need the whole `dp` array?",
+        "a": "No. `dp[i]` reads only `dp[i − 1]` and `dp[i − 2]`, so two variables `prev1` and `prev2` are enough, giving `O(n)` time and `O(1)` space."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Pick / skip recursion",
+        "aha": "Each house is a yes/no decision that only conflicts with its neighbours, so the first idea is to try both choices for the last house and recurse on whatever houses remain.",
+        "idea": "Let `best(i)` be the most money obtainable from houses `0..i`. For house `i` there are two options: rob it, earning `nums[i]` but making house `i − 1` off-limits, so add `best(i − 2)`; or skip it and take `best(i − 1)`. So `best(i) = max(nums[i] + best(i − 2), best(i − 1))`, with `best(0) = nums[0]` (amounts are never negative, so robbing the only house never hurts) and `best(i) = 0` for `i < 0`. It is correct because every valid plan either robs house `i` or does not, and in both cases the rest of the plan is a valid plan on a shorter prefix.",
+        "steps": [
+          "Define `best(i)` as the most money from houses `0..i`; the answer is `best(n − 1)`.",
+          "If `i < 0`, there are no houses, so return 0; if `i = 0`, return `nums[0]`.",
+          "Pick option: rob house `i`, giving `nums[i] + best(i − 2)` because house `i − 1` is now off-limits.",
+          "Skip option: leave house `i`, giving `best(i − 1)`.",
+          "Return the larger of the pick and skip options."
+        ],
+        "time": "O(2^n)",
+        "space": "O(n)",
+        "complexity": "Every non-base call makes two more calls, so the call count grows like the Fibonacci numbers: 9 calls for `[1,2,3,1]` and about `1.1·10^21` for 100 houses, each doing O(1) work. The only memory is the recursion stack, at most `n` frames deep along the skip chain `best(n − 1) → best(n − 2) → … → best(0)`.",
+        "tradeoff": "The bottleneck is recomputation: even for `[1,2,3,1]` the subproblem `best(1)` is solved twice, and the waste grows exponentially, so 100 houses can never finish although there are only 100 distinct subproblems.",
+        "deep": {
+          "pseudocode": [
+            "function rob(nums)",
+            "  n ← length(nums)",
+            "  return best(n − 1, nums)  // best loot from houses 0..n − 1",
+            "function best(i, nums)",
+            "  if i < 0",
+            "    return 0  // no houses left: nothing to rob",
+            "  if i = 0",
+            "    return nums[0]  // only house 0 left; amounts are never negative, so rob it",
+            "  pick ← nums[i] + best(i − 2, nums)  // rob house i, so house i − 1 is off-limits",
+            "  skip ← best(i − 1, nums)  // leave house i, house i − 1 is free to decide",
+            "  return max(pick, skip)"
+          ],
+          "time": {
+            "total": "O(2^n)",
+            "parts": [
+              {
+                "part": "Base cases (lines 5-8)",
+                "cost": "O(1) per call",
+                "why": "A comparison and a return; every leaf of the call tree ends here."
+              },
+              {
+                "part": "Two recursive calls (lines 9-10)",
+                "cost": "calls(i) = 1 + calls(i − 2) + calls(i − 1) calls in total",
+                "why": "Each non-base call branches into the pick and skip subproblems, and nothing is cached."
+              },
+              {
+                "part": "Comparison (line 11)",
+                "cost": "O(1) per call",
+                "why": "One max per non-base call."
+              }
+            ],
+            "sum": "With calls(−2) = calls(−1) = calls(0) = 1, the recurrence gives calls(1) = 3, calls(2) = 5, calls(3) = 9, growing by a factor of about φ ≈ 1.618 per house, so the total is Θ(φ^n) × O(1) ⊆ O(2^n).",
+            "cases": "",
+            "feel": "n = 100 → about 1.1·10^21 calls; even at 10^9 calls per second that is over 30,000 years.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Recursion stack (lines 9-10)",
+                "cost": "at most n frames × O(1)",
+                "why": "The skip chain best(n − 1) → best(n − 2) → … → best(0) is the deepest path, and each frame holds only i, pick and skip."
+              }
+            ],
+            "sum": "The stack is the only thing that grows: O(n).",
+            "cases": "",
+            "feel": "",
+            "note": "nums is passed by reference and not copied, so it is not counted; 100 frames at most is no risk of stack overflow."
+          },
+          "dryRun": {
+            "input": "nums = [1, 2, 3, 1]",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "n = 4 houses with nums = [1, 2, 3, 1]. Nothing is on the call stack yet.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              },
+              {
+                "line": 4,
+                "explain": "rob calls best(3). best(3) is not a base case, so line 9 tries robbing house 3 (money 1), which needs best(1), the best loot from houses 0..1.",
+                "vars": {
+                  "i": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3)",
+                      "best(1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "best(1) tries robbing house 1, which needs best(-1); no houses are left, so line 6 returns 0.",
+                "vars": {
+                  "i": "-1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3)",
+                      "best(1)",
+                      "best(-1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "pick = nums[1] + best(-1) = 2 + 0 = 2: rob house 1 alone, since no house lies before house 0.",
+                "vars": {
+                  "i": "1",
+                  "pick": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3)",
+                      "best(1): pick=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "best(1) now tries skipping house 1 and calls best(0); with only house 0 left, line 8 returns nums[0] = 1.",
+                "vars": {
+                  "i": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3)",
+                      "best(1): pick=2",
+                      "best(0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "skip = best(0) = 1, so best(1) returns max(pick, skip) = max(2, 1) = 2: robbing house 1 is better.",
+                "vars": {
+                  "i": "1",
+                  "pick": "2",
+                  "skip": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3)",
+                      "best(1): pick=2, skip=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Back in best(3): pick = nums[3] + best(1) = 1 + 2 = 3.",
+                "vars": {
+                  "i": "3",
+                  "pick": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3): pick=3"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 4,
+                "explain": "best(3) now tries skipping house 3, so line 10 calls best(2), the best loot from houses 0..2.",
+                "vars": {
+                  "i": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3): pick=3",
+                      "best(2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "best(2) tries robbing house 2, which needs best(0); line 8 returns nums[0] = 1 (already computed once before, but plain recursion does not remember it).",
+                "vars": {
+                  "i": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3): pick=3",
+                      "best(2)",
+                      "best(0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "pick = nums[2] + best(0) = 3 + 1 = 4: rob house 2 plus the best loot from house 0.",
+                "vars": {
+                  "i": "2",
+                  "pick": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3): pick=3",
+                      "best(2): pick=4"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "skip = best(1) = 2, but best(1) was already solved earlier: line 10 re-explores its whole subtree from scratch. best(2) returns max(4, 2) = 4.",
+                "vars": {
+                  "i": "2",
+                  "pick": "4",
+                  "skip": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3): pick=3",
+                      "best(2): pick=4, skip=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "skip = best(2) = 4, so best(3) returns max(pick, skip) = max(3, 4) = 4: leaving house 3 is better.",
+                "vars": {
+                  "i": "3",
+                  "pick": "3",
+                  "skip": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "best(3): pick=3, skip=4"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 3,
+                "explain": "rob returns best(3) = 4 after 9 calls, robbing houses 0 and 2 (1 + 3).",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              }
+            ],
+            "result": "4: rob house 0 (1) and house 2 (3); the alternative that robs house 3 reaches only 1 + 2 = 3."
+          },
+          "solution": "class Solution {\npublic:\n    int rob(vector<int>& nums) {\n        int n = (int)nums.size();\n        return best(n - 1, nums); // best loot from houses 0..n-1\n    }\n\nprivate:\n    // best(i) = most money from houses 0..i without robbing two adjacent houses\n    int best(int i, vector<int>& nums) {\n        if (i < 0) return 0;                      // no houses left: nothing to rob\n        if (i == 0) return nums[0];               // only house 0 left; amounts are >= 0, so rob it\n        int pick = nums[i] + best(i - 2, nums);   // rob house i, so house i - 1 is off-limits\n        int skip = best(i - 1, nums);             // leave house i, house i - 1 is free to decide\n        return max(pick, skip);                   // keep the better of the two plans\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<int> nums1 = {1, 2, 3, 1};\n    cout << \"Example 1: \" << sol.rob(nums1) << \" (expected 4)\\n\";\n\n    vector<int> nums2 = {2, 7, 9, 3, 1};\n    cout << \"Example 2: \" << sol.rob(nums2) << \" (expected 12)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Better",
+        "name": "Bottom-up DP table",
+        "aha": "The recursion's answer depends only on `i`, and `best(i)` only ever asks for `best(i − 1)` and `best(i − 2)`; so there are just `n` distinct subproblems, and solving them from left to right means each one finds its inputs already computed.",
+        "idea": "Create `dp` of length `n` where `dp[i]` is the most money from houses `0..i`. Set `dp[0] = nums[0]`, then for `i = 1..n − 1` compute `pick = nums[i] + dp[i − 2]` (treating `dp[−1]` as 0, which is why line 7 checks `i ≥ 2`) and `skip = dp[i − 1]`, and store `dp[i] = max(pick, skip)`. Filling left to right guarantees both inputs are final when `dp[i]` is computed, and the answer is `dp[n − 1]`. Top-down memoisation of the recursion gives the same `O(n)` time but adds a recursion stack; the table avoids it.",
+        "steps": [
+          "Create `dp` of length `n`; `dp[i]` will hold the most money from houses `0..i`.",
+          "Set `dp[0] = nums[0]`.",
+          "For each `i` from 1 to `n − 1`, start `pick` at `nums[i]` and add `dp[i − 2]` when `i ≥ 2`.",
+          "Set `skip = dp[i − 1]`.",
+          "Store `dp[i] = max(pick, skip)`.",
+          "Return `dp[n − 1]`."
+        ],
+        "time": "O(n)",
+        "space": "O(n)",
+        "complexity": "The single loop over `i = 1..n − 1` dominates, with a constant amount of work per house. The `dp` array of `n` ints is the extra memory.",
+        "tradeoff": "It easily meets `n ≤ 100`, but it stores all `n` values of `dp` while each step reads only the last two, so the `O(n)` space is more than the recurrence needs.",
+        "deep": {
+          "pseudocode": [
+            "function rob(nums)",
+            "  n ← length(nums)",
+            "  dp ← array of n zeros  // dp[i] = most money from houses 0..i",
+            "  dp[0] ← nums[0]  // a single house: rob it",
+            "  for i ← 1 to n − 1",
+            "    pick ← nums[i]  // rob house i ...",
+            "    if i ≥ 2",
+            "      pick ← pick + dp[i − 2]  // ... plus the best loot that ends before house i − 1",
+            "    skip ← dp[i − 1]  // leave house i: best loot through house i − 1",
+            "    dp[i] ← max(pick, skip)",
+            "  return dp[n − 1]"
+          ],
+          "time": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Table allocation and base case (lines 2-4)",
+                "cost": "n cells × O(1)",
+                "why": "dp is zero-filled once and dp[0] is set."
+              },
+              {
+                "part": "Main loop (lines 5-10)",
+                "cost": "n − 1 iterations × O(1)",
+                "why": "Each house does one optional addition, two reads and one max."
+              },
+              {
+                "part": "Return (line 11)",
+                "cost": "O(1)",
+                "why": "A single read of dp[n − 1]."
+              }
+            ],
+            "sum": "O(n) + (n − 1) · O(1) + O(1) = O(n).",
+            "cases": "",
+            "feel": "n = 100 → 99 loop iterations, a fraction of a microsecond.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "dp array (line 3)",
+                "cost": "n ints",
+                "why": "One cell per prefix 0..i."
+              },
+              {
+                "part": "Loop variables (lines 5-9)",
+                "cost": "O(1)",
+                "why": "i, pick and skip."
+              }
+            ],
+            "sum": "O(n) + O(1) = O(n); the table dominates.",
+            "cases": "",
+            "feel": "",
+            "note": "The input nums is not counted; there is no recursion."
+          },
+          "dryRun": {
+            "input": "nums = [1, 2, 3, 1]",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "n = 4 houses.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 3,
+                "explain": "dp has 4 cells, all 0; dp[i] will hold the most money from houses 0..i.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 4,
+                "explain": "dp[0] = nums[0] = 1: with only house 0, rob it.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 1: pick = nums[1] = 2, the money from robbing house 1.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "pick": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "i = 1 < 2, so line 8 is skipped (there is no house -1). skip = dp[0] = 1, the best loot if house 1 is left alone.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "pick": "2",
+                  "skip": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "dp[1] = max(pick, skip) = max(2, 1) = 2, so for houses 0..1 the better choice at house 1 is to rob it.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "pick": "2",
+                  "skip": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "2",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 2: pick starts at nums[2] = 3 (line 6), and since i ≥ 2 line 8 adds dp[0] = 1, so pick = 4.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "pick": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "2",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "skip = dp[1] = 2, the best loot if house 2 is left alone.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "pick": "4",
+                  "skip": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "2",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "dp[2] = max(pick, skip) = max(4, 2) = 4, so for houses 0..2 the better choice at house 2 is to rob it.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "pick": "4",
+                  "skip": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "2",
+                      "4",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 3: pick starts at nums[3] = 1 (line 6), and since i ≥ 2 line 8 adds dp[1] = 2, so pick = 3.",
+                "vars": {
+                  "n": "4",
+                  "i": "3",
+                  "pick": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "2",
+                      "4",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "skip = dp[2] = 4, the best loot if house 3 is left alone.",
+                "vars": {
+                  "n": "4",
+                  "i": "3",
+                  "pick": "3",
+                  "skip": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "2",
+                      "4",
+                      "0"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "dp[3] = max(pick, skip) = max(3, 4) = 4, so for houses 0..3 the better choice at house 3 is to skip it.",
+                "vars": {
+                  "n": "4",
+                  "i": "3",
+                  "pick": "3",
+                  "skip": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "2",
+                      "4",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "The table is complete; rob returns dp[3] = 4.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "2",
+                      "4",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "4: dp = [1, 2, 4, 4], and dp[3] = 4 comes from skipping house 3 and keeping the plan 1 + 3 through house 2."
+          },
+          "solution": "class Solution {\npublic:\n    int rob(vector<int>& nums) {\n        int n = (int)nums.size();\n        vector<int> dp(n, 0); // dp[i] = most money from houses 0..i\n        dp[0] = nums[0];      // a single house: rob it\n        for (int i = 1; i < n; ++i) {\n            int pick = nums[i];            // rob house i ...\n            if (i >= 2) pick += dp[i - 2]; // ... plus the best loot that ends before house i - 1\n            int skip = dp[i - 1];          // leave house i: keep the best loot through house i - 1\n            dp[i] = max(pick, skip);       // both inputs are final because we fill left to right\n        }\n        return dp[n - 1]; // best loot over all houses\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<int> nums1 = {1, 2, 3, 1};\n    cout << \"Example 1: \" << sol.rob(nums1) << \" (expected 4)\\n\";\n\n    vector<int> nums2 = {2, 7, 9, 3, 1};\n    cout << \"Example 2: \" << sol.rob(nums2) << \" (expected 12)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Optimal",
+        "name": "Two rolling variables",
+        "aha": "In the table, computing `dp[i]` reads only `dp[i − 1]` and `dp[i − 2]`, and older cells are never read again; so two variables can replace the whole array.",
+        "idea": "Keep `prev1` = best through house `i − 1` and `prev2` = best through house `i − 2`, starting with `prev1 = nums[0]` and `prev2 = 0` (nothing before house 0). For each `i` from 1, `curr = max(nums[i] + prev2, prev1)`; then shift `prev2 ← prev1` and `prev1 ← curr`. The invariant \"before iteration `i`, `prev1 = dp[i − 1]` and `prev2 = dp[i − 2]`\" is exactly the table's recurrence, so after the last house `prev1 = dp[n − 1]`. A single house needs no special case: the loop does not run and `prev1 = nums[0]` is returned.",
+        "steps": [
+          "Set `prev2 = 0` (best before house 0) and `prev1 = nums[0]` (best through house 0).",
+          "For each house `i` from 1 to `n − 1`, compute `pick = nums[i] + prev2` and `skip = prev1`.",
+          "Let `curr` be the larger of `pick` and `skip`.",
+          "Shift the window: `prev2` takes `prev1`, then `prev1` takes `curr`.",
+          "After the last house, return `prev1`."
+        ],
+        "time": "O(n)",
+        "space": "O(1)",
+        "complexity": "One pass over the `n − 1` houses after the first, with O(1) work each, is the whole running time. Only `prev2`, `prev1`, `pick`, `skip`, `curr` and `i` are stored, regardless of `n`.",
+        "tradeoff": "Every house must be read at least once, so `O(n)` time is a lower bound, and `O(1)` extra space cannot be improved. What it gives up is the full `dp` table, which you would need to reconstruct which houses were robbed.",
+        "deep": {
+          "pseudocode": [
+            "function rob(nums)",
+            "  n ← length(nums)",
+            "  prev2 ← 0  // best loot through house i − 2 (nothing before house 0)",
+            "  prev1 ← nums[0]  // best loot through house i − 1; starts as house 0 alone",
+            "  for i ← 1 to n − 1",
+            "    pick ← nums[i] + prev2  // rob house i on top of the best plan that skips i − 1",
+            "    skip ← prev1  // leave house i",
+            "    curr ← max(pick, skip)  // best loot through house i",
+            "    prev2 ← prev1  // slide the window before prev1 is overwritten",
+            "    prev1 ← curr",
+            "  return prev1  // best loot through house n − 1"
+          ],
+          "time": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Initialisation (lines 2-4)",
+                "cost": "O(1)",
+                "why": "Three assignments."
+              },
+              {
+                "part": "Main loop (lines 5-10)",
+                "cost": "n − 1 iterations × O(1)",
+                "why": "Each house does one addition, one max and two copies."
+              }
+            ],
+            "sum": "O(1) + (n − 1) · O(1) = O(n); the loop dominates.",
+            "cases": "",
+            "feel": "n = 100 → 99 iterations, effectively instant.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(1)",
+            "parts": [
+              {
+                "part": "prev2, prev1, pick, skip, curr, i (lines 3-8)",
+                "cost": "6 ints",
+                "why": "Only the two most recent prefix answers and the current house's options are kept."
+              }
+            ],
+            "sum": "A constant number of ints: O(1).",
+            "cases": "",
+            "feel": "",
+            "note": "The input nums is read but not copied, and the answer is a single int."
+          },
+          "dryRun": {
+            "input": "nums = [1, 2, 3, 1]",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "n = 4 houses.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 3,
+                "explain": "prev2 = 0: before house 0 there is nothing to rob.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 4,
+                "explain": "prev1 = nums[0] = 1: the best loot through house 0 is to rob it.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "0",
+                  "prev1": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 1: pick = nums[1] + prev2 = 2 + 0 = 2, robbing house 1 alone (prev2 = 0 because no house lies before house 0).",
+                "vars": {
+                  "n": "4",
+                  "prev2": "0",
+                  "prev1": "1",
+                  "i": "1",
+                  "pick": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "skip = prev1 = 1 (line 7), so curr = max(2, 1) = 2, the best loot through house 1.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "0",
+                  "prev1": "1",
+                  "i": "1",
+                  "pick": "2",
+                  "skip": "1",
+                  "curr": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Lines 9-10 slide the window one house right: prev2 = 1 (best through house 0), prev1 = 2 (best through house 1).",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1",
+                  "prev1": "2",
+                  "i": "1",
+                  "pick": "2",
+                  "skip": "1",
+                  "curr": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 2: pick = nums[2] + prev2 = 3 + 1 = 4, robbing house 2 on top of the best plan through house 0.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1",
+                  "prev1": "2",
+                  "i": "2",
+                  "pick": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "skip = prev1 = 2 (line 7), so curr = max(4, 2) = 4, the best loot through house 2.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1",
+                  "prev1": "2",
+                  "i": "2",
+                  "pick": "4",
+                  "skip": "2",
+                  "curr": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Lines 9-10 slide the window one house right: prev2 = 2 (best through house 1), prev1 = 4 (best through house 2).",
+                "vars": {
+                  "n": "4",
+                  "prev2": "2",
+                  "prev1": "4",
+                  "i": "2",
+                  "pick": "4",
+                  "skip": "2",
+                  "curr": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 3: pick = nums[3] + prev2 = 1 + 2 = 3, robbing house 3 on top of the best plan through house 1.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "2",
+                  "prev1": "4",
+                  "i": "3",
+                  "pick": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "skip = prev1 = 4 (line 7), so curr = max(3, 4) = 4, the best loot through house 3.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "2",
+                  "prev1": "4",
+                  "i": "3",
+                  "pick": "3",
+                  "skip": "4",
+                  "curr": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Lines 9-10 slide the window one house right: prev2 = 4 (best through house 2), prev1 = 4 (best through house 3).",
+                "vars": {
+                  "n": "4",
+                  "prev2": "4",
+                  "prev1": "4",
+                  "i": "3",
+                  "pick": "3",
+                  "skip": "4",
+                  "curr": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "All houses are processed, so rob returns prev1 = 4, the best loot through house 3.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "4",
+                  "prev1": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "4: the window passes through the same values as the table (1, 2, 4, 4) but never holds more than two of them."
+          },
+          "solution": "class Solution {\npublic:\n    int rob(vector<int>& nums) {\n        int n = (int)nums.size();\n        int prev2 = 0;       // best loot through house i - 2 (nothing exists before house 0)\n        int prev1 = nums[0]; // best loot through house i - 1; with one house, rob it\n        for (int i = 1; i < n; ++i) {\n            int pick = nums[i] + prev2; // rob house i, so house i - 1 must stay untouched\n            int skip = prev1;           // leave house i and keep the best through house i - 1\n            int curr = max(pick, skip); // best loot through house i\n            prev2 = prev1;              // slide the window: house i - 1 becomes the new \"two back\"\n            prev1 = curr;               // and house i becomes the new \"one back\"\n        }\n        return prev1; // best loot through the last house (nums[0] when n == 1)\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<int> nums1 = {1, 2, 3, 1};\n    cout << \"Example 1: \" << sol.rob(nums1) << \" (expected 4)\\n\";\n\n    vector<int> nums2 = {2, 7, 9, 3, 1};\n    cout << \"Example 2: \" << sol.rob(nums2) << \" (expected 12)\\n\";\n\n    return 0;\n}"
+        }
+      }
+    ],
+    "mistakes": [
+      "Comparing only the even-index sum with the odd-index sum, which fails on `[2,1,1,2]` (returns 3 instead of 4).",
+      "Greedily robbing the richest available house first, which fails on `[2,3,2]` (returns 3 instead of 4).",
+      "Setting `dp[1] = max(nums[0], nums[1])` without checking the length, which reads past the end of `nums` when there is only one house.",
+      "Defining `dp[i]` as \"best loot when house `i` is robbed\" and returning `dp[n − 1]`, which misses every plan that leaves the last house alone (for `[1,2,3,1]` it returns 3 instead of 4)."
+    ],
+    "edgeCases": [
+      "A single house such as `[5]`: the answer is `nums[0]`, and any code that touches `nums[1]` or `dp[1]` goes out of bounds.",
+      "Two houses such as `[3,8]`: they are adjacent, so the answer is the larger one, 8, not the sum.",
+      "All zeros such as `[0,0,0,0]`: the answer is 0, which checks the base cases do not invent money.",
+      "Plans that skip two houses in a row, such as `[2,1,1,2]` → 4, which break alternation-based shortcuts.",
+      "100 houses of 400 each: the answer 20000 is the largest possible and still fits easily in `int`."
+    ],
+    "related": [
+      {
+        "title": "House Robber II",
+        "slug": "house-robber-ii",
+        "why": "The same street bent into a circle: run this exact DP twice, once without the first house and once without the last."
+      },
+      {
+        "title": "Delete and Earn",
+        "slug": "delete-and-earn",
+        "why": "After summing points per value, taking value `v` forbids `v − 1` and `v + 1`, which is House Robber over the value line."
+      },
+      {
+        "title": "House Robber III",
+        "slug": "house-robber-iii",
+        "why": "The same pick / skip choice, but the houses form a binary tree, so each node returns a (robbed, not robbed) pair."
+      },
+      {
+        "title": "Climbing Stairs",
+        "slug": "climbing-stairs",
+        "why": "The same `dp[i]` from `dp[i − 1]` and `dp[i − 2]` shape, with a sum instead of a max, and the same two-variable optimisation."
+      }
+    ],
+    "takeaways": [
+      "For \"choose a subset with no two adjacent\" problems, decide pick or skip for the last element and recurse on the prefix that remains.",
+      "Define the DP state as \"best answer using a prefix\" rather than \"best answer that uses element `i`\", so the final answer is simply the last cell.",
+      "Test greedy or alternating shortcuts against tiny counterexamples like `[2,1,1,2]` and `[2,3,2]` before trusting them.",
+      "When a recurrence only looks back a fixed number of steps, replace the table with that many rolling variables."
+    ]
+  }
+}

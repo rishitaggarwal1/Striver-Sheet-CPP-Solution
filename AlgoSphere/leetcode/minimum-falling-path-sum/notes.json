@@ -1,0 +1,2266 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "minimum-falling-path-sum",
+  "title": "Minimum Falling Path Sum",
+  "url": "https://leetcode.com/problems/minimum-falling-path-sum/",
+  "updatedAt": "2026-11-20T14:58:07.458Z",
+  "problem": {
+    "difficulty": "Medium",
+    "description": "Given an n x n array of integers matrix, return the minimum sum of any falling path through matrix.\n\nA falling path starts at any element in the first row and chooses the element in the next row that is either directly below or diagonally left/right. Specifically, the next element from position (row, col) will be (row + 1, col - 1), (row + 1, col), or (row + 1, col + 1).\n\nExample 1:\n\nInput: matrix = [[2,1,3],[6,5,4],[7,8,9]]\nOutput: 13\nExplanation: There are two falling paths with a minimum sum as shown.\n\nExample 2:\n\nInput: matrix = [[-19,57],[-40,-5]]\nOutput: -59\nExplanation: The falling path with a minimum sum is shown.\n\nConstraints:\n\n- n == matrix.length == matrix[i].length\n\n- 1 <= n <= 100\n\n- -100 <= matrix[i][j] <= 100"
+  },
+  "hints": [
+    "Pick one cell from every row, starting anywhere in the top row, so that each chosen cell is in the same column as the one above it or one column to its left or right, and make the total of the chosen values as small as possible.",
+    "A cell `(row, col)` can only be entered from at most three cells of the row above: `(row - 1, col - 1)`, `(row - 1, col)` and `(row - 1, col + 1)`; cells in the first and last columns have only two. In Example 1 the two best paths `1 → 5 → 7` and `1 → 4 → 8` both cost 13 but pass through different middle cells.",
+    "With `n <= 100`, a falling path makes up to 3 choices per row, so trying every path costs around `n · 3^(n-1)`, astronomical for `n = 100`. There are only `10^4` cells, so constant work per cell is enough: aim for `O(n^2)`.",
+    "This is grid dynamic programming filled row by row: the best path ending at a cell is built from the best paths ending at its parents in the previous row, and neighbouring cells share those parents.",
+    "The cheapest falling path that ends at `(row, col)` is `matrix[row][col]` plus the cheapest falling path ending at one of its in-range parents, so each row can be computed from the previous row alone, and the answer is the minimum over the last row.",
+    "Keep one number per column for the previous row: `prev[col]` is the minimum sum of a falling path ending at `(row - 1, col)`. Build a separate array `cur` for the current row from `prev`, then let `cur` become `prev`.",
+    "Copy the first row of `matrix` into `prev`.\nFor each `row` from 1 to `n - 1`, create a new array `cur`.\nFor each `col`, start `best` at `prev[col]`.\nIf `col > 0` compare with `prev[col - 1]`; if `col < n - 1` compare with `prev[col + 1]`.\nSet `cur[col]` to `matrix[row][col] + best`, and after the row replace `prev` with `cur`.\nReturn the smallest value in `prev`.",
+    "The trickiest step is the border: column 0 has no up-left parent and column `n - 1` has no up-right parent, so skip them (or treat them as `+∞`) instead of reading outside the row. Also handle `n = 1` (the answer is the single value), values as low as -100 (never use 0 or -1 as an 'unset' marker), and write into `cur`, not into `prev`, while `prev` is still needed. Time `O(n^2)`, extra space `O(n)`."
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[1,2,3],[4,5,6],[7,8,9]]"
+          }
+        ],
+        "output": "12",
+        "note": "Sorted values: the best path goes straight down the first column, 1 + 4 + 7."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[5,-3,2],[1,4,-6],[-2,7,3]]"
+          }
+        ],
+        "output": "-6",
+        "note": "Mixed signs: the path -3 → -6 → 3 is best because the two negative cells outweigh the forced last step onto 3."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[1,2,3],[50,50,1],[50,50,1]]"
+          }
+        ],
+        "output": "4",
+        "note": "Greedy trap: starting at the smallest top cell 1 forces a 50, while 2 → 1 → 1 costs only 4."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[3,8,1,7],[9,2,7,4],[4,6,5,1],[2,9,3,8]]"
+          }
+        ],
+        "output": "9",
+        "note": "A 4 × 4 matrix where the best path 1 → 2 → 4 → 2 drifts left using diagonal moves."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[-1,4,-2,0,3],[2,-5,1,6,-3],[7,0,-4,2,1],[-6,3,5,-1,2],[1,-2,4,0,-7]]"
+          }
+        ],
+        "output": "-19",
+        "note": "A 5 × 5 matrix with scattered negatives: the best path -2 → -5 → -4 → -1 → -7 changes column at almost every row."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[7]]"
+          }
+        ],
+        "output": "7",
+        "note": "Single cell: n = 1, no moves are made and the answer is the only value."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[-100]]"
+          }
+        ],
+        "output": "-100",
+        "note": "Minimum value with n = 1: checks that an initial minimum such as 0 does not cap the answer."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[100,100],[100,100]]"
+          }
+        ],
+        "output": "200",
+        "note": "All equal at the maximum value: every path costs the same (a 100 × 100 grid of 100s would give 10000)."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[-100,-100,-100],[-100,-100,-100],[-100,-100,-100]]"
+          }
+        ],
+        "output": "-300",
+        "note": "All values at the minimum: the answer is -100 · n, the most negative sum possible for n = 3."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[0,0],[0,0]]"
+          }
+        ],
+        "output": "0",
+        "note": "All zeros: every path sums to 0, so a sentinel of 0 must not be confused with 'no path'."
+      },
+      {
+        "args": [
+          {
+            "name": "matrix",
+            "value": "[[100,100,1],[100,1,100],[1,100,100]]"
+          }
+        ],
+        "output": "3",
+        "note": "Anti-diagonal path: the only cheap route moves down-left twice, from the top-right corner to the bottom-left corner."
+      }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Choose one cell per row of the `n × n` `matrix`, starting anywhere in row 0, where each next cell is directly below or diagonally below-left or below-right of the previous one, and return the smallest possible sum.",
+    "pattern": "Grid DP, row by row (free start and end)",
+    "signals": [
+      "\"the next element from position (row, col) will be (row + 1, col - 1), (row + 1, col), or (row + 1, col + 1)\" → each cell depends only on at most three cells in the row above, a row-by-row DP recurrence.",
+      "\"starts at any element in the first row\" → every cell of row 0 is a base case, and since the path can also end anywhere, the answer is a minimum over the whole last row.",
+      "\"-100 <= matrix[i][j] <= 100\" → values can be negative, so greedy choices and 'unset' markers like 0 or -1 are unsafe; the DP must compare real sums.",
+      "\"1 <= n <= 100\" → only `10^4` cells, so `O(n^2)` is trivial while exploring all `≈ n · 3^(n-1)` paths is impossible."
+    ],
+    "constraints": "With `n <= 100` the matrix has `10^4` cells, so an `O(n^2)` DP does about `3·10^4` comparisons and runs instantly. Enumerating every falling path costs roughly `n · 3^(n-1)`, about `1.7·10^49` at `n = 100` (even `n = 20` gives about `2·10^10`), so the target is `O(n^2)`.",
+    "thinking": [
+      {
+        "q": "What is the most direct way to solve it?",
+        "a": "Try every falling path: for each end cell in the last row, look back at the up to three allowed cells in the row above, recursively, and keep the smallest total. It is correct, but each row multiplies the number of paths by up to 3."
+      },
+      {
+        "q": "Can I just step greedily to the smallest of the cells below?",
+        "a": "No. In `[[1,2,3],[50,50,1],[50,50,1]]` greedy starts at `1` and must then step onto a `50`, while starting at `2` and going `2 → 1 → 1` costs only 4. A cheap cell now can lead into expensive cells later."
+      },
+      {
+        "q": "If I knew the best path ending at every cell of row `row - 1`, what is the best path ending at `(row, col)`?",
+        "a": "Its previous cell is `(row - 1, col - 1)`, `(row - 1, col)` or `(row - 1, col + 1)`, and the part before the last step must itself be the cheapest path to that parent. So `best(row, col) = matrix[row][col] + min` of the in-range parents' best values."
+      },
+      {
+        "q": "Why is recursion on that formula slow, and how is it fixed?",
+        "a": "Neighbouring cells share parents, so `best(row - 1, col)` is requested by up to three cells below it and the repetition compounds over the rows. There are only `n^2` distinct `(row, col)` states, so compute each once, row by row from the top."
+      },
+      {
+        "q": "Where do paths start and end in the DP?",
+        "a": "Anywhere: the row 0 values are the base cases, `best(0, col) = matrix[0][col]`, and the answer is the minimum of `best(n - 1, col)` over all columns. In Example 1 the last row ends up as `[13, 13, 14]`, so the answer is 13."
+      },
+      {
+        "q": "How much of the table do I actually need?",
+        "a": "Row `row` only reads row `row - 1`, so keep one array `prev` for the previous row and build `cur` for the current one; memory drops from `n^2` to `n`."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Recursion from every bottom cell",
+        "aha": "A falling path is just a sequence of choices (down-left, down, down-right), so the first instinct is to try them all; working backwards from the last row turns that into a short recursive formula.",
+        "idea": "Define `best(row, col)` as the minimum sum of a falling path that starts anywhere in row 0 and ends at `(row, col)`. If `col` is outside `0..n-1` the move is illegal and the value is `+∞`; if `row` is 0 the value is `matrix[0][col]`; otherwise it is `matrix[row][col]` plus the minimum of `best` at `(row - 1, col - 1)`, `(row - 1, col)` and `(row - 1, col + 1)`. This is correct because the last step into `(row, col)` comes from exactly one of those parents and the prefix before it must be optimal for that parent. The answer is the minimum of `best(n - 1, endCol)` over every column `endCol`.",
+        "steps": [
+          "Set `ans = +∞`.",
+          "For each column `endCol` of the last row, compute `best(n - 1, endCol)` and keep the minimum in `ans`.",
+          "In `best(row, col)`, return `+∞` if `col < 0` or `col >= n`.",
+          "Return `matrix[0][col]` if `row` is 0.",
+          "Otherwise recurse on the three parents in row `row - 1` and return `matrix[row][col]` plus their minimum.",
+          "Return `ans`."
+        ],
+        "time": "O(n·3^n)",
+        "space": "O(n)",
+        "complexity": "Each call with `row > 0` makes three calls one row higher, so one end cell produces a call tree of up to `(3^n - 1)/2` nodes, and there are `n` end cells. The only extra memory is the recursion stack, at most `n` frames deep.",
+        "tradeoff": "The same `best(row, col)` is recomputed for every path that passes through it, so the work grows like `3^n`: `n = 15` already needs about `10^8` calls, while `n` can be 100.",
+        "deep": {
+          "pseudocode": [
+            "function minFallingPathSum(matrix)",
+            "  n ← number of rows in matrix",
+            "  ans ← +∞",
+            "  for endCol ← 0 to n - 1",
+            "    ans ← min(ans, best(n - 1, endCol))  // the path may end at any cell of the last row",
+            "  return ans",
+            "function best(row, col)  // min sum of a falling path that starts in row 0 and ends at (row, col)",
+            "  if col < 0 or col ≥ n",
+            "    return +∞  // fell off the side: this move is not allowed",
+            "  if row = 0",
+            "    return matrix[0][col]  // a path may start at any cell of the first row",
+            "  upLeft ← best(row - 1, col - 1)",
+            "  up ← best(row - 1, col)",
+            "  upRight ← best(row - 1, col + 1)",
+            "  return matrix[row][col] + min(upLeft, up, upRight)  // up is always in range, so the min is a real sum"
+          ],
+          "time": {
+            "total": "O(n·3^n)",
+            "parts": [
+              {
+                "part": "Outer loop over end columns (lines 4-5)",
+                "cost": "n iterations × one recursion tree",
+                "why": "Every cell of the last row is tried as the end of the path."
+              },
+              {
+                "part": "Recursive calls (lines 7-15)",
+                "cost": "up to (3^n - 1)/2 calls per tree × O(1)",
+                "why": "Each call with row > 0 makes three calls one row higher, so a tree of depth n - 1 has at most 1 + 3 + … + 3^(n-1) nodes."
+              },
+              {
+                "part": "Border and base checks (lines 8-11)",
+                "cost": "O(1) per call",
+                "why": "Off-matrix columns and row 0 stop immediately, which only trims the tree near the edges."
+              }
+            ],
+            "sum": "n × (3^n - 1)/2 × O(1) = O(n·3^n); the recursion trees dominate the O(n) outer loop.",
+            "cases": "",
+            "feel": "n = 100 → up to about 2.6·10^49 calls, hopeless; n = 12 is about 3·10^6 calls and n = 15 already about 10^8.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Recursion stack (lines 7-15)",
+                "cost": "at most n frames × O(1)",
+                "why": "Each nested call moves one row up, from row n - 1 to row 0."
+              }
+            ],
+            "sum": "O(n) for the stack; no arrays are allocated.",
+            "cases": "",
+            "feel": "",
+            "note": "matrix is the input and is not counted; with n <= 100 the stack is at most 100 frames deep."
+          },
+          "dryRun": {
+            "input": "matrix = [[-19,57],[-40,-5]] (Example 2; Example 1 has 9 cells, more than a short trace allows)",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "n = 2 and ans = +∞. Every cell of the last row will be tried as the end of the path.",
+                "vars": {
+                  "n": "2",
+                  "ans": "+∞"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "endCol = 0 calls best(1, 0), whose first request is the up-left parent best(0, -1). Column -1 is off the matrix, so it returns +∞: that move is not allowed.",
+                "vars": {
+                  "n": "2",
+                  "ans": "+∞",
+                  "endCol": "0",
+                  "row": "0",
+                  "col": "-1"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=0",
+                      "best(1,0)",
+                      "best(0,-1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "best(1, 0) stored upLeft = +∞; then best(0, 0) returned matrix[0][0] = -19 because row 0 is where paths start, so up = -19.",
+                "vars": {
+                  "n": "2",
+                  "ans": "+∞",
+                  "endCol": "0",
+                  "row": "1",
+                  "col": "0",
+                  "upLeft": "+∞",
+                  "up": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=0",
+                      "best(1,0) upLeft=+∞ up=-19"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "best(0, 1) returns matrix[0][1] = 57, so upRight = 57.",
+                "vars": {
+                  "n": "2",
+                  "ans": "+∞",
+                  "endCol": "0",
+                  "row": "1",
+                  "col": "0",
+                  "upLeft": "+∞",
+                  "up": "-19",
+                  "upRight": "57"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=0",
+                      "best(1,0) upLeft=+∞ up=-19 upRight=57"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 15,
+                "explain": "best(1, 0) returns matrix[1][0] + min(+∞, -19, 57) = -40 + (-19) = -59.",
+                "vars": {
+                  "n": "2",
+                  "ans": "+∞",
+                  "endCol": "0",
+                  "row": "1",
+                  "col": "0",
+                  "upLeft": "+∞",
+                  "up": "-19",
+                  "upRight": "57"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=0",
+                      "best(1,0) upLeft=+∞ up=-19 upRight=57"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 5,
+                "explain": "ans = min(+∞, -59) = -59 for paths that end at column 0.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59",
+                  "endCol": "0"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=0"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "endCol = 1 calls best(1, 1). Its up-left parent best(0, 0) is computed again from scratch and returns -19, so upLeft = -19.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59",
+                  "endCol": "1",
+                  "row": "1",
+                  "col": "1",
+                  "upLeft": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=1",
+                      "best(1,1) upLeft=-19"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 13,
+                "explain": "best(0, 1) is also recomputed and returns 57, so up = 57.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59",
+                  "endCol": "1",
+                  "row": "1",
+                  "col": "1",
+                  "upLeft": "-19",
+                  "up": "57"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=1",
+                      "best(1,1) upLeft=-19 up=57"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "The up-right parent would be column 2, outside 0..1, so best(0, 2) returns +∞.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59",
+                  "endCol": "1",
+                  "row": "0",
+                  "col": "2"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=1",
+                      "best(1,1) upLeft=-19 up=57",
+                      "best(0,2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 15,
+                "explain": "best(1, 1) returns matrix[1][1] + min(-19, 57, +∞) = -5 + (-19) = -24.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59",
+                  "endCol": "1",
+                  "row": "1",
+                  "col": "1",
+                  "upLeft": "-19",
+                  "up": "57",
+                  "upRight": "+∞"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=1",
+                      "best(1,1) upLeft=-19 up=57 upRight=+∞"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 5,
+                "explain": "ans = min(-59, -24) = -59; the path ending at column 0 is still the cheapest.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59",
+                  "endCol": "1"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum endCol=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "Every end column has been tried, so the function returns ans = -59.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "minFallingPathSum"
+                    ]
+                  }
+                }
+              }
+            ],
+            "result": "-59 — the path -19 → -40 (straight down from (0, 0) to (1, 0)) has sum -59, smaller than the best path ending at column 1 (-19 → -5 = -24)."
+          },
+          "solution": "class Solution {\npublic:\n    int minFallingPathSum(vector<vector<int>>& matrix) {\n        int n = matrix.size();                 // matrix is n x n\n        int ans = INT_MAX;                     // no path seen yet\n        for (int endCol = 0; endCol < n; ++endCol)\n            ans = min(ans, best(matrix, n - 1, endCol)); // the path may end at any cell of the last row\n        return ans;\n    }\n\nprivate:\n    const int INF = 1000000000;                // larger than any real sum (|sum| <= 100 * 100 = 10^4)\n\n    // Minimum sum of a falling path that starts anywhere in row 0 and ends at (row, col).\n    int best(vector<vector<int>>& matrix, int row, int col) {\n        int n = matrix.size();\n        if (col < 0 || col >= n) return INF;   // fell off the side: this move is not allowed\n        if (row == 0) return matrix[0][col];   // a path may start at any cell of the first row\n        int upLeft = best(matrix, row - 1, col - 1);  // came diagonally from the up-left cell\n        int up = best(matrix, row - 1, col);          // came straight down\n        int upRight = best(matrix, row - 1, col + 1); // came diagonally from the up-right cell\n        return matrix[row][col] + min({upLeft, up, upRight}); // up is always in range, so the min is a real sum\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> matrix1 = {{2, 1, 3}, {6, 5, 4}, {7, 8, 9}};\n    cout << \"Example 1: output = \" << sol.minFallingPathSum(matrix1) << \" (expected: 13)\\n\";\n\n    vector<vector<int>> matrix2 = {{-19, 57}, {-40, -5}};\n    cout << \"Example 2: output = \" << sol.minFallingPathSum(matrix2) << \" (expected: -59)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Better",
+        "name": "Bottom-up DP table",
+        "aha": "The recursion asks for `best(row - 1, col)` from up to three different cells below it, and that repetition multiplies with every row; there are only `n^2` different `(row, col)` states, so each can be computed once and stored.",
+        "idea": "Create an `n × n` table `dp` where `dp[row][col]` is the minimum sum of a falling path ending at `(row, col)`. Copy row 0 of `matrix` into `dp[0]`, then fill rows top to bottom with `dp[row][col] = matrix[row][col] + min` of `dp[row - 1][col]` and whichever of `dp[row - 1][col - 1]` and `dp[row - 1][col + 1]` exist. Because every parent lives in the previous row, it is always finished before it is needed. The answer is the minimum of the last row `dp[n - 1]`.",
+        "steps": [
+          "Create `dp` of size `n × n`.",
+          "Copy `matrix[0]` into `dp[0]`: a path may start at any top cell.",
+          "For each `row` from 1 to `n - 1` and each `col`, set `best = dp[row - 1][col]`.",
+          "If `col > 0`, set `best = min(best, dp[row - 1][col - 1])`; if `col < n - 1`, set `best = min(best, dp[row - 1][col + 1])`.",
+          "Store `dp[row][col] = matrix[row][col] + best`.",
+          "Return the minimum value in `dp[n - 1]`."
+        ],
+        "time": "O(n^2)",
+        "space": "O(n^2)",
+        "complexity": "The double loop visits each of the `n^2` cells once and does at most three comparisons there, which dominates; the final scan of the last row is only `O(n)`. The `n × n` table `dp` is the extra memory.",
+        "tradeoff": "Time is optimal, but the table keeps all `n` rows (`10^4` integers) although row `row` only ever reads row `row - 1`; everything above that is dead weight.",
+        "deep": {
+          "pseudocode": [
+            "function minFallingPathSum(matrix)",
+            "  n ← number of rows in matrix",
+            "  dp ← n × n table of zeros  // dp[row][col] = min sum of a falling path ending at (row, col)",
+            "  for col ← 0 to n - 1",
+            "    dp[0][col] ← matrix[0][col]  // a path may start at any cell of row 0",
+            "  for row ← 1 to n - 1",
+            "    for col ← 0 to n - 1",
+            "      best ← dp[row - 1][col]  // straight down from (row - 1, col)",
+            "      if col > 0",
+            "        best ← min(best, dp[row - 1][col - 1])  // diagonal from the up-left cell",
+            "      if col < n - 1",
+            "        best ← min(best, dp[row - 1][col + 1])  // diagonal from the up-right cell",
+            "      dp[row][col] ← matrix[row][col] + best",
+            "  ans ← dp[n - 1][0]",
+            "  for col ← 1 to n - 1",
+            "    ans ← min(ans, dp[n - 1][col])  // the path may end at any column of the last row",
+            "  return ans"
+          ],
+          "time": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Table allocation and row 0 copy (lines 3-5)",
+                "cost": "n^2 + n steps",
+                "why": "The table is zero-filled once and row 0 is copied from matrix."
+              },
+              {
+                "part": "Filling rows 1 to n - 1 (lines 6-13)",
+                "cost": "(n - 1)·n cells × at most 3 comparisons",
+                "why": "Each cell reads at most three parents from the previous row and writes one value."
+              },
+              {
+                "part": "Scanning the last row (lines 14-16)",
+                "cost": "n steps",
+                "why": "The path may end at any column, so all of dp[n - 1] is compared."
+              }
+            ],
+            "sum": "n^2 + n + 3n(n - 1) + n ≈ 4n^2 = O(n^2); the double loop dominates.",
+            "cases": "",
+            "feel": "n = 100 → about 4·10^4 basic steps, well under a millisecond.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "dp table (line 3)",
+                "cost": "n × n integers",
+                "why": "One best sum per cell, with every row kept."
+              }
+            ],
+            "sum": "n^2 = O(n^2).",
+            "cases": "",
+            "feel": "",
+            "note": "matrix is the input and is not counted; best, ans, row and col are O(1)."
+          },
+          "dryRun": {
+            "input": "matrix = [[-19,57],[-40,-5]] (Example 2; Example 1 has 9 cells, more than a short trace allows)",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "n = 2; dp is a 2 × 2 table of zeros, where dp[row][col] will hold the cheapest falling path ending at (row, col).",
+                "vars": {
+                  "n": "2"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 5,
+                "explain": "col = 0: a path may start here, so dp[0][0] = matrix[0][0] = -19.",
+                "vars": {
+                  "n": "2",
+                  "col": "0"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 5,
+                "explain": "col = 1: dp[0][1] = matrix[0][1] = 57. Row 0 is complete.",
+                "vars": {
+                  "n": "2",
+                  "col": "1"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "row = 1, col = 0: start with the straight-down parent, best = dp[0][0] = -19.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "0",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 12,
+                "explain": "col = 0 has no up-left parent, so lines 9-10 are skipped; the up-right parent dp[0][1] = 57 leaves best = min(-19, 57) = -19.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "0",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 13,
+                "explain": "dp[1][0] = matrix[1][0] + best = -40 + (-19) = -59.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "0",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-59",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "row = 1, col = 1: best starts at the straight-down parent dp[0][1] = 57.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "1",
+                  "best": "57"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-59",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "The up-left parent dp[0][0] = -19 is smaller, so best = min(57, -19) = -19. The last column has no up-right parent, so lines 11-12 are skipped.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "1",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-59",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 13,
+                "explain": "dp[1][1] = matrix[1][1] + best = -5 + (-19) = -24. The table is full.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "1",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-59",
+                        "-24"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 14,
+                "explain": "ans starts at the first cell of the last row, dp[1][0] = -59.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-59",
+                        "-24"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 16,
+                "explain": "col = 1: ans = min(-59, dp[1][1]) = min(-59, -24) = -59.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59",
+                  "col": "1"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-59",
+                        "-24"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 17,
+                "explain": "Return ans = -59.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-59",
+                        "-24"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "-59 — dp[1][0] = -59 is the smallest value in the last row, from the path -19 → -40."
+          },
+          "solution": "class Solution {\npublic:\n    int minFallingPathSum(vector<vector<int>>& matrix) {\n        int n = matrix.size();                                   // matrix is n x n\n        vector<vector<int>> dp(n, vector<int>(n, 0));            // dp[row][col] = min sum of a falling path ending at (row, col)\n        for (int col = 0; col < n; ++col)\n            dp[0][col] = matrix[0][col];                         // a path may start at any cell of row 0\n        for (int row = 1; row < n; ++row) {\n            for (int col = 0; col < n; ++col) {\n                int best = dp[row - 1][col];                     // straight down from (row - 1, col)\n                if (col > 0)\n                    best = min(best, dp[row - 1][col - 1]);      // diagonal from the up-left cell\n                if (col < n - 1)\n                    best = min(best, dp[row - 1][col + 1]);      // diagonal from the up-right cell\n                dp[row][col] = matrix[row][col] + best;          // extend the cheapest reachable path\n            }\n        }\n        int ans = dp[n - 1][0];\n        for (int col = 1; col < n; ++col)\n            ans = min(ans, dp[n - 1][col]);                      // the path may end at any column of the last row\n        return ans;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> matrix1 = {{2, 1, 3}, {6, 5, 4}, {7, 8, 9}};\n    cout << \"Example 1: output = \" << sol.minFallingPathSum(matrix1) << \" (expected: 13)\\n\";\n\n    vector<vector<int>> matrix2 = {{-19, 57}, {-40, -5}};\n    cout << \"Example 2: output = \" << sol.minFallingPathSum(matrix2) << \" (expected: -59)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Optimal",
+        "name": "Two rolling rows",
+        "aha": "In the table, `dp[row]` is read only while filling `dp[row + 1]`, so keeping just the previous row `prev` and the row being built `cur` loses nothing.",
+        "idea": "Start with `prev` equal to `matrix[0]`. For each later row build a new array `cur` where `cur[col] = matrix[row][col] + min(prev[col - 1], prev[col], prev[col + 1])` over the in-range neighbours, then set `prev = cur`. A separate `cur` is needed because `cur[col + 1]` still needs the old `prev[col]`, so overwriting `prev` in place would mix two rows. After the last row, `prev` holds the best sum ending at every bottom cell, and its minimum is the answer.",
+        "steps": [
+          "Copy `matrix[0]` into `prev`.",
+          "For each `row` from 1 to `n - 1`, create a new array `cur` of length `n`.",
+          "For each `col`, start `best` at `prev[col]`, then take the minimum with `prev[col - 1]` if `col > 0` and with `prev[col + 1]` if `col < n - 1`.",
+          "Set `cur[col] = matrix[row][col] + best`.",
+          "After the row is finished, set `prev = cur`.",
+          "Return the minimum value in `prev`."
+        ],
+        "time": "O(n^2)",
+        "space": "O(n)",
+        "complexity": "Each of the `n^2` cells is processed once with at most three comparisons, so the nested loops dominate. Extra memory is the two arrays `prev` and `cur` of length `n`.",
+        "tradeoff": "Every cell can change the answer, so all `n^2` values must be read and `O(n^2)` time cannot be beaten. The `O(n)` arrays could be dropped to `O(1)` by adding the minimum directly into `matrix[row][col]`, at the cost of overwriting the caller's input.",
+        "deep": {
+          "pseudocode": [
+            "function minFallingPathSum(matrix)",
+            "  n ← number of rows in matrix",
+            "  prev ← copy of matrix[0]  // prev[c] = min sum of a falling path ending at (row - 1, c)",
+            "  for row ← 1 to n - 1",
+            "    cur ← array of n zeros  // separate array: prev must stay intact while this row is built",
+            "    for col ← 0 to n - 1",
+            "      best ← prev[col]  // straight down from (row - 1, col)",
+            "      if col > 0",
+            "        best ← min(best, prev[col - 1])  // diagonal from the up-left cell",
+            "      if col < n - 1",
+            "        best ← min(best, prev[col + 1])  // diagonal from the up-right cell",
+            "      cur[col] ← matrix[row][col] + best",
+            "    prev ← cur  // this row is done; only it is needed for the next row",
+            "  ans ← prev[0]",
+            "  for col ← 1 to n - 1",
+            "    ans ← min(ans, prev[col])  // the path may end at any column of the last row",
+            "  return ans"
+          ],
+          "time": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Copying row 0 (line 3)",
+                "cost": "n steps",
+                "why": "prev starts as the first row of matrix."
+              },
+              {
+                "part": "Building each row (lines 4-13)",
+                "cost": "(n - 1) rows × (n cells × at most 3 comparisons + O(n) to create cur and copy it into prev)",
+                "why": "Each cell reads at most three values of prev and writes one value of cur."
+              },
+              {
+                "part": "Scanning the last row (lines 14-16)",
+                "cost": "n steps",
+                "why": "The path may end at any column, so all of prev is compared."
+              }
+            ],
+            "sum": "n + (n - 1)(3n + 2n) + n ≈ 5n^2 = O(n^2); the nested loops dominate.",
+            "cases": "",
+            "feel": "n = 100 → about 5·10^4 basic steps, effectively instant.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "prev (line 3)",
+                "cost": "n integers",
+                "why": "Best sums for the previous row."
+              },
+              {
+                "part": "cur (line 5)",
+                "cost": "n integers",
+                "why": "Best sums for the row being built, kept separate so prev is not corrupted."
+              }
+            ],
+            "sum": "n + n = 2n = O(n).",
+            "cases": "",
+            "feel": "",
+            "note": "matrix is the input and is not counted. Writing results into matrix itself would make the extra space O(1) but destroys the input."
+          },
+          "dryRun": {
+            "input": "matrix = [[-19,57],[-40,-5]] (Example 2; Example 1 has 9 cells, more than a short trace allows)",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "n = 2; prev starts as a copy of row 0, [-19, 57]: a path that ends in row 0 is just that cell.",
+                "vars": {
+                  "n": "2"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "prev": {
+                    "values": [
+                      "-19",
+                      "57"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 5,
+                "explain": "row = 1: create a fresh cur = [0, 0] so prev stays intact while row 1 is built.",
+                "vars": {
+                  "n": "2",
+                  "row": "1"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "prev": {
+                    "values": [
+                      "-19",
+                      "57"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 7,
+                "explain": "col = 0: best = prev[0] = -19, the straight-down parent.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "0",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "prev": {
+                    "values": [
+                      "-19",
+                      "57"
+                    ],
+                    "pointers": {
+                      "col": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "col": 0
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "col = 0 has no up-left parent (line 9 is skipped); the up-right parent prev[1] = 57 leaves best = min(-19, 57) = -19.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "0",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "prev": {
+                    "values": [
+                      "-19",
+                      "57"
+                    ],
+                    "pointers": {
+                      "col": 0
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "col": 0
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 12,
+                "explain": "cur[0] = matrix[1][0] + best = -40 + (-19) = -59.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "0",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "prev": {
+                    "values": [
+                      "-19",
+                      "57"
+                    ],
+                    "pointers": {
+                      "col": 0
+                    },
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "-59",
+                      "0"
+                    ],
+                    "pointers": {
+                      "col": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 7,
+                "explain": "col = 1: best = prev[1] = 57, the straight-down parent.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "1",
+                  "best": "57"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "prev": {
+                    "values": [
+                      "-19",
+                      "57"
+                    ],
+                    "pointers": {
+                      "col": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "-59",
+                      "0"
+                    ],
+                    "pointers": {
+                      "col": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "The up-left parent prev[0] = -19 is cheaper, so best = min(57, -19) = -19. col = 1 is the last column, so there is no up-right parent.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "1",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "prev": {
+                    "values": [
+                      "-19",
+                      "57"
+                    ],
+                    "pointers": {
+                      "col": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "-59",
+                      "0"
+                    ],
+                    "pointers": {
+                      "col": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 12,
+                "explain": "cur[1] = matrix[1][1] + best = -5 + (-19) = -24.",
+                "vars": {
+                  "n": "2",
+                  "row": "1",
+                  "col": "1",
+                  "best": "-19"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {
+                      "(row,col)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "prev": {
+                    "values": [
+                      "-19",
+                      "57"
+                    ],
+                    "pointers": {
+                      "col": 1
+                    },
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "-59",
+                      "-24"
+                    ],
+                    "pointers": {
+                      "col": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 13,
+                "explain": "Row 1 is finished, so prev = cur = [-59, -24]; row 0's values are no longer needed.",
+                "vars": {
+                  "n": "2",
+                  "row": "1"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "prev": {
+                    "values": [
+                      "-59",
+                      "-24"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "-59",
+                      "-24"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 14,
+                "explain": "ans = prev[0] = -59.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "prev": {
+                    "values": [
+                      "-59",
+                      "-24"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 16,
+                "explain": "col = 1: ans = min(-59, prev[1]) = min(-59, -24) = -59.",
+                "vars": {
+                  "n": "2",
+                  "col": "1",
+                  "ans": "-59"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "prev": {
+                    "values": [
+                      "-59",
+                      "-24"
+                    ],
+                    "pointers": {
+                      "col": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 17,
+                "explain": "Return ans = -59.",
+                "vars": {
+                  "n": "2",
+                  "ans": "-59"
+                },
+                "arrays": {
+                  "matrix": {
+                    "values": [
+                      [
+                        "-19",
+                        "57"
+                      ],
+                      [
+                        "-40",
+                        "-5"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "prev": {
+                    "values": [
+                      "-59",
+                      "-24"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "-59 — prev[0] = -59 is the smallest falling-path sum ending in the last row, from the path -19 → -40."
+          },
+          "solution": "class Solution {\npublic:\n    int minFallingPathSum(vector<vector<int>>& matrix) {\n        int n = matrix.size();                          // matrix is n x n\n        vector<int> prev(matrix[0]);                    // row 0: a path ending there is just that cell\n        for (int row = 1; row < n; ++row) {\n            vector<int> cur(n, 0);                      // separate array: prev must stay intact while this row is built\n            for (int col = 0; col < n; ++col) {\n                int best = prev[col];                   // straight down from (row - 1, col)\n                if (col > 0)\n                    best = min(best, prev[col - 1]);    // diagonal from the up-left cell\n                if (col < n - 1)\n                    best = min(best, prev[col + 1]);    // diagonal from the up-right cell\n                cur[col] = matrix[row][col] + best;     // extend the cheapest reachable path\n            }\n            prev = cur;                                 // only the latest row is needed for the next one\n        }\n        int ans = prev[0];\n        for (int col = 1; col < n; ++col)\n            ans = min(ans, prev[col]);                  // the path may end at any column of the last row\n        return ans;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> matrix1 = {{2, 1, 3}, {6, 5, 4}, {7, 8, 9}};\n    cout << \"Example 1: output = \" << sol.minFallingPathSum(matrix1) << \" (expected: 13)\\n\";\n\n    vector<vector<int>> matrix2 = {{-19, 57}, {-40, -5}};\n    cout << \"Example 2: output = \" << sol.minFallingPathSum(matrix2) << \" (expected: -59)\\n\";\n\n    return 0;\n}"
+        }
+      }
+    ],
+    "mistakes": [
+      "Reading `prev[col - 1]` at `col = 0` or `prev[col + 1]` at `col = n - 1`: that is out of bounds in C++; border cells have only two parents, so skip the missing one or treat it as `+∞`.",
+      "Returning the value at one fixed column such as `dp[n - 1][0]`, or starting from only the smallest top cell: the path can start at any column of row 0 and end at any column of the last row.",
+      "Updating `prev` in place while scanning a row: once `prev[col]` is overwritten, cell `col + 1` reads the new value as its up-left parent, mixing two rows.",
+      "Using 0 or -1 as a memo 'unset' marker or as the initial minimum: sums range from -10^4 to 10^4, so pick a sentinel outside that range such as `INT_MAX`."
+    ],
+    "edgeCases": [
+      "`n = 1`, e.g. `[[-7]]`: no moves are made, so the answer is the single value.",
+      "`n = 2`, e.g. Example 2: each bottom cell has a parent in only two columns, so both border rules (no up-left at column 0, no up-right at column 1) are exercised.",
+      "All values at -100: the answer is `-100 · n`, which checks that no sentinel like 0 caps the minimum.",
+      "A cheap top cell that leads into expensive cells, e.g. `[[1,2,3],[50,50,1],[50,50,1]]` → 4: checks that the solution is not greedy.",
+      "An anti-diagonal optimum such as `[[100,100,1],[100,1,100],[1,100,100]]` → 3: needs diagonal moves in the down-left direction at every step."
+    ],
+    "related": [
+      {
+        "title": "Minimum Falling Path Sum II",
+        "slug": "minimum-falling-path-sum-ii",
+        "why": "Same falling-path DP, but the next cell must be in a different column, which needs the smallest and second-smallest values of the previous row."
+      },
+      {
+        "title": "Triangle",
+        "slug": "triangle",
+        "why": "Top-to-bottom path DP where each cell has two parents; the same rolling-row trick gives O(n) space."
+      },
+      {
+        "title": "Minimum Path Sum",
+        "slug": "minimum-path-sum",
+        "why": "Grid min-cost DP with right/down moves; the same 'cell value plus best parent' recurrence."
+      },
+      {
+        "title": "Cherry Pickup II",
+        "slug": "cherry-pickup-ii",
+        "why": "Row-by-row grid DP where each step moves to column col - 1, col or col + 1, extended to two walkers at once."
+      }
+    ],
+    "takeaways": [
+      "When a path may start and end anywhere in a row, make every first-row cell a base case and take a minimum (or maximum) over the last row.",
+      "Out-of-range moves should contribute the neutral value of the combine step (`+∞` for a minimum) or be skipped; never read past the array border.",
+      "If row `r` depends only on row `r - 1`, keep two arrays; use a separate `cur` whenever an update would overwrite a value a neighbour still needs.",
+      "Negative values break greedy choices and magic 'unset' markers; prove the recurrence and choose sentinels outside the value range."
+    ]
+  }
+}

@@ -1,0 +1,1999 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "unique-paths",
+  "title": "Unique Paths",
+  "url": "https://leetcode.com/problems/unique-paths/",
+  "updatedAt": "2026-11-20T14:58:07.458Z",
+  "problem": {
+    "difficulty": "Medium",
+    "description": "There is a robot on an m x n grid. The robot is initially located at the top-left corner (i.e., grid[0][0]). The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]). The robot can only move either down or right at any point in time.\n\nGiven the two integers m and n, return the number of possible unique paths that the robot can take to reach the bottom-right corner.\n\nThe test cases are generated so that the answer will be less than or equal to 2 * 10^9.\n\nExample 1:\n\nInput: m = 3, n = 7\nOutput: 28\n\nExample 2:\n\nInput: m = 3, n = 2\nOutput: 3\nExplanation: From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:\n1. Right -> Down -> Down\n2. Down -> Down -> Right\n3. Down -> Right -> Down\n\nConstraints:\n\n- 1 <= m, n <= 100"
+  },
+  "hints": [
+    "A robot starts in the top-left cell of an `m × n` grid and may only step right or down. Count how many different routes lead it to the bottom-right cell.",
+    "Every cell in the top row, and every cell in the left column, can be reached in exactly one way: a straight line. In Example 2 (`m = 3`, `n = 2`) all three routes contain exactly two Downs and one Right; they differ only in the order of those moves.",
+    "With `m, n <= 100` there are at most `10^4` cells, so work proportional to the size of the grid is instant. Following routes one at a time is not: answers go up to `2·10^9`, so enumerating them means billions of steps.",
+    "This is grid dynamic programming for counting: the number of ways to reach a cell is the sum of the ways to reach the cells you can enter it from. Because every route is a fixed mix of two kinds of moves, it is also a combinatorics (binomial coefficient) problem.",
+    "Every route uses exactly `m - 1` Downs and `n - 1` Rights, so a route is decided by choosing which of its `m + n - 2` moves are Downs. The answer is therefore the binomial coefficient `C(m + n - 2, m - 1)`.",
+    "Build `C(N, k)` with `N = m + n - 2` and `k = min(m, n) - 1` as a running value `res` that starts at `1`: at step `i` it is multiplied by `N - k + i` and then divided by `i`, after which it equals `C(N - k + i, i)`. Keep `res` in a 64-bit integer because the product before the division can exceed `2^31`.",
+    "Set `N = m + n - 2` and `k = min(m, n) - 1`.\nSet a 64-bit `res = 1`.\nFor `i` from `1` to `k`:\nmultiply `res` by `N - k + i`,\nthen divide `res` by `i` (always exact).\nReturn `res`.",
+    "The trickiest step is keeping every intermediate exact and in range: multiply before dividing (each partial result is a whole binomial coefficient), use 64-bit because a product can reach about `2.8·10^10`, and never compute full factorials like `198!`. When `m = 1` or `n = 1`, `k = 0`, the loop does nothing, and the answer is `1`. Time is `O(min(m, n))` and extra space is `O(1)`."
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "3"
+          },
+          {
+            "name": "n",
+            "value": "3"
+          }
+        ],
+        "output": "6",
+        "note": "Small square grid: 2 Downs and 2 Rights in any order, `C(4, 2) = 6`."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "4"
+          },
+          {
+            "name": "n",
+            "value": "5"
+          }
+        ],
+        "output": "35",
+        "note": "Rectangular grid: 3 Downs among 7 moves, `C(7, 3) = 35`."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "7"
+          },
+          {
+            "name": "n",
+            "value": "3"
+          }
+        ],
+        "output": "28",
+        "note": "Example 1 transposed: swapping `m` and `n` must not change the count."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "10"
+          },
+          {
+            "name": "n",
+            "value": "10"
+          }
+        ],
+        "output": "48620",
+        "note": "Medium square grid where plain recursion already repeats a lot of work: `C(18, 9) = 48620`."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "23"
+          },
+          {
+            "name": "n",
+            "value": "12"
+          }
+        ],
+        "output": "193536720",
+        "note": "Larger rectangle with a nine-digit answer, `C(33, 11)`."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "1"
+          },
+          {
+            "name": "n",
+            "value": "1"
+          }
+        ],
+        "output": "1",
+        "note": "Single cell: the start is the target, and the empty route counts as one path."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "1"
+          },
+          {
+            "name": "n",
+            "value": "100"
+          }
+        ],
+        "output": "1",
+        "note": "Single row at maximum width: only Right moves, so exactly one path."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "100"
+          },
+          {
+            "name": "n",
+            "value": "1"
+          }
+        ],
+        "output": "1",
+        "note": "Single column at maximum height: only Down moves, so exactly one path."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "2"
+          },
+          {
+            "name": "n",
+            "value": "100"
+          }
+        ],
+        "output": "100",
+        "note": "Two rows: the single Down can happen in any of the 100 columns."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "100"
+          },
+          {
+            "name": "n",
+            "value": "3"
+          }
+        ],
+        "output": "5050",
+        "note": "Tall narrow grid at maximum height: `C(101, 2) = 5050`."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "17"
+          },
+          {
+            "name": "n",
+            "value": "18"
+          }
+        ],
+        "output": "1166803110",
+        "note": "Near the `2·10^9` cap: `C(33, 16)`; the last product before dividing overflows a 32-bit `int`."
+      },
+      {
+        "args": [
+          {
+            "name": "m",
+            "value": "100"
+          },
+          {
+            "name": "n",
+            "value": "7"
+          }
+        ],
+        "output": "1609344100",
+        "note": "Maximum height with the widest grid that stays under the cap: `C(105, 6)`."
+      }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Count the distinct sequences of Down and Right moves that take the robot from cell `(0, 0)` to cell `(m - 1, n - 1)` of an `m × n` grid.",
+    "pattern": "Grid DP for counting paths, which collapses to a binomial coefficient",
+    "signals": [
+      "\"The robot can only move either down or right\" → a cell can be entered only from the cell above or the cell on its left, so `ways(i, j) = ways(i - 1, j) + ways(i, j - 1)`: grid DP.",
+      "\"return the number of possible unique paths\" → a counting question (add the counts of the choices), not a max/min optimisation.",
+      "\"the answer will be less than or equal to 2 * 10^9\" → the result fits in a 32-bit `int`, but a formula's intermediate products may not, and visiting paths one by one would take billions of steps.",
+      "\"1 <= m, n <= 100\" → at most `10^4` cells, so an `O(m·n)` table is tiny and even simpler closed forms are worth looking for."
+    ],
+    "constraints": "`m, n <= 100` means at most `10^4` cells, so an `O(m·n)` DP is about `10^4` additions and a closed formula needs at most `99` multiply/divide steps. Plain recursion makes `2 × answer - 1` calls, about `2.3·10^9` for `m = 17, n = 18`, far too slow. So any polynomial method is fine; the target is `O(m·n)` or better.",
+    "thinking": [
+      {
+        "q": "How can I count paths without listing them?",
+        "a": "Look at the last move into the target `(m - 1, n - 1)`: it came either from the cell above or from the cell on the left, and those two groups never overlap. So `paths(i, j) = paths(i - 1, j) + paths(i, j - 1)`, with every top-row and left-column cell reachable in exactly one way."
+      },
+      {
+        "q": "Why is recursing on that formula slow even for small grids?",
+        "a": "The same cell is counted from many parents: in a `3 × 3` grid `paths(1,1)` is solved once for `paths(1,2)` and again for `paths(2,1)`. Each leaf adds just `1`, so the recursion makes about `2 × answer` calls, billions when the answer is near `2·10^9`."
+      },
+      {
+        "q": "In what order can I compute each cell exactly once?",
+        "a": "A cell needs only the cell above and the cell to its left, so filling the grid row by row, left to right, always has both ready. That is `m·n <= 10^4` additions, and `dp[m - 1][n - 1]` is the answer (for Example 1, `28`)."
+      },
+      {
+        "q": "What do all the paths in Example 2 (`m = 3`, `n = 2`) have in common?",
+        "a": "Each has exactly two Downs and one Right: `Right→Down→Down`, `Down→Down→Right` and `Down→Right→Down` differ only in where the single Right sits. In general every path has `m - 1` Downs and `n - 1` Rights."
+      },
+      {
+        "q": "So is there a closed form?",
+        "a": "A path is fixed once you choose which of its `m + n - 2` moves are Downs, so the count is `C(m + n - 2, m - 1)`. For Example 1 that is `C(8, 2) = 28`, matching the table."
+      },
+      {
+        "q": "How do I evaluate `C(N, k)` without overflow or fractions?",
+        "a": "Take `k = min(m, n) - 1` and build `res = res × (N - k + i) / i` for `i = 1..k` in 64-bit. After each step `res` equals `C(N - k + i, i)`, a whole number, so the division is exact, and no product exceeds about `2.8·10^10`."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Recursion on the last move",
+        "aha": "Asking 'where did the robot come from just before this cell?' gives the recurrence immediately, and recursing on it is the first thing anyone writes.",
+        "idea": "Let `paths(i, j)` be the number of Down/Right paths from `(0,0)` to `(i, j)`. If `i = 0` or `j = 0` the cell is on the top row or left column and only one straight path reaches it. Otherwise the last move was a Down from `(i - 1, j)` or a Right from `(i, j - 1)`; those groups are disjoint and together contain every path, so `paths(i, j) = paths(i - 1, j) + paths(i, j - 1)`. The answer is `paths(m - 1, n - 1)`, but since every leaf contributes only `1`, the work grows with the answer itself.",
+        "steps": [
+          "Call `paths(m - 1, n - 1)`.",
+          "In `paths(i, j)`, return `1` if `i == 0` or `j == 0`.",
+          "Otherwise compute `up = paths(i - 1, j)` and `left = paths(i, j - 1)`.",
+          "Return `up + left`."
+        ],
+        "time": "O(2^(m+n))",
+        "space": "O(m + n)",
+        "complexity": "Every base case returns `1`, so the call tree has exactly `answer` leaves and `answer - 1` inner calls: `2·C(m + n - 2, m - 1) - 1` calls, exponential in `m + n`. The only extra memory is the recursion stack, at most `m + n - 2` frames, because each call lowers `i + j` by one.",
+        "tradeoff": "The same cell is recomputed from many parents (`paths(1,1)` twice even in `3 × 3`), so a grid like `17 × 18` needs about `2.3·10^9` calls and times out.",
+        "deep": {
+          "pseudocode": [
+            "function uniquePaths(m, n)",
+            "  ans ← paths(m - 1, n - 1)  // count the paths that end in the bottom-right cell",
+            "  return ans",
+            "function paths(i, j)  // number of Down/Right paths from (0,0) to cell (i, j)",
+            "  if i = 0 or j = 0",
+            "    return 1  // top row or left column: only a straight line reaches it",
+            "  up ← paths(i - 1, j)  // paths whose last move is Down, from (i-1, j)",
+            "  left ← paths(i, j - 1)  // paths whose last move is Right, from (i, j-1)",
+            "  total ← up + left  // the two groups share no path, so add them",
+            "  return total"
+          ],
+          "time": {
+            "total": "O(2^(m+n))",
+            "parts": [
+              {
+                "part": "Base cases (lines 5-6)",
+                "cost": "answer leaves × O(1)",
+                "why": "Every leaf returns 1 and the root adds them all up, so there are exactly `answer` leaves."
+              },
+              {
+                "part": "Recursive calls (lines 7-10)",
+                "cost": "(answer − 1) inner calls × O(1)",
+                "why": "Each inner call makes exactly two calls, and a full binary tree with `answer` leaves has `answer − 1` inner nodes."
+              }
+            ],
+            "sum": "answer + (answer − 1) = 2·C(m + n − 2, m − 1) − 1 calls of O(1) work; since C(N, k) ≤ 2^N, this is O(2^(m + n)).",
+            "cases": "A single row or column (`m = 1` or `n = 1`) makes just one call; for a fixed `m + n`, square grids are the worst because the middle binomial coefficient is the largest.",
+            "feel": "m = 3, n = 7 → 55 calls; m = 17, n = 18 → about 2.3·10^9 calls, several seconds in C++, so it times out.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(m + n)",
+            "parts": [
+              {
+                "part": "Recursion stack (lines 7-8)",
+                "cost": "at most m + n − 2 frames × O(1)",
+                "why": "Each call lowers i + j by one, and the recursion stops as soon as i or j reaches 0."
+              }
+            ],
+            "sum": "Only one chain of calls is alive at a time, so the peak is O(m + n) frames of O(1) each.",
+            "cases": "",
+            "feel": "",
+            "note": "No table is stored; the grid itself is never built."
+          },
+          "dryRun": {
+            "input": "m = 3, n = 3",
+            "steps": [
+              {
+                "line": 5,
+                "explain": "uniquePaths(3, 3) calls paths(2,2) for the target cell; i = 2 and j = 2 are both non-zero, so it must recurse.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "2"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "paths(2,2) asks paths(1,2) for its up value, which in turn asks paths(0,2); (0,2) is on the top row, so it returns 1.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "0",
+                  "j": "2"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2)",
+                      "paths(1,2)",
+                      "paths(0,2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Back in paths(1,2): up = paths(0,2) = 1.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2",
+                  "up": "1"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2)",
+                      "paths(1,2): up=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "paths(1,2) now asks paths(1,1), which gets up = paths(0,1) = 1 and left = paths(1,0) = 1 and returns total = 2.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "up": "1",
+                  "left": "1",
+                  "total": "2"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2)",
+                      "paths(1,2): up=1",
+                      "paths(1,1): up=1, left=1, total=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "paths(1,2): left = paths(1,1) = 2.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2",
+                  "up": "1",
+                  "left": "2"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2)",
+                      "paths(1,2): up=1, left=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "paths(1,2): total = up + left = 1 + 2 = 3, which it returns as the up value of paths(2,2).",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2",
+                  "up": "1",
+                  "left": "2",
+                  "total": "3"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2)",
+                      "paths(1,2): up=1, left=2, total=3"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Back in paths(2,2): up = paths(1,2) = 3.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "2",
+                  "up": "3"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2): up=3"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 5,
+                "explain": "paths(2,2) now asks paths(2,1) for its left value; i = 2 and j = 1 are both non-zero, so it recurses.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "1"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2): up=3",
+                      "paths(2,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "paths(2,1) asks paths(1,1) — the same cell already solved two steps earlier — and it redoes paths(0,1) and paths(1,0) to return 2 again. This repeated work is what makes the recursion exponential.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "up": "1",
+                  "left": "1",
+                  "total": "2"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2): up=3",
+                      "paths(2,1)",
+                      "paths(1,1): up=1, left=1, total=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Back in paths(2,1): up = paths(1,1) = 2.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "1",
+                  "up": "2"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2): up=3",
+                      "paths(2,1): up=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "paths(2,0) is in the left column, so it returns 1.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "0"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2): up=3",
+                      "paths(2,1): up=2",
+                      "paths(2,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "paths(2,1): left = paths(2,0) = 1, so total = 2 + 1 = 3, which it returns.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "1",
+                  "up": "2",
+                  "left": "1",
+                  "total": "3"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2): up=3",
+                      "paths(2,1): up=2, left=1, total=3"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "Back in paths(2,2): left = paths(2,1) = 3.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "2",
+                  "up": "3",
+                  "left": "3"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2): up=3, left=3"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "paths(2,2): total = up + left = 3 + 3 = 6, and it returns 6.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "2",
+                  "up": "3",
+                  "left": "3",
+                  "total": "6"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3)",
+                      "paths(2,2): up=3, left=3, total=6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 2,
+                "explain": "The outer call paths(2,2) has returned, so ans = 6.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "ans": "6"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3): ans=6"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 3,
+                "explain": "Return ans = 6.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "ans": "6"
+                },
+                "arrays": {
+                  "grid": {
+                    "values": [
+                      [
+                        "S",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "·"
+                      ],
+                      [
+                        "·",
+                        "·",
+                        "T"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePaths(m=3, n=3): ans=6"
+                    ]
+                  }
+                }
+              }
+            ],
+            "result": "6 — the target (2,2) is reached by 3 paths through (1,2) plus 3 paths through (2,1); C(4, 2) = 6 confirms it."
+          },
+          "solution": "class Solution {\npublic:\n    int uniquePaths(int m, int n) {\n        // Count the paths that end in the bottom-right cell (m-1, n-1)\n        return paths(m - 1, n - 1);\n    }\n\nprivate:\n    // Number of Down/Right paths from (0,0) to (i,j), by plain recursion (no caching)\n    int paths(int i, int j) {\n        if (i == 0 || j == 0) return 1;   // top row or left column: one straight path\n        int up = paths(i - 1, j);         // last move was Down, from the cell above\n        int left = paths(i, j - 1);       // last move was Right, from the cell on the left\n        return up + left;                 // the two groups never share a path\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    cout << \"Example 1: \" << sol.uniquePaths(3, 7) << \" (expected 28)\\n\";\n    cout << \"Example 2: \" << sol.uniquePaths(3, 2) << \" (expected 3)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Better",
+        "name": "2D DP table filled row by row",
+        "aha": "The recursion solves the same cell again and again (`paths(1,1)` twice even in `3 × 3`), yet there are only `m·n` distinct cells; storing each count once, in an order where the cell above and the cell on the left are already known, removes all the repetition.",
+        "idea": "Let `dp[i][j]` be the number of paths from `(0,0)` to `(i, j)`. Every cell in row `0` or column `0` gets `1`, because only a straight line reaches it. Any other cell is entered by a Down from `(i - 1, j)` or a Right from `(i, j - 1)`, and those two groups never overlap, so `dp[i][j] = dp[i - 1][j] + dp[i][j - 1]`. Filling rows top to bottom and each row left to right guarantees both neighbours are final when they are read, so `dp[m - 1][n - 1]` is the answer.",
+        "steps": [
+          "Create an `m × n` table `dp`.",
+          "Set every cell in row `0` and column `0` to `1`.",
+          "For `i` from `1` to `m - 1` and `j` from `1` to `n - 1`, set `dp[i][j] = dp[i - 1][j] + dp[i][j - 1]`.",
+          "Return `dp[m - 1][n - 1]`."
+        ],
+        "time": "O(m·n)",
+        "space": "O(m·n)",
+        "complexity": "The double loop visits each of the `m·n` cells exactly once and does one addition, so at most `10^4` operations. The `dp` table holding all `m·n` counts is the extra memory.",
+        "tradeoff": "It passes the limits easily, but it keeps all `m·n` counts although each row only reads the row above (one rolling row of `n` cells would give `O(n)` space), and it still does `m·n` additions where a closed formula needs only `min(m, n) - 1` steps.",
+        "deep": {
+          "pseudocode": [
+            "function uniquePaths(m, n)",
+            "  dp ← m × n table of 0  // dp[i][j] = number of paths from (0,0) to (i, j)",
+            "  for i ← 0 to m - 1",
+            "    for j ← 0 to n - 1",
+            "      if i = 0 or j = 0",
+            "        dp[i][j] ← 1  // first row or first column: one straight path",
+            "      else",
+            "        up ← dp[i - 1][j]  // paths arriving by a Down move",
+            "        left ← dp[i][j - 1]  // paths arriving by a Right move",
+            "        dp[i][j] ← up + left  // the two groups are disjoint, so add",
+            "  return dp[m - 1][n - 1]"
+          ],
+          "time": {
+            "total": "O(m·n)",
+            "parts": [
+              {
+                "part": "Table allocation (line 2)",
+                "cost": "m·n cells × O(1)",
+                "why": "Zero-filling the table touches every cell once."
+              },
+              {
+                "part": "Double loop (lines 3-10)",
+                "cost": "m·n iterations × O(1)",
+                "why": "Each cell is set to 1 or to one addition of two already-known cells."
+              },
+              {
+                "part": "Return (line 11)",
+                "cost": "O(1)",
+                "why": "A single table lookup."
+              }
+            ],
+            "sum": "m·n + m·n + 1 = 2·m·n + 1 = O(m·n).",
+            "cases": "",
+            "feel": "m = n = 100 → 10^4 cells and about 2·10^4 simple operations, a few microseconds.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(m·n)",
+            "parts": [
+              {
+                "part": "dp table (line 2)",
+                "cost": "m × n integers",
+                "why": "One path count per cell of the grid."
+              }
+            ],
+            "sum": "m·n integers = O(m·n); at most 10^4 ints, about 40 KB.",
+            "cases": "",
+            "feel": "",
+            "note": "Keeping only the previous row would cut this to O(n) with the same recurrence; the inputs and the returned int are not counted."
+          },
+          "dryRun": {
+            "input": "m = 3, n = 3",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "Create a 3 × 3 table of zeros; dp[i][j] will hold the number of paths into cell (i, j).",
+                "vars": {
+                  "m": "3",
+                  "n": "3"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "Cell (0,0) is the start cell, reachable by a single straight path, so dp[0][0] = 1.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "0",
+                  "j": "0"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "Cell (0,1) is in the first row, reachable by a single straight path, so dp[0][1] = 1.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "0",
+                  "j": "1"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "Cell (0,2) is in the first row, reachable by a single straight path, so dp[0][2] = 1.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "0",
+                  "j": "2"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "Cell (1,0) is in the first column, reachable by a single straight path, so dp[1][0] = 1.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "1",
+                  "j": "0"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Cell (1,1): up = dp[0][1] = 1, left = dp[1][0] = 1, so dp[1][1] = 1 + 1 = 2.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "up": "1",
+                  "left": "1"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "1",
+                        "2",
+                        "0"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ],
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Cell (1,2): up = dp[0][2] = 1, left = dp[1][1] = 2, so dp[1][2] = 1 + 2 = 3.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2",
+                  "up": "1",
+                  "left": "2"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "1",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "Cell (2,0) is in the first column, reachable by a single straight path, so dp[2][0] = 1.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "0"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "1",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Cell (2,1): up = dp[1][1] = 2, left = dp[2][0] = 1, so dp[2][1] = 2 + 1 = 3.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "1",
+                  "up": "2",
+                  "left": "1"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "1",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "1",
+                        "3",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        2,
+                        0
+                      ],
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Cell (2,2): up = dp[1][2] = 3, left = dp[2][1] = 3, so dp[2][2] = 3 + 3 = 6.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "2",
+                  "up": "3",
+                  "left": "3"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "1",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "1",
+                        "3",
+                        "6"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ],
+                      [
+                        2,
+                        1
+                      ],
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "Return dp[2][2] = 6.",
+                "vars": {
+                  "m": "3",
+                  "n": "3",
+                  "i": "2",
+                  "j": "2"
+                },
+                "arrays": {
+                  "dp": {
+                    "values": [
+                      [
+                        "1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "1",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "1",
+                        "3",
+                        "6"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        2,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "6 — dp[2][2] = dp[1][2] + dp[2][1] = 3 + 3, and the table is Pascal's triangle, so the corner equals C(4, 2) = 6."
+          },
+          "solution": "class Solution {\npublic:\n    int uniquePaths(int m, int n) {\n        // dp[i][j] = number of paths from (0,0) to (i,j); every value is <= the answer, so int is enough\n        vector<vector<int>> dp(m, vector<int>(n, 0));\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                if (i == 0 || j == 0) {\n                    dp[i][j] = 1;                          // first row/column: one straight path\n                } else {\n                    // Arrive by a Down move from above or a Right move from the left\n                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];\n                }\n            }\n        }\n        return dp[m - 1][n - 1];                           // paths into the bottom-right cell\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    cout << \"Example 1: \" << sol.uniquePaths(3, 7) << \" (expected 28)\\n\";\n    cout << \"Example 2: \" << sol.uniquePaths(3, 2) << \" (expected 3)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Optimal",
+        "name": "Binomial coefficient C(m + n − 2, m − 1)",
+        "aha": "Every entry of the `dp` table counts arrangements of Downs and Rights — `dp[i][j] = C(i + j, i)`, Pascal's triangle — so the bottom-right entry is one binomial coefficient and the table is not needed at all.",
+        "idea": "A path is fully described by which of its `N = m + n - 2` moves are Downs, and any choice of `m - 1` positions gives a valid path, so the count is `C(N, m - 1) = C(N, n - 1)`. Using `k = min(m, n) - 1` keeps the loop as short as possible. Building it as `res = res × (N - k + i) / i` for `i = 1..k` keeps every intermediate equal to the whole number `C(N - k + i, i)`, so integer division never loses anything, and a 64-bit `res` absorbs the temporary product before each division.",
+        "steps": [
+          "Set `N = m + n - 2` and `k = min(m, n) - 1`.",
+          "Start with a 64-bit `res = 1`.",
+          "For `i` from `1` to `k`, multiply `res` by `N - k + i`.",
+          "Then divide `res` by `i`; the result is exactly `C(N - k + i, i)`.",
+          "Return `res` as an `int`."
+        ],
+        "time": "O(min(m, n))",
+        "space": "O(1)",
+        "complexity": "The loop runs `k = min(m, n) - 1 <= 99` times with one multiplication and one division each, so time is `O(min(m, n))`. Only a few scalars (`N`, `k`, `res`, `i`) are stored, so extra space is `O(1)`.",
+        "tradeoff": "With at most `99` arithmetic steps and constant memory there is nothing meaningful left to save. The trade-off is generality: the formula works only because every cell is open, so blocked cells (Unique Paths II) or weighted cells send you back to the DP.",
+        "deep": {
+          "pseudocode": [
+            "function uniquePaths(m, n)",
+            "  N ← m + n - 2  // total moves on every path",
+            "  downs ← m - 1  // every path has exactly m-1 Down moves ...",
+            "  rights ← n - 1  // ... and exactly n-1 Right moves",
+            "  k ← min(downs, rights)  // C(N, downs) = C(N, rights); the smaller k means fewer steps",
+            "  res ← 1  // 64-bit; after step i it holds C(N - k + i, i)",
+            "  for i ← 1 to k",
+            "    res ← res × (N - k + i)  // multiply first ...",
+            "    res ← res / i  // ... then divide: the result is a whole binomial, so this is exact",
+            "  return res  // C(N, k): ways to place the k rarer moves among N slots"
+          ],
+          "time": {
+            "total": "O(min(m, n))",
+            "parts": [
+              {
+                "part": "Setup (lines 2-6)",
+                "cost": "O(1)",
+                "why": "A few additions, one min and one assignment."
+              },
+              {
+                "part": "Product loop (lines 7-9)",
+                "cost": "k = min(m, n) − 1 iterations × O(1)",
+                "why": "One multiplication and one exact division per iteration."
+              }
+            ],
+            "sum": "O(1) + (min(m, n) − 1)·O(1) = O(min(m, n)).",
+            "cases": "`m = 1` or `n = 1` gives k = 0, so the loop never runs and the answer is 1; otherwise the length depends only on the smaller side.",
+            "feel": "At most 99 iterations for any allowed input; Example 1 (m = 3, n = 7) needs just 2.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(1)",
+            "parts": [
+              {
+                "part": "Scalars N, downs, rights, k, res, i (lines 2-7)",
+                "cost": "6 numbers",
+                "why": "No table and no recursion are used."
+              }
+            ],
+            "sum": "6 scalars regardless of m and n = O(1).",
+            "cases": "",
+            "feel": "",
+            "note": "`res` must be 64-bit: the product before a division can exceed 2^31 − 1 (up to about 2.8·10^10) even though the final answer fits in an int."
+          },
+          "dryRun": {
+            "input": "m = 3, n = 7",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "N = m + n - 2 = 3 + 7 - 2 = 8: every path makes exactly 8 moves.",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 3,
+                "explain": "downs = m - 1 = 2: every path goes down exactly 2 times.",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 4,
+                "explain": "rights = n - 1 = 6: every path goes right exactly 6 times.",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2",
+                  "rights": "6"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 5,
+                "explain": "k = min(2, 6) = 2: choosing where the 2 Down moves go among 8 slots fixes the path, and the smaller k means only 2 loop steps.",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2",
+                  "rights": "6",
+                  "k": "2"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "res = 1, the empty product (C(anything, 0) = 1).",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2",
+                  "rights": "6",
+                  "k": "2",
+                  "res": "1"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 1: res = 1 × (N - k + i) = 1 × 7 = 7.",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2",
+                  "rights": "6",
+                  "k": "2",
+                  "res": "7",
+                  "i": "1"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "res = 7 / 1 = 7, which is exactly C(7, 1).",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2",
+                  "rights": "6",
+                  "k": "2",
+                  "res": "7",
+                  "i": "1"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 2: res = 7 × (N - k + i) = 7 × 8 = 56.",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2",
+                  "rights": "6",
+                  "k": "2",
+                  "res": "56",
+                  "i": "2"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "res = 56 / 2 = 28, which is exactly C(8, 2).",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2",
+                  "rights": "6",
+                  "k": "2",
+                  "res": "28",
+                  "i": "2"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "The loop is done; return res = 28 = C(8, 2).",
+                "vars": {
+                  "m": "3",
+                  "n": "7",
+                  "N": "8",
+                  "downs": "2",
+                  "rights": "6",
+                  "k": "2",
+                  "res": "28"
+                },
+                "arrays": {},
+                "structures": {}
+              }
+            ],
+            "result": "28 — choosing which 2 of the 8 moves are Downs gives C(8, 2) = 28, the same as filling the 3 × 7 table."
+          },
+          "solution": "class Solution {\npublic:\n    int uniquePaths(int m, int n) {\n        // Every path has exactly m-1 Downs and n-1 Rights, so it is fixed by choosing\n        // which of the N = m+n-2 moves are Downs: answer = C(N, m-1) = C(N, n-1)\n        int N = m + n - 2;\n        int k = min(m - 1, n - 1);      // use the smaller side so the loop is shortest\n        long long res = 1;              // 64-bit: res * (N-k+i) can exceed 2^31 - 1\n        for (int i = 1; i <= k; ++i) {\n            res = res * (N - k + i);    // multiply first ...\n            res /= i;                   // ... then divide: res is now C(N-k+i, i), exact\n        }\n        return (int)res;                // the problem guarantees the answer <= 2 * 10^9\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    cout << \"Example 1: \" << sol.uniquePaths(3, 7) << \" (expected 28)\\n\";\n    cout << \"Example 2: \" << sol.uniquePaths(3, 2) << \" (expected 3)\\n\";\n\n    return 0;\n}"
+        }
+      }
+    ],
+    "mistakes": [
+      "Computing `C(m + n - 2, m - 1)` from full factorials: `198!` overflows every integer type long before the division; build the value incrementally instead.",
+      "Dividing before multiplying, or keeping `res` in a 32-bit `int`: `res / i` on its own is not always a whole number, and `res × (N - k + i)` can reach about `2.8·10^10`, overflowing `int`.",
+      "Off-by-one moves: a path has `m - 1` Downs and `n - 1` Rights, not `m` and `n`; using `C(m + n, m)` gives `C(10, 3) = 120` instead of `28` for Example 1.",
+      "Starting the DP with only `dp[0][0] = 1` and then reading `dp[i - 1][j]` and `dp[i][j - 1]` for every cell without handling row `0` and column `0`, which reads outside the table."
+    ],
+    "edgeCases": [
+      "`m = 1, n = 1`: the start is the target, so the answer is `1` (the empty path); `k = 0` and the loop never runs.",
+      "`m = 1` or `n = 1` (for example `1 × 100`): only one straight path exists, so the answer is `1`, not `0` or `100`.",
+      "`m = 2, n = 100`: the answer is `100`, one path for each column where the single Down can happen; it checks that `k = min(m, n) - 1 = 1` is used.",
+      "`m = 17, n = 18`: the answer `1166803110` is close to the `2·10^9` cap and the last product `565722720 × 33` exceeds `2^31`, catching a 32-bit `res`."
+    ],
+    "related": [
+      {
+        "title": "Unique Paths II",
+        "slug": "unique-paths-ii",
+        "why": "The same grid DP with blocked cells; the closed formula no longer works, so the table (or one rolling row) is required."
+      },
+      {
+        "title": "Minimum Path Sum",
+        "slug": "minimum-path-sum",
+        "why": "The same right/down grid recurrence, but taking the minimum of the two neighbours plus the cell cost instead of adding counts."
+      },
+      {
+        "title": "Climbing Stairs",
+        "slug": "climbing-stairs",
+        "why": "The 1D version of counting ways: `ways(i) = ways(i - 1) + ways(i - 2)`, summing over the possible last moves."
+      },
+      {
+        "title": "Pascal's Triangle",
+        "slug": "pascals-triangle",
+        "why": "Each entry is the sum of the two above it, which is this problem's table rotated 45 degrees; its entries are the binomial coefficients used in the formula."
+      }
+    ],
+    "takeaways": [
+      "To count paths in a grid where moves only go forward, `ways(cell)` is the sum of `ways` over the cells that can step into it; fill the table in an order where those cells come first.",
+      "When every valid object is an arrangement of a fixed multiset of moves, the count is a binomial coefficient, so check for a formula before building a table.",
+      "Compute `C(N, k)` incrementally with `res = res × (N - k + i) / i` in 64-bit, using the smaller of `k` and `N - k`; every intermediate is a whole number, so the division is exact."
+    ]
+  }
+}

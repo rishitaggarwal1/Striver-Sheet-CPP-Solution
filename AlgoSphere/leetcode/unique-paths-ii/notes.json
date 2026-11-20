@@ -1,0 +1,2256 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "unique-paths-ii",
+  "title": "Unique Paths II",
+  "url": "https://leetcode.com/problems/unique-paths-ii/",
+  "updatedAt": "2026-11-20T14:58:07.458Z",
+  "problem": {
+    "difficulty": "Medium",
+    "description": "You are given an m x n integer array grid. There is a robot initially located at the top-left corner (i.e., grid[0][0]). The robot tries to move to the bottom-right corner (i.e., grid[m - 1][n - 1]). The robot can only move either down or right at any point in time.\n\nAn obstacle and space are marked as 1 or 0 respectively in grid. A path that the robot takes cannot include any square that is an obstacle.\n\nReturn the number of possible unique paths that the robot can take to reach the bottom-right corner.\n\nThe testcases are generated so that the answer will be less than or equal to 2 * 10^9.\n\nExample 1:\n\nInput: obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]\nOutput: 2\nExplanation: There is one obstacle in the middle of the 3x3 grid above.\nThere are two ways to reach the bottom-right corner:\n1. Right -> Right -> Down -> Down\n2. Down -> Down -> Right -> Right\n\nExample 2:\n\nInput: obstacleGrid = [[0,1],[0,0]]\nOutput: 1\n\nConstraints:\n\n- m == obstacleGrid.length\n\n- n == obstacleGrid[i].length\n\n- 1 <= m, n <= 100\n\n- obstacleGrid[i][j] is 0 or 1."
+  },
+  "hints": [
+    "Count how many different routes lead from the top-left cell of `obstacleGrid` to the bottom-right cell when every step moves one cell right or one cell down and no route may step on a cell marked `1`.",
+    "Any route into cell `(i, j)` arrives either from the cell directly above or from the cell directly to the left, and no route does both. In Example 1 the target is entered from `(1, 2)` or `(2, 1)`, and the centre `1` leaves each of those with exactly one route.",
+    "`m` and `n` are at most 100, so a route has up to 198 moves and listing routes one by one is exponential. There are only `10^4` cells, so doing constant work per cell is instant: aim for `O(m·n)`.",
+    "This is 2D grid dynamic programming (counting paths): the answer for a cell is built from the answers for the cell above and the cell to the left, and those smaller answers are shared by many cells.",
+    "The number of routes to `(i, j)` is the routes to `(i - 1, j)` plus the routes to `(i, j - 1)`, and an obstacle cell has 0 routes. Filling cells top to bottom and left to right guarantees both inputs are ready.",
+    "Keep one array `dp` of length `n`: `dp[j]` is the number of routes from the start to column `j` of the row being processed. Just before you update it, `dp[j]` still holds the count of the cell above, and `dp[j - 1]` already holds the count of the cell on the left.",
+    "Create `dp` of length `n` filled with 0 and set `dp[0]` to 1.\nGo through rows `i` from top to bottom.\nInside a row, go through columns `j` from left to right.\nIf `obstacleGrid[i][j]` is 1, set `dp[j]` to 0.\nOtherwise, if `j > 0`, add `dp[j - 1]` to `dp[j]`.\nAfter the last row, `dp[n - 1]` is the answer.",
+    "The trickiest part is the first row and column: once an obstacle appears there, every cell after it along that edge must get 0, which the same update does automatically. Return 0 when the start or the target is blocked, handle a single row or column, and note that cells that cannot reach the target may hold counts far above `2·10^9`, so pick an overflow-safe type in C++. Time `O(m·n)`, extra space `O(n)`."
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0,0,0,0],[0,1,0,0],[0,0,0,0]]"
+          }
+        ],
+        "output": "4",
+        "note": "A 3 × 4 grid with one interior obstacle that removes the routes through (1, 1)."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0,0,0],[0,0,0],[0,0,0]]"
+          }
+        ],
+        "output": "6",
+        "note": "No obstacles: the count equals plain Unique Paths, C(4, 2) = 6."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0,0,1],[0,0,0],[1,0,0]]"
+          }
+        ],
+        "output": "4",
+        "note": "Obstacles in two corners away from start and target cut off the routes along the outer edges."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0,0,0,0,0],[0,0,1,0,0],[1,0,0,0,1],[0,0,0,0,0]]"
+          }
+        ],
+        "output": "7",
+        "note": "A 4 × 5 grid with three scattered obstacles, so counts merge from several directions."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0,0,0],[1,1,0],[0,0,0]]"
+          }
+        ],
+        "output": "1",
+        "note": "A wall of obstacles leaves a single corridor along the top row and right column."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0]]"
+          }
+        ],
+        "output": "1",
+        "note": "Single free cell: start equals target, so there is exactly one (empty) route."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[1]]"
+          }
+        ],
+        "output": "0",
+        "note": "Single blocked cell: the start itself is an obstacle, so no route exists."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[1,0],[0,0]]"
+          }
+        ],
+        "output": "0",
+        "note": "Blocked start: every other cell is free but the robot cannot begin."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0,0],[0,1]]"
+          }
+        ],
+        "output": "0",
+        "note": "Blocked target: routes exist to every neighbour of the target but not into it."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0,0,0,0,0]]"
+          }
+        ],
+        "output": "1",
+        "note": "Single row: only Right moves are possible, so there is one route (a 1 × 100 row behaves the same)."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0],[0],[1],[0]]"
+          }
+        ],
+        "output": "0",
+        "note": "Single column with an obstacle: there is no way around it, so the answer drops to 0."
+      },
+      {
+        "args": [
+          {
+            "name": "obstacleGrid",
+            "value": "[[0,1],[1,0]]"
+          }
+        ],
+        "output": "0",
+        "note": "Start walled off: both neighbours of the start are obstacles, so the target is unreachable."
+      }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Count the right/down routes from the top-left to the bottom-right cell of `obstacleGrid` that never step on a cell containing `1`.",
+    "pattern": "2D grid DP (counting paths)",
+    "signals": [
+      "\"The robot can only move either down or right\" → every cell is entered from at most two neighbours (above or left), which gives the recurrence `paths(i, j) = paths(i - 1, j) + paths(i, j - 1)`.",
+      "\"Return the number of possible unique paths\" → only a count is needed, so overlapping sub-answers can be added instead of listing routes.",
+      "\"A path ... cannot include any square that is an obstacle\" → an obstacle cell contributes 0 routes, which automatically cuts off every cell that can only be reached through it.",
+      "\"1 <= m, n <= 100\" → at most `10^4` cells, so constant work per cell is trivial while enumerating routes is exponential."
+    ],
+    "constraints": "With `m, n <= 100` there are at most `10^4` cells, so an `O(m·n)` fill is about `10^4` additions and runs instantly. Exploring routes one by one is exponential: a grid whose start is walled off by obstacles at `(0, 1)` and `(1, 0)` has answer 0 yet makes plain recursion explore about `9·10^58` dead-end routes. The target is `O(m·n)` time.",
+    "thinking": [
+      {
+        "q": "What is the most direct way to count the routes?",
+        "a": "Walk every route: from the target, repeatedly ask where the previous step came from (above or left) until you reach `(0, 0)`, the edge of the grid or a `1`. It is correct, but the number of routes explored grows exponentially with `m + n`."
+      },
+      {
+        "q": "How can a route arrive at cell `(i, j)`?",
+        "a": "Only from `(i - 1, j)` with a Down move or from `(i, j - 1)` with a Right move, and the last move of a route is unique. So `paths(i, j) = paths(i - 1, j) + paths(i, j - 1)` with `paths(0, 0) = 1`, and nothing is double-counted."
+      },
+      {
+        "q": "What does an obstacle change in that formula?",
+        "a": "A cell with `obstacleGrid[i][j] = 1` simply has 0 routes, whatever its neighbours hold. In Example 2 the `1` at `(0, 1)` makes `paths(0, 1) = 0`, so the target only inherits the route Down, Right through `(1, 0)`."
+      },
+      {
+        "q": "Why is plain recursion on that formula still slow?",
+        "a": "The same cell is requested again and again: in a free 2 × 3 grid, `paths(0, 1)` is needed by both `paths(0, 2)` and `paths(1, 1)`, and the repetition compounds over larger grids. There are only `m·n` distinct cells, so each count should be computed once and stored."
+      },
+      {
+        "q": "In which order can the cells be filled without recursion?",
+        "a": "Row by row from the top, left to right inside each row. Then the cell above and the cell to the left of `(i, j)` are always finished before `(i, j)` is computed."
+      },
+      {
+        "q": "Do we need the whole `m × n` table?",
+        "a": "No. Cell `(i, j)` only reads the row above and the current row, so one array `dp` of length `n` is enough: before the update `dp[j]` is the value from above and `dp[j - 1]` is the value from the left, giving `dp[j] ← dp[j] + dp[j - 1]`."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Plain recursion on the last move",
+        "aha": "Every route into a cell ends with either a Down or a Right move, so the first idea is to write the count for a cell as the sum of the two smaller questions and let recursion answer them.",
+        "idea": "Define `countPaths(i, j)` as the number of obstacle-free routes from `(0, 0)` to `(i, j)`. If `(i, j)` is outside the grid or is an obstacle the answer is 0; if it is the start the answer is 1; otherwise it is `countPaths(i - 1, j) + countPaths(i, j - 1)`. This is correct because the last move of every route into `(i, j)` is unique, so the two groups split all routes without overlap. The answer is `countPaths(m - 1, n - 1)`.",
+        "steps": [
+          "Call `countPaths(m - 1, n - 1)` for the target cell.",
+          "If `i < 0` or `j < 0`, return 0 because the route left the grid.",
+          "If `obstacleGrid[i][j]` is 1, return 0 because no route may use this cell.",
+          "If `(i, j)` is `(0, 0)`, return 1: the route has reached the start.",
+          "Otherwise return `countPaths(i - 1, j) + countPaths(i, j - 1)`."
+        ],
+        "time": "O(2^(m+n))",
+        "space": "O(m+n)",
+        "complexity": "Each call on a free, non-start cell makes two more calls, and a chain of calls can be up to `m + n - 1` levels deep, so the call tree has up to about `2^(m+n)` nodes. The only extra memory is the recursion stack, at most `m + n` frames deep.",
+        "tradeoff": "The same cell is recomputed once for every route that leads from it back to the target, so the work explodes: a free 14 × 14 grid already needs about `6·10^7` calls, and a 100 × 100 grid with the start walled off needs about `9·10^58` even though the answer is 0.",
+        "deep": {
+          "pseudocode": [
+            "function uniquePathsWithObstacles(obstacleGrid)",
+            "  m ← number of rows in obstacleGrid",
+            "  n ← number of columns in obstacleGrid",
+            "  return countPaths(m - 1, n - 1)  // count the routes that end at the target cell",
+            "function countPaths(i, j)  // routes from (0, 0) to (i, j) using only Down and Right moves",
+            "  if i < 0 or j < 0",
+            "    return 0  // stepped outside the grid",
+            "  if obstacleGrid[i][j] = 1",
+            "    return 0  // tested before the start check, so a blocked start gives 0",
+            "  if i = 0 and j = 0",
+            "    return 1  // reached the start: exactly one route",
+            "  up ← countPaths(i - 1, j)  // routes whose last move was Down from (i - 1, j)",
+            "  left ← countPaths(i, j - 1)  // routes whose last move was Right from (i, j - 1)",
+            "  return up + left  // the two groups never share a route"
+          ],
+          "time": {
+            "total": "O(2^(m+n))",
+            "parts": [
+              {
+                "part": "Setup and first call (lines 2-4)",
+                "cost": "1 × O(1)",
+                "why": "Reads the grid size once and starts the recursion at the target."
+              },
+              {
+                "part": "Base-case checks (lines 6-11)",
+                "cost": "one per call × O(1)",
+                "why": "Every call first tests the bounds, the obstacle and the start before doing anything else."
+              },
+              {
+                "part": "Recursive expansion (lines 12-14)",
+                "cost": "up to 2^(m+n) calls × O(1)",
+                "why": "Each free, non-start cell makes two calls, and each call lowers i + j by one, so chains are at most m + n - 1 deep."
+              }
+            ],
+            "sum": "O(1) + (number of calls) × O(1). The call tree is binary with depth at most m + n - 1, so it has fewer than 2^(m+n) nodes: O(2^(m+n)).",
+            "cases": "Best case: the target is an obstacle, so the first call returns 0 immediately. Worst case: a large free region whose routes cannot reach the start, e.g. obstacles at (0, 1) and (1, 0) in a 100 × 100 grid, where the answer is 0 but about 9·10^58 calls are made.",
+            "feel": "A free 14 × 14 grid (answer 10,400,600) already takes about 6·10^7 calls, a fraction of a second; at m = n = 100 the worst case is about 9·10^58 calls, far beyond any time limit.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(m+n)",
+            "parts": [
+              {
+                "part": "Recursion stack (lines 5-14)",
+                "cost": "at most m + n frames × O(1)",
+                "why": "Each nested call lowers i + j by one, from m + n - 2 at the target down to -1 off the grid."
+              }
+            ],
+            "sum": "O(m + n) for the stack; nothing else is allocated.",
+            "cases": "",
+            "feel": "",
+            "note": "obstacleGrid is the input and is not counted; at m = n = 100 the stack is at most 200 frames deep."
+          },
+          "dryRun": {
+            "input": "obstacleGrid = [[0,0,0],[1,0,0]] (a 2 × 3 grid with an obstacle at (1, 0); Example 1 has 9 cells, so a smaller grid keeps the trace short)",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "The grid has m = 2 rows and n = 3 columns with an obstacle at (1, 0). We count the routes into the target (1, 2) by calling countPaths(1, 2).",
+                "vars": {
+                  "m": "2",
+                  "n": "3"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "countPaths(1, 2) first asks for up = countPaths(0, 2), which in turn asks for countPaths(-1, 2). Row -1 is outside the grid, so that call returns 0.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "-1",
+                  "j": "2"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2)",
+                      "countPaths(0,2)",
+                      "countPaths(-1,2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "Back in countPaths(0, 2), up = 0. Its left call countPaths(0, 1) gets 0 from the off-grid countPaths(-1, 1) and then calls countPaths(0, 0), which is the start and returns 1.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2)",
+                      "countPaths(0,2) up=0",
+                      "countPaths(0,1) up=0",
+                      "countPaths(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "countPaths(0, 1) has up = 0 and left = 1, so it returns 0 + 1 = 1: the only route to (0, 1) is a single Right move.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "1",
+                  "up": "0",
+                  "left": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2)",
+                      "countPaths(0,2) up=0",
+                      "countPaths(0,1) up=0 left=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "countPaths(0, 2) now has up = 0 and left = 1 and returns 1 (the route Right, Right).",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "2",
+                  "up": "0",
+                  "left": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2)",
+                      "countPaths(0,2) up=0 left=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "Control is back in countPaths(1, 2), which stores up = 1: one route reaches the target with a final Down move from (0, 2).",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2",
+                  "up": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "countPaths(1, 2) now asks for left = countPaths(1, 1), whose up call is countPaths(0, 1) again. Plain recursion has no memory, so (0, 1) is explored from scratch and the start is reached a second time.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1",
+                      "countPaths(1,1)",
+                      "countPaths(0,1) up=0",
+                      "countPaths(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "The repeated countPaths(0, 1) returns 1, exactly the value computed earlier. This duplicated work is what memoisation removes.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "1",
+                  "up": "0",
+                  "left": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1",
+                      "countPaths(1,1)",
+                      "countPaths(0,1) up=0 left=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "countPaths(1, 1) stores up = 1 (the route Right, Down).",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "up": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1",
+                      "countPaths(1,1) up=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Its left call countPaths(1, 0) lands on obstacleGrid[1][0] = 1, so it returns 0: no route may pass through (1, 0).",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1",
+                      "countPaths(1,1) up=1",
+                      "countPaths(1,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "countPaths(1, 1) returns up + left = 1 + 0 = 1.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "up": "1",
+                  "left": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1",
+                      "countPaths(1,1) up=1 left=0"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "countPaths(1, 2) has up = 1 and left = 1 and returns 1 + 1 = 2.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2",
+                  "up": "1",
+                  "left": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1 left=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 4,
+                "explain": "uniquePathsWithObstacles returns countPaths(1, 2) = 2.",
+                "vars": {
+                  "m": "2",
+                  "n": "3"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles"
+                    ]
+                  }
+                }
+              }
+            ],
+            "result": "2 — the routes Right, Right, Down and Right, Down, Right; the third route Down, Right, Right is blocked by the obstacle at (1, 0)."
+          },
+          "solution": "class Solution {\npublic:\n    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {\n        int m = obstacleGrid.size();     // number of rows\n        int n = obstacleGrid[0].size();  // number of columns\n        return countPaths(obstacleGrid, m - 1, n - 1); // count the routes that end at the target cell\n    }\n\nprivate:\n    // Routes from (0, 0) to (i, j) using only Down and Right moves.\n    // int is enough: every cell we expand can still reach the target, so its count is <= the answer <= 2 * 10^9.\n    int countPaths(vector<vector<int>>& grid, int i, int j) {\n        if (i < 0 || j < 0) return 0;          // stepped outside the grid\n        if (grid[i][j] == 1) return 0;         // obstacle; tested before the start so a blocked start gives 0\n        if (i == 0 && j == 0) return 1;        // reached the start: exactly one route\n        int up = countPaths(grid, i - 1, j);   // routes whose last move was Down from (i - 1, j)\n        int left = countPaths(grid, i, j - 1); // routes whose last move was Right from (i, j - 1)\n        return up + left;                      // the two groups never share a route\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> grid1 = {{0, 0, 0}, {0, 1, 0}, {0, 0, 0}};\n    cout << \"Example 1: output = \" << sol.uniquePathsWithObstacles(grid1) << \" (expected: 2)\\n\";\n\n    vector<vector<int>> grid2 = {{0, 1}, {0, 0}};\n    cout << \"Example 2: output = \" << sol.uniquePathsWithObstacles(grid2) << \" (expected: 1)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Better",
+        "name": "Memoized recursion (top-down DP)",
+        "aha": "Plain recursion asks for the same cell over and over (in a free 2 × 3 grid `countPaths(0, 1)` is computed once for `(0, 2)` and again for `(1, 1)`), yet a cell's count never changes, so it can be stored the first time.",
+        "idea": "Keep the same recurrence but add an `m × n` table `memo` filled with -1. Before expanding `(i, j)`, return `memo[i][j]` if it has been filled; otherwise compute `countPaths(i - 1, j) + countPaths(i, j - 1)`, store it in `memo[i][j]` and return it. Correctness is unchanged because a cell's count depends only on its position, not on which caller asked. Each cell now expands at most once, so the work drops from exponential to proportional to the number of cells.",
+        "steps": [
+          "Create `memo` of size `m × n` filled with -1 (not computed).",
+          "Call `countPaths(m - 1, n - 1)`.",
+          "Return 0 for cells outside the grid or on an obstacle, and 1 for `(0, 0)`.",
+          "If `memo[i][j]` is not -1, return it immediately.",
+          "Otherwise compute `up = countPaths(i - 1, j)` and `left = countPaths(i, j - 1)`.",
+          "Store `up + left` in `memo[i][j]` and return it."
+        ],
+        "time": "O(m·n)",
+        "space": "O(m·n)",
+        "complexity": "Each of the `m·n` cells is expanded at most once, and each expansion does O(1) work plus two calls, so there are at most `2·m·n + 1` calls in total. Memory is the `m × n` memo table plus a recursion stack up to `m + n` frames deep.",
+        "tradeoff": "Time is already optimal, but the `10^4`-entry table and up to 200 stack frames are more than needed, and recursion adds call overhead. Each cell only needs the row above it, which a bottom-up fill can exploit to keep a single row.",
+        "deep": {
+          "pseudocode": [
+            "function uniquePathsWithObstacles(obstacleGrid)",
+            "  m ← number of rows in obstacleGrid",
+            "  n ← number of columns in obstacleGrid",
+            "  memo ← m × n table filled with -1  // -1 means not computed yet; real counts are ≥ 0",
+            "  return countPaths(m - 1, n - 1)",
+            "function countPaths(i, j)  // routes from (0, 0) to (i, j)",
+            "  if i < 0 or j < 0",
+            "    return 0  // stepped outside the grid",
+            "  if obstacleGrid[i][j] = 1",
+            "    return 0  // a route cannot pass through an obstacle",
+            "  if i = 0 and j = 0",
+            "    return 1  // reached the start: exactly one route",
+            "  if memo[i][j] ≠ -1",
+            "    return memo[i][j]  // solved before: reuse instead of re-exploring",
+            "  up ← countPaths(i - 1, j)  // routes whose last move was Down",
+            "  left ← countPaths(i, j - 1)  // routes whose last move was Right",
+            "  memo[i][j] ← up + left  // store before returning so later callers reuse it",
+            "  return memo[i][j]"
+          ],
+          "time": {
+            "total": "O(m·n)",
+            "parts": [
+              {
+                "part": "Memo setup (line 4)",
+                "cost": "m·n cells × O(1)",
+                "why": "Every memo cell is filled with -1 once."
+              },
+              {
+                "part": "Expanding a cell (lines 15-18)",
+                "cost": "at most m·n expansions × O(1)",
+                "why": "A cell is expanded only while memo[i][j] = -1, and the expansion fills it immediately."
+              },
+              {
+                "part": "All calls, including base cases and memo hits (lines 6-14)",
+                "cost": "at most 2·m·n + 1 calls × O(1)",
+                "why": "Each expansion makes exactly two calls, plus the first call from line 5."
+              }
+            ],
+            "sum": "m·n + m·n + (2·m·n + 1) ≈ 4·m·n = O(m·n).",
+            "cases": "",
+            "feel": "m = n = 100 → about 4·10^4 basic steps, well under a millisecond.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(m·n)",
+            "parts": [
+              {
+                "part": "memo table (line 4)",
+                "cost": "m × n integers",
+                "why": "One stored count per cell."
+              },
+              {
+                "part": "Recursion stack (lines 6-18)",
+                "cost": "at most m + n frames",
+                "why": "Each nested call lowers i + j by one."
+              }
+            ],
+            "sum": "m·n + (m + n) = O(m·n); the table dominates.",
+            "cases": "",
+            "feel": "",
+            "note": "obstacleGrid is the input and is not counted."
+          },
+          "dryRun": {
+            "input": "obstacleGrid = [[0,0,0],[1,0,0]] (a 2 × 3 grid with an obstacle at (1, 0); Example 1 has 9 cells, so a smaller grid keeps the trace short)",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "m = 2 and n = 3; every memo cell starts at -1, meaning not computed yet.",
+                "vars": {
+                  "m": "2",
+                  "n": "3"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ],
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "countPaths(1, 2) asks for up = countPaths(0, 2), which asks for countPaths(-1, 2). Row -1 is off the grid, so it returns 0.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "-1",
+                  "j": "2"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ],
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2)",
+                      "countPaths(0,2)",
+                      "countPaths(-1,2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "countPaths(0, 2) has up = 0 and calls countPaths(0, 1). After its off-grid up call returns 0, countPaths(0, 1) calls countPaths(0, 0), the start, which returns 1.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ],
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2)",
+                      "countPaths(0,2) up=0",
+                      "countPaths(0,1) up=0",
+                      "countPaths(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 17,
+                "explain": "countPaths(0, 1) has up = 0 and left = 1, so it stores memo[0][1] = 1 before returning it.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "1",
+                  "up": "0",
+                  "left": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "1",
+                        "-1"
+                      ],
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2)",
+                      "countPaths(0,2) up=0",
+                      "countPaths(0,1) up=0 left=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 17,
+                "explain": "countPaths(0, 2) receives left = 1 from (0, 1) and stores memo[0][2] = 0 + 1 = 1.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "2",
+                  "up": "0",
+                  "left": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2)",
+                      "countPaths(0,2) up=0 left=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 15,
+                "explain": "Back in countPaths(1, 2): up = 1, the single route that ends with a Down move from (0, 2).",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2",
+                  "up": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 14,
+                "explain": "countPaths(1, 2) calls left = countPaths(1, 1), which asks for countPaths(0, 1). This time memo[0][1] = 1 is already filled, so the call returns 1 at once instead of re-exploring (0, 1).",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1",
+                      "countPaths(1,1)",
+                      "countPaths(0,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "countPaths(1, 1) has stored up = 1 and now calls countPaths(1, 0); obstacleGrid[1][0] = 1, so it returns 0.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "-1",
+                        "-1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1",
+                      "countPaths(1,1) up=1",
+                      "countPaths(1,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 17,
+                "explain": "countPaths(1, 1) stores memo[1][1] = 1 + 0 = 1.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "up": "1",
+                  "left": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "-1",
+                        "1",
+                        "-1"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1",
+                      "countPaths(1,1) up=1 left=0"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 17,
+                "explain": "countPaths(1, 2) has up = 1 and left = 1 and stores memo[1][2] = 2.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2",
+                  "up": "1",
+                  "left": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "-1",
+                        "1",
+                        "2"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles",
+                      "countPaths(1,2) up=1 left=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 5,
+                "explain": "The top call returns 2. memo[0][0] and memo[1][0] stay -1 because the start and the obstacle are answered by base cases and never stored.",
+                "vars": {
+                  "m": "2",
+                  "n": "3"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "-1",
+                        "1",
+                        "1"
+                      ],
+                      [
+                        "-1",
+                        "1",
+                        "2"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "uniquePathsWithObstacles"
+                    ]
+                  }
+                }
+              }
+            ],
+            "result": "2 — memo[1][2] = memo[0][2] + memo[1][1] = 1 + 1, the routes Right, Right, Down and Right, Down, Right; (0, 1) was expanded only once."
+          },
+          "solution": "class Solution {\npublic:\n    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {\n        int m = obstacleGrid.size();     // number of rows\n        int n = obstacleGrid[0].size();  // number of columns\n        vector<vector<int>> memo(m, vector<int>(n, -1)); // -1 = not computed yet (real counts are >= 0)\n        return countPaths(obstacleGrid, m - 1, n - 1, memo); // count the routes that end at the target cell\n    }\n\nprivate:\n    // Routes from (0, 0) to (i, j); memo makes every cell expand at most once.\n    // int is enough: every memoised cell can still reach the target, so its count is <= the answer <= 2 * 10^9.\n    int countPaths(vector<vector<int>>& grid, int i, int j, vector<vector<int>>& memo) {\n        if (i < 0 || j < 0) return 0;                // stepped outside the grid\n        if (grid[i][j] == 1) return 0;               // obstacle; tested before the start so a blocked start gives 0\n        if (i == 0 && j == 0) return 1;              // reached the start: exactly one route\n        if (memo[i][j] != -1) return memo[i][j];     // solved before: reuse instead of re-exploring\n        int up = countPaths(grid, i - 1, j, memo);   // routes whose last move was Down from (i - 1, j)\n        int left = countPaths(grid, i, j - 1, memo); // routes whose last move was Right from (i, j - 1)\n        memo[i][j] = up + left;                      // store before returning so later callers reuse it\n        return memo[i][j];\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> grid1 = {{0, 0, 0}, {0, 1, 0}, {0, 0, 0}};\n    cout << \"Example 1: output = \" << sol.uniquePathsWithObstacles(grid1) << \" (expected: 2)\\n\";\n\n    vector<vector<int>> grid2 = {{0, 1}, {0, 0}};\n    cout << \"Example 2: output = \" << sol.uniquePathsWithObstacles(grid2) << \" (expected: 1)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Optimal",
+        "name": "Bottom-up DP with a single row",
+        "aha": "In the memo table, row `i` is only ever read while filling row `i + 1`, so filling the grid row by row from the top lets one array of length `n` replace both the table and the recursion.",
+        "idea": "Let `dp[j]` be the number of routes from `(0, 0)` to `(i, j)` for the row `i` being processed. Scanning a row left to right, the old `dp[j]` is the count of the cell above and `dp[j - 1]` was just updated to the count of the cell on the left, so `dp[j] ← dp[j] + dp[j - 1]` is exactly the recurrence. An obstacle sets `dp[j] ← 0`, which also stops its count from flowing right or down. After the last row, `dp[n - 1]` is the count for the target.",
+        "steps": [
+          "Create `dp` of length `n` filled with 0 and set `dp[0] = 1` for the start.",
+          "For each row `i` from 0 to `m - 1`, scan `j` from 0 to `n - 1`.",
+          "If `obstacleGrid[i][j]` is 1, set `dp[j] = 0` (this also handles a blocked start).",
+          "Else if `j > 0`, set `dp[j] = dp[j] + dp[j - 1]` (above + left).",
+          "Else (`j = 0` and free) leave `dp[0]` as is: its only source is the cell above, which `dp[0]` already holds.",
+          "Return `dp[n - 1]`."
+        ],
+        "time": "O(m·n)",
+        "space": "O(n)",
+        "complexity": "The two nested loops visit each of the `m·n` cells exactly once with O(1) work, which dominates. The only extra memory is the array `dp` of `n` counters.",
+        "tradeoff": "Every cell must be read at least once because any single obstacle can change the answer, so `O(m·n)` time cannot be beaten. Space could drop to `O(min(m, n))` by scanning along the shorter side, or to `O(1)` by writing counts into `obstacleGrid`, at the cost of destroying the input.",
+        "deep": {
+          "pseudocode": [
+            "function uniquePathsWithObstacles(obstacleGrid)",
+            "  m ← number of rows in obstacleGrid",
+            "  n ← number of columns in obstacleGrid",
+            "  dp ← array of n zeros  // dp[j] = routes from (0, 0) to (i, j) for the row i being processed",
+            "  dp[0] ← 1  // seed for the start; the loop resets it to 0 if (0, 0) is an obstacle",
+            "  for i ← 0 to m - 1",
+            "    for j ← 0 to n - 1",
+            "      if obstacleGrid[i][j] = 1",
+            "        dp[j] ← 0  // no route may pass through an obstacle",
+            "      else if j > 0",
+            "        dp[j] ← dp[j] + dp[j - 1]  // old dp[j] = from above, dp[j - 1] = from the left",
+            "  return dp[n - 1]"
+          ],
+          "time": {
+            "total": "O(m·n)",
+            "parts": [
+              {
+                "part": "Setup (lines 2-5)",
+                "cost": "n steps",
+                "why": "dp is filled with n zeros and seeded once."
+              },
+              {
+                "part": "Nested loops (lines 6-11)",
+                "cost": "m·n iterations × O(1)",
+                "why": "Each cell is visited once and does one obstacle test and at most one addition."
+              }
+            ],
+            "sum": "n + m·n = O(m·n); the double loop dominates.",
+            "cases": "",
+            "feel": "m = n = 100 → 10^4 iterations, a few microseconds.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "dp array (line 4)",
+                "cost": "n counters",
+                "why": "One running count per column; earlier rows are overwritten in place."
+              }
+            ],
+            "sum": "O(n).",
+            "cases": "",
+            "feel": "",
+            "note": "obstacleGrid is the input and is not counted; i and j are O(1)."
+          },
+          "dryRun": {
+            "input": "obstacleGrid = [[0,0,0],[1,0,0]] (a 2 × 3 grid with an obstacle at (1, 0); Example 1 has 9 cells, so a smaller grid keeps the trace short)",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "m = 2 and n = 3; dp holds one counter per column, all 0.",
+                "vars": {
+                  "m": "2",
+                  "n": "3"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 5,
+                "explain": "Seed dp[0] = 1 for the start cell (0, 0). If the start were an obstacle, the loop would reset it to 0.",
+                "vars": {
+                  "m": "2",
+                  "n": "3"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "i = 0, j = 0: the cell is free and j = 0, so nothing is added and dp[0] keeps the single route to the start.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "j": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 0, j = 1: dp[1] = dp[1] + dp[0] = 0 + 1 = 1. Nothing comes from above on row 0; one route comes from the left.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "1",
+                      "0"
+                    ],
+                    "pointers": {
+                      "j": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 0, j = 2: dp[2] = 0 + 1 = 1, so every cell of row 0 has exactly one route (Right moves only).",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "0",
+                  "j": "2"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "j": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "i = 1, j = 0: obstacleGrid[1][0] = 1, so dp[0] = 0; the route that starts with Down dies here.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "0"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "j": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 1, j = 1: dp[1] = dp[1] + dp[0] = 1 + 0 = 1: one route from above (0, 1), none from the blocked cell on the left.",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "1"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "j": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 1, j = 2: dp[2] = dp[2] + dp[1] = 1 + 1 = 2: one route from above (0, 2) and one from the left (1, 1).",
+                "vars": {
+                  "m": "2",
+                  "n": "3",
+                  "i": "1",
+                  "j": "2"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {
+                      "(i,j)": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {
+                      "j": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 12,
+                "explain": "Both rows are done, so dp[n - 1] = dp[2] = 2 is the number of routes to the target (1, 2).",
+                "vars": {
+                  "m": "2",
+                  "n": "3"
+                },
+                "arrays": {
+                  "obstacleGrid": {
+                    "values": [
+                      [
+                        "0",
+                        "0",
+                        "0"
+                      ],
+                      [
+                        "1",
+                        "0",
+                        "0"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "0",
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "2 — the routes Right, Right, Down and Right, Down, Right; the third route Down, Right, Right is blocked by the obstacle at (1, 0)."
+          },
+          "solution": "class Solution {\npublic:\n    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {\n        int m = obstacleGrid.size();     // number of rows\n        int n = obstacleGrid[0].size();  // number of columns\n        // dp[j] = routes from (0, 0) to (i, j) for the row i being processed.\n        // unsigned: cells that can never reach the target may hold counts far above 2 * 10^9; unsigned\n        // overflow wraps (well defined) and the target's true count (<= 2 * 10^9 < 2^32) still comes out exact.\n        vector<unsigned int> dp(n, 0);\n        dp[0] = 1;                                // seed for the start; reset below if (0, 0) is an obstacle\n        for (int i = 0; i < m; ++i) {\n            for (int j = 0; j < n; ++j) {\n                if (obstacleGrid[i][j] == 1) {\n                    dp[j] = 0;                    // no route may pass through an obstacle\n                } else if (j > 0) {\n                    dp[j] += dp[j - 1];           // old dp[j] = routes from above, dp[j - 1] = routes from the left\n                }\n                // j == 0 and free: dp[0] keeps the count of the cell above (its only source)\n            }\n        }\n        return (int)dp[n - 1];                    // count for the bottom-right cell\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> grid1 = {{0, 0, 0}, {0, 1, 0}, {0, 0, 0}};\n    cout << \"Example 1: output = \" << sol.uniquePathsWithObstacles(grid1) << \" (expected: 2)\\n\";\n\n    vector<vector<int>> grid2 = {{0, 1}, {0, 0}};\n    cout << \"Example 2: output = \" << sol.uniquePathsWithObstacles(grid2) << \" (expected: 1)\\n\";\n\n    return 0;\n}"
+        }
+      }
+    ],
+    "mistakes": [
+      "Initialising the whole first row and first column to 1 as in Unique Paths: an obstacle at `(0, k)` must make every cell `(0, k')` with `k' > k` equal 0, because those cells can only be reached through it.",
+      "Ignoring that the start or the target can be an obstacle: `[[1,0],[0,0]]` and `[[0,0],[0,1]]` must both return 0. A recursion that tests `i == 0 && j == 0` before the obstacle check, or a table that hard-codes `dp[0][0] = 1`, returns 2 for the first.",
+      "Scanning `j` from right to left in the one-row version: `dp[j - 1]` would still hold the previous row's value, so the routes arriving from the left would be taken from the wrong row.",
+      "Using plain `int` in a bottom-up fill: the answer is at most `2·10^9`, but cells that cannot reach the target may hold counts far larger and overflow (undefined behaviour in C++); use unsigned arithmetic, a wider type or a cap."
+    ],
+    "edgeCases": [
+      "`[[0]]`: start equals target, so the answer is 1 (the empty route), not 0.",
+      "`[[1]]`, a blocked start such as `[[1,0],[0,0]]`, or a blocked target such as `[[0,0],[0,1]]`: the answer must be 0.",
+      "A single row or column such as `[[0],[0],[1],[0]]`: one obstacle leaves no way around it, so the answer is 0.",
+      "An obstacle on the first row such as `[[0,1,0],[0,0,0]]`: `(0, 2)` must get 0 routes, not inherit 1, and the answer is 1 (Down, Right, Right).",
+      "A large grid where many cells cannot reach the target (for example, obstacles surrounding the target region): those cells can hold counts far above `2·10^9`, which tests overflow handling."
+    ],
+    "related": [
+      {
+        "title": "Unique Paths",
+        "slug": "unique-paths",
+        "why": "The same right/down route counting without obstacles; the recurrence and the one-row DP are identical minus the 0 rule."
+      },
+      {
+        "title": "Minimum Path Sum",
+        "slug": "minimum-path-sum",
+        "why": "Same grid and moves, but each cell takes the minimum of above and left plus its own cost instead of the sum."
+      },
+      {
+        "title": "Dungeon Game",
+        "slug": "dungeon-game",
+        "why": "Right/down grid DP that must be filled from the target backwards, a good next step after this forward fill."
+      },
+      {
+        "title": "Unique Paths III",
+        "slug": "unique-paths-iii",
+        "why": "Grid route counting with obstacles where moves go in four directions and every free cell must be visited, which needs backtracking instead of DP."
+      }
+    ],
+    "takeaways": [
+      "When moves are restricted to right and down, each cell depends only on the cell above and the cell to the left, so a row-major fill always has its inputs ready.",
+      "Blocked states are handled by forcing their value to the neutral element of the combine step (0 for counting, +∞ for a minimum); the recurrence then propagates the block automatically.",
+      "If a DP row reads only the previous row and the already-updated entry to its left, a single 1D array updated in place can replace the 2D table.",
+      "A bound on the final answer does not bound intermediate DP values; check which states actually feed the answer before choosing an integer type."
+    ]
+  }
+}

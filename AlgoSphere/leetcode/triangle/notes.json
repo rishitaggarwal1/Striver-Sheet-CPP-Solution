@@ -1,0 +1,3115 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "triangle",
+  "title": "Triangle",
+  "url": "https://leetcode.com/problems/triangle/",
+  "updatedAt": "2026-11-20T14:58:07.458Z",
+  "problem": {
+    "difficulty": "Medium",
+    "description": "Given a triangle array, return the minimum path sum from top to bottom.\n\nFor each step, you may move to an adjacent number of the row below. More formally, if you are on index i on the current row, you may move to either index i or index i + 1 on the next row.\n\nExample 1:\n\nInput: triangle = [[2],[3,4],[6,5,7],[4,1,8,3]]\nOutput: 11\nExplanation: The triangle looks like:\n   2\n  3 4\n 6 5 7\n4 1 8 3\nThe minimum path sum from top to bottom is 2 + 3 + 5 + 1 = 11 (underlined above).\n\nExample 2:\n\nInput: triangle = [[-10]]\nOutput: -10\n\nConstraints:\n\n- 1 <= triangle.length <= 200\n\n- triangle[0].length == 1\n\n- triangle[i].length == triangle[i - 1].length + 1\n\n- -10^4 <= triangle[i][j] <= 10^4\n\nFollow up: Could you do this using only O(n) extra space, where n is the total number of rows in the triangle?"
+  },
+  "hints": [
+    "You start on the single number at the top and walk down one row at a time until you reach the bottom row; from position `i` in a row you may step only to position `i` or `i + 1` in the next row. Add up every number you stand on and return the smallest total any such walk can reach.",
+    "Taking the smaller neighbour each time happens to work on Example 1 (2 → 3 → 5 → 1), but on `[[1],[2,3],[9,8,1]]` it goes 1 → 2 → 8 = 11 while 1 → 3 → 1 = 5. Also notice that the 5 at row 2, index 1 can be reached from both the 3 and the 4 above it: different paths share the same lower part.",
+    "With `triangle.length` up to 200 there are 2^199 top-to-bottom paths, so trying them all is hopeless. But the triangle has only 200 · 201 / 2 = 20,100 cells, so any method that does constant work per cell, `O(n^2)`, is instant.",
+    "This is dynamic programming on a grid (a triangle-shaped one): the best answer for a cell is built from the best answers of the two cells it can step to, so solve cells in an order where those two are already known.",
+    "The cheapest path from cell `(i, j)` down to the bottom does not depend on how you reached `(i, j)`: it is `triangle[i][j] + min(best(i + 1, j), best(i + 1, j + 1))`. Solving from the bottom row upward makes everything funnel into the single apex, so the answer is one cell instead of a minimum over the whole last row.",
+    "Keep one array `dp` of length `n` (the number of rows). It starts as a copy of the last row; after you finish row `i`, `dp[j]` is the minimum path sum from `(i, j)` to the bottom for every `j <= i`, and at the end `dp[0]` is the answer.",
+    "Copy the last row of `triangle` into `dp`.\nFor each row `i` from `n - 2` up to `0`:\nFor each column `j` from `0` to `i`:\nSet `dp[j]` to `triangle[i][j] + min(dp[j], dp[j + 1])`.\nGoing left to right is safe because `dp[j + 1]` still holds the row-below value.\nReturn `dp[0]`.",
+    "The trickiest step is overwriting `dp[j]` in place: it works only because cell `(i, j)` reads `dp[j]` and `dp[j + 1]`, and `dp[j + 1]` is overwritten later in the same pass; going right to left would break it. Check a single-row triangle (the loop never runs, the answer is `triangle[0][0]`) and negative values (you can never stop early or prune by the running sum). Time is `O(n^2)` for the `n(n + 1)/2` cells and extra space is `O(n)` for `dp`, which meets the follow-up."
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[1],[2,3],[4,5,6]]"
+          }
+        ],
+        "output": "7",
+        "note": "The optimal path runs straight down the left edge: 1 + 2 + 4."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[1],[2,3],[9,8,1]]"
+          }
+        ],
+        "output": "5",
+        "note": "Greedy trap: taking the smaller neighbour 2 leads to 11, but going through 3 to the 1 gives 5."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[-1],[2,3],[1,-1,-3]]"
+          }
+        ],
+        "output": "-1",
+        "note": "Negative values: the best path -1 + 3 + (-3) ends at the bottom-right cell."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[7],[3,8],[8,1,0],[2,7,4,4],[4,5,2,6,5]]"
+          }
+        ],
+        "output": "17",
+        "note": "Five rows with a zig-zag optimum 7 + 3 + 1 + 4 + 2 (indices 0, 0, 1, 2, 2)."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[5],[-2,4],[3,-6,1],[2,2,-8,0]]"
+          }
+        ],
+        "output": "-11",
+        "note": "Mixed signs: the path collects every negative, 5 - 2 - 6 - 8."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[10000]]"
+          }
+        ],
+        "output": "10000",
+        "note": "Single row: the answer is the only element, here the maximum value 10^4."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[1],[5,2]]"
+          }
+        ],
+        "output": "3",
+        "note": "Two rows: only two paths exist, so pick the cheaper bottom cell 2."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[1],[1,1],[1,1,1],[1,1,1,1]]"
+          }
+        ],
+        "output": "4",
+        "note": "All equal: every path ties, so the answer is the number of rows."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[-10000],[-10000,-10000],[-10000,-10000,-10000]]"
+          }
+        ],
+        "output": "-30000",
+        "note": "All minimum values: sums go far below zero; at 200 rows the extreme is -2·10^6, still inside int."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[1],[9,2],[9,9,3],[9,9,9,4]]"
+          }
+        ],
+        "output": "10",
+        "note": "Right edge: the optimal path always moves to index i + 1 and ends at the last cell of the last row."
+      },
+      {
+        "args": [
+          {
+            "name": "triangle",
+            "value": "[[1],[100,100],[100,-10000,100]]"
+          }
+        ],
+        "output": "-9899",
+        "note": "Hidden negative: the path looks expensive until the -10^4 at the bottom, so pruning by partial sums is wrong."
+      }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Find the smallest sum of a top-to-bottom path through `triangle`, where from index `j` in one row you may step to index `j` or `j + 1` in the next row.",
+    "pattern": "2D grid DP on a triangle, filled bottom-up",
+    "signals": [
+      "\"you may move to either index i or index i + 1 on the next row\" → every cell has exactly two successors, so a cell's best answer is built from two smaller subproblems: grid DP.",
+      "The 5 at `(2, 1)` in Example 1 is reachable from both `(1, 0)` and `(1, 1)` → paths overlap, so plain recursion solves the same cells repeatedly: memoise or tabulate.",
+      "\"1 <= triangle.length <= 200\" → only about 20,100 cells but 2^199 paths: per-cell work is fine, per-path work is not.",
+      "\"Follow up: ... only O(n) extra space\" → each row depends only on the row below, so a single 1D array of length n is enough."
+    ],
+    "constraints": "With n = 200 rows there are 2^199 ≈ 8·10^59 distinct paths, so enumerating them is impossible. The triangle has only n(n + 1)/2 = 20,100 cells, so an `O(n^2)` DP with constant work per cell is about 2·10^4 operations, effectively instant; the follow-up additionally asks to keep extra memory to `O(n)` = 200 integers.",
+    "thinking": [
+      {
+        "q": "What is the most direct way to get the minimum?",
+        "a": "Try every path: from the apex, branch into index `j` and `j + 1` on every row and keep the smallest total. With n rows that is 2^(n - 1) paths, only 8 for Example 1 but 2^199 at the limit."
+      },
+      {
+        "q": "Does stepping to the smaller neighbour each time work?",
+        "a": "No. On `[[1],[2,3],[9,8,1]]` greedy picks 2 and then 8 for 11, but 1 → 3 → 1 costs 5. A cheap cell now can lead into an expensive region, so each choice must know the best cost of everything below it."
+      },
+      {
+        "q": "What do I really need to know about the part of the path below cell `(i, j)`?",
+        "a": "Only its minimum cost. If `best(i, j)` is the cheapest path from `(i, j)` to the bottom, then `best(i, j) = triangle[i][j] + min(best(i + 1, j), best(i + 1, j + 1))`, with `best(n - 1, j) = triangle[n - 1][j]`, and the answer is `best(0, 0)`."
+      },
+      {
+        "q": "Why is that recursion slow, and how many different subproblems are there?",
+        "a": "In Example 1, `best(2, 1)` is needed by both `(1, 0)` and `(1, 1)`, and the sharing compounds row after row, so recursion makes about 2^n calls. Yet there are only n(n + 1)/2 = 10 distinct cells in Example 1, so remembering each answer once gives `O(n^2)`."
+      },
+      {
+        "q": "Should the table be filled top-down or bottom-up?",
+        "a": "Bottom-up: row `n - 1` is already solved (each cell is its own answer) and everything funnels into the single apex, so the answer is just `dp[0]`. Filling from the top would need boundary checks at `j = 0` and `j = i` and a final minimum over the whole bottom row."
+      },
+      {
+        "q": "Do I need the whole table?",
+        "a": "No. Row `i` only reads row `i + 1`, so one array `dp` of length n works. Updating `dp[j]` left to right is safe because cell `(i, j)` reads `dp[j]` and `dp[j + 1]`, and `dp[j + 1]` has not been overwritten yet in this pass."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Plain recursion over both moves",
+        "aha": "Every cell offers exactly two moves, so the first idea is to try both from every cell and keep the cheaper total; it is a direct translation of the movement rule.",
+        "idea": "Define `f(i, j)` as the minimum path sum from cell `(i, j)` to the bottom row. On the bottom row (`i = n - 1`) the path is just the cell, so `f(n - 1, j) = triangle[n - 1][j]`. Above it, a path from `(i, j)` must continue through `(i + 1, j)` or `(i + 1, j + 1)`, so `f(i, j) = triangle[i][j] + min(f(i + 1, j), f(i + 1, j + 1))`. This is correct because any path from `(i, j)` is the cell itself followed by a path from one of those two cells, and the best total uses the best continuation. The answer is `f(0, 0)`.",
+        "steps": [
+          "Let `n` be the number of rows and call `f(0, 0)` at the apex.",
+          "In `f(i, j)`, if `i = n - 1`, return `triangle[i][j]`.",
+          "Otherwise compute `down = f(i + 1, j)` and `diag = f(i + 1, j + 1)`.",
+          "Return `triangle[i][j] + min(down, diag)`.",
+          "The value returned by `f(0, 0)` is the answer."
+        ],
+        "time": "O(2^n)",
+        "space": "O(n)",
+        "complexity": "Every call above the bottom row makes two recursive calls, so the call tree from the apex has 2^n - 1 nodes for n rows, each doing O(1) work. The only extra memory is the recursion stack, at most n frames deep (one per row).",
+        "tradeoff": "The same cells are solved again and again: in Example 1, `f(2, 1)` is computed twice and the bottom cells `f(3, 1)` and `f(3, 2)` three times each. At n = 200 that is about 2^200 calls, hopeless against the limit.",
+        "deep": {
+          "pseudocode": [
+            "function minimumTotal(triangle)",
+            "  n ← number of rows in triangle  // f reads n to detect the bottom row",
+            "  return f(0, 0)  // every path starts at the apex",
+            "function f(i, j)  // cheapest path sum from cell (i, j) down to the bottom row",
+            "  if i = n - 1  // bottom row: the path is just this cell",
+            "    return triangle[i][j]",
+            "  down ← f(i + 1, j)  // step to index j on the next row",
+            "  diag ← f(i + 1, j + 1)  // step to index j + 1 on the next row",
+            "  best ← min(down, diag)",
+            "  return triangle[i][j] + best"
+          ],
+          "time": {
+            "total": "O(2^n)",
+            "parts": [
+              {
+                "part": "Setup and first call (lines 2-3)",
+                "cost": "1 × O(1)",
+                "why": "Reads the row count once and starts the recursion at the apex."
+              },
+              {
+                "part": "Recursive calls (lines 7-8)",
+                "cost": "2^n - 1 calls in total",
+                "why": "Each call above the bottom row spawns two calls, so depth i of the call tree holds 2^i calls: 1 + 2 + 4 + … + 2^(n-1)."
+              },
+              {
+                "part": "Work inside one call (lines 5-6, 9-10)",
+                "cost": "O(1) per call",
+                "why": "One comparison, one min and one addition."
+              }
+            ],
+            "sum": "1 + 2 + 4 + … + 2^(n-1) = 2^n - 1 calls × O(1) = O(2^n); the call tree dominates the O(1) setup.",
+            "cases": "",
+            "feel": "n = 200 → about 1.6·10^60 calls, which never finishes; even n = 30 already needs about 10^9 calls, roughly a second.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Recursion stack (lines 7-8)",
+                "cost": "n frames × O(1)",
+                "why": "Each nested call moves one row down, so at most n calls are active at once, each holding i, j, down, diag and best."
+              }
+            ],
+            "sum": "n frames × O(1) = O(n).",
+            "cases": "",
+            "feel": "",
+            "note": "The input triangle is not counted. Nothing is cached, and a stack depth of at most 200 is safe."
+          },
+          "dryRun": {
+            "input": "triangle = [[2],[3,4],[6,5,7]] (the first three rows of Example 1, to keep the call tree small)",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "n = 3 rows, so the bottom row is i = 2. Line 3 is about to call f(0, 0) at the apex.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              },
+              {
+                "line": 5,
+                "explain": "f(0, 0) starts. i = 0 is not the bottom row (n - 1 = 2), so it must explore both moves.",
+                "vars": {
+                  "n": "3",
+                  "i": "0",
+                  "j": "0"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "Line 7 of f(0, 0) calls f(1, 0), whose line 7 calls f(2, 0). Row 2 is the bottom, so f(2, 0) returns triangle[2][0] = 6.",
+                "vars": {
+                  "n": "3",
+                  "i": "2",
+                  "j": "0"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)",
+                      "f(2,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Back in f(1, 0): down = 6, the cheapest path below if we step straight down to index 0.",
+                "vars": {
+                  "n": "3",
+                  "i": "1",
+                  "j": "0",
+                  "down": "6"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "f(1, 0) calls f(2, 1), another bottom cell, which returns 5, so diag = 5.",
+                "vars": {
+                  "n": "3",
+                  "i": "1",
+                  "j": "0",
+                  "down": "6",
+                  "diag": "5"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "Line 9 sets best = min(6, 5) = 5, and f(1, 0) returns 3 + 5 = 8 to f(0, 0).",
+                "vars": {
+                  "n": "3",
+                  "i": "1",
+                  "j": "0",
+                  "down": "6",
+                  "diag": "5",
+                  "best": "5"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Back in f(0, 0): down = 8, the best total below the apex when going to index 0.",
+                "vars": {
+                  "n": "3",
+                  "i": "0",
+                  "j": "0",
+                  "down": "8"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "Line 8 of f(0, 0) calls f(1, 1), whose line 7 calls f(2, 1) again: the same cell f(1, 0) already evaluated. It returns 5 a second time; this repeated work is what memoisation removes.",
+                "vars": {
+                  "n": "3",
+                  "i": "2",
+                  "j": "1"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,1)",
+                      "f(2,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "Back in f(1, 1): down = 5.",
+                "vars": {
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "down": "5"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "f(1, 1) calls f(2, 2), a bottom cell that returns 7, so diag = 7.",
+                "vars": {
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "down": "5",
+                  "diag": "7"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "best = min(5, 7) = 5, so f(1, 1) returns 4 + 5 = 9 to f(0, 0).",
+                "vars": {
+                  "n": "3",
+                  "i": "1",
+                  "j": "1",
+                  "down": "5",
+                  "diag": "7",
+                  "best": "5"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "Back in f(0, 0): diag = 9, the best total below the apex when going to index 1.",
+                "vars": {
+                  "n": "3",
+                  "i": "0",
+                  "j": "0",
+                  "down": "8",
+                  "diag": "9"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "best = min(8, 9) = 8: going left through the 3 is cheaper.",
+                "vars": {
+                  "n": "3",
+                  "i": "0",
+                  "j": "0",
+                  "down": "8",
+                  "diag": "9",
+                  "best": "8"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "f(0, 0) returns 2 + 8 = 10.",
+                "vars": {
+                  "n": "3",
+                  "i": "0",
+                  "j": "0",
+                  "down": "8",
+                  "diag": "9",
+                  "best": "8"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 3,
+                "explain": "minimumTotal returns 10. In total 7 calls were made for 6 cells, and f(2, 1) ran twice.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              }
+            ],
+            "result": "10: the cheapest path is 2 → 3 → 5 (indices 0, 0, 1); every path was tried, so nothing cheaper exists, but f(2, 1) was evaluated twice."
+          },
+          "solution": "class Solution {\npublic:\n    int minimumTotal(vector<vector<int>>& triangle) {\n        int n = triangle.size();                 // number of rows; row n - 1 is the bottom\n        return solve(0, 0, n, triangle);         // every path starts at the apex (0, 0)\n    }\n\nprivate:\n    // Cheapest path sum from cell (i, j) down to the bottom row\n    int solve(int i, int j, int n, vector<vector<int>>& triangle) {\n        if (i == n - 1) return triangle[i][j];        // bottom row: the path is just this cell\n        int down = solve(i + 1, j, n, triangle);      // move to index j on the next row\n        int diag = solve(i + 1, j + 1, n, triangle);  // move to index j + 1 on the next row\n        int best = min(down, diag);                   // cheaper of the two continuations\n        return triangle[i][j] + best;                 // pay for this cell plus the best continuation\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> triangle1 = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};\n    cout << \"Example 1: \" << sol.minimumTotal(triangle1) << \" (expected 11)\\n\";\n\n    vector<vector<int>> triangle2 = {{-10}};\n    cout << \"Example 2: \" << sol.minimumTotal(triangle2) << \" (expected -10)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Better",
+        "name": "Top-down recursion with a memo table",
+        "aha": "The recursion only ever asks about n(n + 1)/2 distinct cells, yet in Example 1 it computes `f(2, 1)` twice and `f(3, 1)` three times; storing each cell's answer the first time removes all of that repeated work.",
+        "idea": "Keep a triangle-shaped table `memo` where `memo[i][j]` stores `f(i, j)` once it is known, and ∞ means not computed yet (-1 cannot be the marker because path sums can be negative). Before expanding a cell above the bottom row, check `memo[i][j]`; if it is set, return it immediately. The recurrence is unchanged, so every value equals the brute-force one, but each of the n(n - 1)/2 non-bottom cells is expanded at most once and every later request for it is an O(1) lookup.",
+        "steps": [
+          "Create `memo` with row `i` holding `i + 1` slots, all set to ∞.",
+          "Call `f(0, 0)`.",
+          "In `f(i, j)`, return `triangle[i][j]` on the bottom row.",
+          "If `memo[i][j]` is not ∞, return it.",
+          "Otherwise compute `down = f(i + 1, j)` and `diag = f(i + 1, j + 1)`.",
+          "Store `memo[i][j] = triangle[i][j] + min(down, diag)` and return it."
+        ],
+        "time": "O(n^2)",
+        "space": "O(n^2)",
+        "complexity": "Each of the n(n - 1)/2 non-bottom cells is expanded once and makes two calls, so there are about n^2 calls in total, each O(1) apart from its children. Memory is the triangle-shaped `memo` with n(n + 1)/2 slots plus a recursion stack n frames deep.",
+        "tradeoff": "Time is already optimal, but it stores all 20,100 slots for n = 200 and uses an n-deep recursion stack; the follow-up asks for `O(n)` extra space, which needs an iterative fill that keeps only one row.",
+        "deep": {
+          "pseudocode": [
+            "function minimumTotal(triangle)",
+            "  n ← number of rows in triangle",
+            "  memo ← triangle-shaped table, row i has i + 1 slots, all ∞  // ∞ = not computed; real sums stay within ±2·10^6",
+            "  return f(0, 0)",
+            "function f(i, j)  // cheapest path sum from (i, j) to the bottom row",
+            "  if i = n - 1  // bottom row: the path is just this cell",
+            "    return triangle[i][j]",
+            "  if memo[i][j] ≠ ∞  // solved before: reuse it",
+            "    return memo[i][j]",
+            "  down ← f(i + 1, j)",
+            "  diag ← f(i + 1, j + 1)",
+            "  memo[i][j] ← triangle[i][j] + min(down, diag)  // store before returning so later callers reuse it",
+            "  return memo[i][j]"
+          ],
+          "time": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Table setup (lines 2-3)",
+                "cost": "n(n + 1)/2 slots × O(1)",
+                "why": "Every slot of the triangle-shaped memo is set to ∞ once."
+              },
+              {
+                "part": "First expansion of each non-bottom cell (lines 10-12)",
+                "cost": "n(n - 1)/2 cells × O(1) plus 2 calls each",
+                "why": "A cell above the bottom row is expanded only the first time it is requested; afterwards its memo slot is set."
+              },
+              {
+                "part": "Calls that end immediately (lines 6-9)",
+                "cost": "at most n(n - 1) calls × O(1)",
+                "why": "Every call is made by some expansion and each expansion makes exactly two, so bottom-row returns and memo hits together number at most n(n - 1)."
+              }
+            ],
+            "sum": "n(n + 1)/2 + n(n - 1)/2 + n(n - 1) = O(n^2); for n = 200 that is 20,100 + 19,900 + 39,800 ≈ 8·10^4 simple steps.",
+            "cases": "",
+            "feel": "n = 200 → under 10^5 simple steps, well under a millisecond.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "memo table (line 3)",
+                "cost": "n(n + 1)/2 integers",
+                "why": "One slot per triangle cell, 20,100 slots for n = 200."
+              },
+              {
+                "part": "Recursion stack (lines 10-11)",
+                "cost": "n frames × O(1)",
+                "why": "Each nested call goes one row lower, so at most n frames are active."
+              }
+            ],
+            "sum": "O(n^2) + O(n) = O(n^2); the table dominates.",
+            "cases": "",
+            "feel": "",
+            "note": "The input triangle is not counted. A recursion depth of 200 is safe."
+          },
+          "dryRun": {
+            "input": "triangle = [[2],[3,4],[6,5,7],[4,1,8,3]] (Example 1)",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "n = 4. memo gets one slot per cell, all ∞ (not computed). ∞ is used instead of -1 because a path sum could legitimately be -1.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "f(0, 0) calls f(1, 0) on line 10, which calls f(2, 0). Row 2 is not the bottom and memo[2][0] = ∞, so f(2, 0) must be computed.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "0"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)",
+                      "f(2,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "In f(2, 0), line 10 gets down = f(3, 0) = 4 and line 11 gets diag = f(3, 1) = 1; both are bottom cells returned straight from line 7.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "0",
+                  "down": "4",
+                  "diag": "1"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        3,
+                        0
+                      ],
+                      [
+                        3,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)",
+                      "f(2,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "memo[2][0] = 6 + min(4, 1) = 7 is stored, then returned to f(1, 0).",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "0",
+                  "down": "4",
+                  "diag": "1"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ],
+                      [
+                        3,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "7",
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)",
+                      "f(2,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "Back in f(1, 0): down = 7.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "j": "0",
+                  "down": "7"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "7",
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "Line 11 of f(1, 0) calls f(2, 1): memo[2][1] is ∞, so it gets down = f(3, 1) = 1 and diag = f(3, 2) = 8, and stores memo[2][1] = 5 + 1 = 6.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "1",
+                  "down": "1",
+                  "diag": "8"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ],
+                      [
+                        3,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)",
+                      "f(2,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "Back in f(1, 0): diag = 6, so memo[1][0] = 3 + min(7, 6) = 9.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "j": "0",
+                  "down": "7",
+                  "diag": "6"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "9",
+                        "∞"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "Back in f(0, 0): down = 9.",
+                "vars": {
+                  "n": "4",
+                  "i": "0",
+                  "j": "0",
+                  "down": "9"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "9",
+                        "∞"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "f(0, 0) calls f(1, 1) (memo ∞, so it expands), and f(1, 1) calls f(2, 1). memo[2][1] = 6 is set, so it returns 6 at once: a memo hit where brute force would have recomputed the whole subtree.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "1"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "9",
+                        "∞"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,1)",
+                      "f(2,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "Back in f(1, 1): down = 6.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "j": "1",
+                  "down": "6"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "9",
+                        "∞"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "∞"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "f(1, 1) calls f(2, 2): it gets down = f(3, 2) = 8 and diag = f(3, 3) = 3, and stores memo[2][2] = 7 + 3 = 10.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "2",
+                  "down": "8",
+                  "diag": "3"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        2,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ],
+                      [
+                        3,
+                        3
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "9",
+                        "∞"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "10"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,1)",
+                      "f(2,2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "Back in f(1, 1): diag = 10, so memo[1][1] = 4 + min(6, 10) = 10.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "j": "1",
+                  "down": "6",
+                  "diag": "10"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "∞"
+                      ],
+                      [
+                        "9",
+                        "10"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "10"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)",
+                      "f(1,1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 12,
+                "explain": "Back in f(0, 0): diag = 10, so memo[0][0] = 2 + min(9, 10) = 11.",
+                "vars": {
+                  "n": "4",
+                  "i": "0",
+                  "j": "0",
+                  "down": "9",
+                  "diag": "10"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "f": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        1,
+                        0
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "11"
+                      ],
+                      [
+                        "9",
+                        "10"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "10"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "f(0,0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 4,
+                "explain": "minimumTotal returns 11. Each of the 6 non-bottom cells was expanded exactly once; the bottom row is never stored because line 7 answers it directly.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        2,
+                        1
+                      ],
+                      [
+                        3,
+                        1
+                      ]
+                    ]
+                  },
+                  "memo": {
+                    "values": [
+                      [
+                        "11"
+                      ],
+                      [
+                        "9",
+                        "10"
+                      ],
+                      [
+                        "7",
+                        "6",
+                        "10"
+                      ],
+                      [
+                        "∞",
+                        "∞",
+                        "∞",
+                        "∞"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              }
+            ],
+            "result": "11: memo[0][0] = 2 + min(9, 10) along 2 → 3 → 5 → 1, matching the expected output, and the second request for f(2, 1) was answered from memo."
+          },
+          "solution": "class Solution {\npublic:\n    int minimumTotal(vector<vector<int>>& triangle) {\n        int n = triangle.size();                          // number of rows\n        // memo[i] has i + 1 slots, one per cell of row i; INT_MAX means \"not computed yet\".\n        // -1 cannot be the marker because path sums can be negative (they stay within +/-2e6).\n        vector<vector<int>> memo(n);\n        for (int i = 0; i < n; i++) memo[i].assign(i + 1, INT_MAX);\n        return solve(0, 0, n, triangle, memo);            // start at the apex\n    }\n\nprivate:\n    // Cheapest path sum from (i, j) to the bottom row, cached in memo\n    int solve(int i, int j, int n, vector<vector<int>>& triangle, vector<vector<int>>& memo) {\n        if (i == n - 1) return triangle[i][j];            // bottom row: the path is just this cell\n        if (memo[i][j] != INT_MAX) return memo[i][j];     // solved before: reuse the stored answer\n        int down = solve(i + 1, j, n, triangle, memo);    // best path through (i + 1, j)\n        int diag = solve(i + 1, j + 1, n, triangle, memo);// best path through (i + 1, j + 1)\n        memo[i][j] = triangle[i][j] + min(down, diag);    // store before returning so later callers reuse it\n        return memo[i][j];\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> triangle1 = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};\n    cout << \"Example 1: \" << sol.minimumTotal(triangle1) << \" (expected 11)\\n\";\n\n    vector<vector<int>> triangle2 = {{-10}};\n    cout << \"Example 2: \" << sol.minimumTotal(triangle2) << \" (expected -10)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Optimal",
+        "name": "Bottom-up DP with one row array",
+        "aha": "In the memo version, row `i` only ever reads row `i + 1`, and once row `i` is finished row `i + 1` is never needed again. So fill rows from the bottom up and keep just the row below in a 1D array, overwriting it in place.",
+        "idea": "Let `dp[j]` hold the minimum path sum from column `j` of the row below to the bottom; initially that row is the last row itself, so `dp` is a copy of it. To lift `dp` to row `i`, set `dp[j] = triangle[i][j] + min(dp[j], dp[j + 1])` for `j = 0..i`. Going left to right is safe: when `dp[j]` is overwritten, the values it needs, old `dp[j]` and `dp[j + 1]`, are still the row-below values, and old `dp[j]` is never needed again because column `j - 1` is already done. After row 0, `dp[0]` is the answer; the higher entries are leftovers from lower rows and are ignored.",
+        "steps": [
+          "Let `n` be the number of rows and copy the bottom row `triangle[n - 1]` into an array `dp` of length `n`.",
+          "Process rows `i = n - 2, n - 3, ..., 0`, one at a time.",
+          "Within row `i`, go through `j = 0..i` and read `down = dp[j]` and `diag = dp[j + 1]`, both still the values for row `i + 1`.",
+          "Overwrite `dp[j]` with `triangle[i][j] + min(down, diag)`.",
+          "After row 0, return `dp[0]`."
+        ],
+        "time": "O(n^2)",
+        "space": "O(n)",
+        "complexity": "The two nested loops visit each of the n(n - 1)/2 cells above the bottom row once with O(1) work, so the time is `O(n^2)`, linear in the number of cells. The only extra memory is `dp`, which holds n integers.",
+        "tradeoff": "Every cell must be read at least once because any single value can change the answer, so `O(n^2)` time (linear in the input size) cannot be beaten, and `O(n)` space meets the follow-up. You could reach `O(1)` extra space by writing the sums into `triangle` itself, but that destroys the input.",
+        "deep": {
+          "pseudocode": [
+            "function minimumTotal(triangle)",
+            "  n ← number of rows in triangle",
+            "  dp ← array of n zeros  // dp[j] = cheapest sum from column j of the last finished row to the bottom",
+            "  for j ← 0 to n - 1",
+            "    dp[j] ← triangle[n - 1][j]  // bottom row: each cell is its own path",
+            "  for i ← n - 2 down to 0  // lift dp one row at a time",
+            "    for j ← 0 to i  // row i has i + 1 cells",
+            "      down ← dp[j]  // best from (i + 1, j)",
+            "      diag ← dp[j + 1]  // best from (i + 1, j + 1): not overwritten yet because we go left to right",
+            "      dp[j] ← triangle[i][j] + min(down, diag)",
+            "  return dp[0]  // the apex (0, 0)"
+          ],
+          "time": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Copy the bottom row (lines 3-5)",
+                "cost": "n iterations × O(1)",
+                "why": "Each of the n bottom cells is its own best path."
+              },
+              {
+                "part": "Row loop with inner column loop (lines 6-10)",
+                "cost": "(n - 1) + (n - 2) + … + 1 = n(n - 1)/2 iterations × O(1)",
+                "why": "Row i has i + 1 cells and each needs two reads, one min and one addition."
+              },
+              {
+                "part": "Return (line 11)",
+                "cost": "O(1)",
+                "why": "Reads a single entry."
+              }
+            ],
+            "sum": "n + n(n - 1)/2 + 1 = O(n^2); the nested loops dominate. For n = 200: 200 + 19,900 + 1 ≈ 2·10^4 steps.",
+            "cases": "",
+            "feel": "n = 200 → about 2·10^4 additions, a few microseconds.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "dp array (line 3)",
+                "cost": "n integers",
+                "why": "Holds one row of best sums and is overwritten in place as we move up."
+              },
+              {
+                "part": "Loop variables (lines 6-9)",
+                "cost": "O(1)",
+                "why": "Just i, j, down and diag."
+              }
+            ],
+            "sum": "n + O(1) = O(n), which meets the follow-up.",
+            "cases": "",
+            "feel": "",
+            "note": "The input triangle is read but not modified, and it is not counted."
+          },
+          "dryRun": {
+            "input": "triangle = [[2],[3,4],[6,5,7],[4,1,8,3]] (Example 1)",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "n = 4, and dp starts as 4 zeros.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "dp": {
+                    "values": [
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 5,
+                "explain": "The loop on lines 4-5 copies the bottom row (shown at its last iteration, j = 3): dp = [4, 1, 8, 3]. Each bottom cell is its own cheapest path.",
+                "vars": {
+                  "n": "4",
+                  "j": "3"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        3,
+                        0
+                      ],
+                      [
+                        3,
+                        1
+                      ],
+                      [
+                        3,
+                        2
+                      ],
+                      [
+                        3,
+                        3
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "4",
+                      "1",
+                      "8",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 3
+                    },
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "Row i = 2, j = 0: down = dp[0] = 4 and diag = dp[1] = 1 are the best sums from the two cells below the 6.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "0",
+                  "down": "4",
+                  "diag": "1"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "i,j": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ],
+                      [
+                        3,
+                        0
+                      ],
+                      [
+                        3,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "4",
+                      "1",
+                      "8",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 0
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "dp[0] = 6 + min(4, 1) = 7. dp[1] = 1 still belongs to row 3, which column 1 needs next.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "0",
+                  "down": "4",
+                  "diag": "1"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "i,j": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "7",
+                      "1",
+                      "8",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "j = 1: down = dp[1] = 1, diag = dp[2] = 8, so dp[1] = 5 + 1 = 6.",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "1",
+                  "down": "1",
+                  "diag": "8"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "i,j": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ],
+                      [
+                        3,
+                        1
+                      ],
+                      [
+                        3,
+                        2
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "7",
+                      "6",
+                      "8",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 1
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "j = 2: down = dp[2] = 8, diag = dp[3] = 3, so dp[2] = 7 + 3 = 10. Row 2 is done: dp[0..2] = [7, 6, 10].",
+                "vars": {
+                  "n": "4",
+                  "i": "2",
+                  "j": "2",
+                  "down": "8",
+                  "diag": "3"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "i,j": [
+                        2,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        2
+                      ],
+                      [
+                        3,
+                        2
+                      ],
+                      [
+                        3,
+                        3
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "7",
+                      "6",
+                      "10",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 2
+                    },
+                    "highlight": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Row i = 1, j = 0: down = 7, diag = 6, so dp[0] = 3 + 6 = 9.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "j": "0",
+                  "down": "7",
+                  "diag": "6"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "i,j": [
+                        1,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        2,
+                        0
+                      ],
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "9",
+                      "6",
+                      "10",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 0
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "j = 1: down = 6, diag = 10, so dp[1] = 4 + 6 = 10. dp[3] = 3 is a leftover from row 3 that is never read again.",
+                "vars": {
+                  "n": "4",
+                  "i": "1",
+                  "j": "1",
+                  "down": "6",
+                  "diag": "10"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "i,j": [
+                        1,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ],
+                      [
+                        2,
+                        1
+                      ],
+                      [
+                        2,
+                        2
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "9",
+                      "10",
+                      "10",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 1
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "Row i = 0, j = 0: down = dp[0] = 9 (path via the 3) and diag = dp[1] = 10 (path via the 4).",
+                "vars": {
+                  "n": "4",
+                  "i": "0",
+                  "j": "0",
+                  "down": "9",
+                  "diag": "10"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "i,j": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "9",
+                      "10",
+                      "10",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 0
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "dp[0] = 2 + min(9, 10) = 11.",
+                "vars": {
+                  "n": "4",
+                  "i": "0",
+                  "j": "0",
+                  "down": "9",
+                  "diag": "10"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {
+                      "i,j": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "11",
+                      "10",
+                      "10",
+                      "3"
+                    ],
+                    "pointers": {
+                      "j": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "Both loops are done; return dp[0] = 11.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "triangle": {
+                    "values": [
+                      [
+                        "2"
+                      ],
+                      [
+                        "3",
+                        "4"
+                      ],
+                      [
+                        "6",
+                        "5",
+                        "7"
+                      ],
+                      [
+                        "4",
+                        "1",
+                        "8",
+                        "3"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ],
+                      [
+                        1,
+                        0
+                      ],
+                      [
+                        2,
+                        1
+                      ],
+                      [
+                        3,
+                        1
+                      ]
+                    ]
+                  },
+                  "dp": {
+                    "values": [
+                      "11",
+                      "10",
+                      "10",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "11: dp[0] is the cheapest path from the apex, 2 + 3 + 5 + 1, because each dp[j] always held the best sum from its cell to the bottom."
+          },
+          "solution": "class Solution {\npublic:\n    int minimumTotal(vector<vector<int>>& triangle) {\n        int n = triangle.size();                     // number of rows\n        vector<int> dp(n, 0);                        // dp[j] = cheapest sum from column j of the last finished row to the bottom\n        for (int j = 0; j < n; j++)\n            dp[j] = triangle[n - 1][j];              // bottom row: each cell is its own path\n        for (int i = n - 2; i >= 0; i--) {           // lift dp one row at a time, bottom to top\n            for (int j = 0; j <= i; j++) {           // row i has i + 1 cells\n                int down = dp[j];                    // best from (i + 1, j)\n                int diag = dp[j + 1];                // best from (i + 1, j + 1); still row i + 1 because we go left to right\n                dp[j] = triangle[i][j] + min(down, diag);  // overwrite with the answer for (i, j)\n            }\n        }\n        return dp[0];                                // the apex holds the minimum total\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<vector<int>> triangle1 = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};\n    cout << \"Example 1: \" << sol.minimumTotal(triangle1) << \" (expected 11)\\n\";\n\n    vector<vector<int>> triangle2 = {{-10}};\n    cout << \"Example 2: \" << sol.minimumTotal(triangle2) << \" (expected -10)\\n\";\n\n    return 0;\n}"
+        }
+      }
+    ],
+    "mistakes": [
+      "Going greedy from the top: choosing the smaller of the two neighbours at each step fails on `[[1],[2,3],[9,8,1]]` (greedy gives 11, the true answer is 5).",
+      "Updating the 1D `dp` right to left (`j` from `i` down to `0`): `dp[j + 1]` has then already been overwritten with a row-`i` value, so cell `(i, j)` combines two cells of the same row and the answer is wrong.",
+      "Filling top-down and returning a single corner such as `dp[n - 1][0]`: when sums flow from the apex downward, the answer is the minimum over the whole last row; bottom-up avoids this because everything funnels into `dp[0]`.",
+      "Using -1 as the 'not computed' marker in the memo: any cell whose true answer is -1 looks unsolved, so it is recomputed on every request and, when many cells share that value, the exponential running time quietly comes back; use a value outside ±2·10^6 such as INT_MAX."
+    ],
+    "edgeCases": [
+      "Single row (`[[-10]]`): the row loop starts at `i = n - 2 = -1` and never runs, so the answer must be `triangle[0][0]` straight from the copied bottom row.",
+      "All negative values such as `[[-10000],[-10000,-10000],[-10000,-10000,-10000]]` (answer -30000): checks that no code assumes sums are non-negative, for example a 0 or -1 sentinel.",
+      "A large negative hidden at the bottom, like `[[1],[100,100],[100,-10000,100]]` (answer -9899): any pruning by the partial sum so far would discard the optimal path.",
+      "Optimal path along an edge (`j` always 0, or always equal to `i`): checks that the first and last cells of each row use the right neighbours; `[[1],[9,2],[9,9,3],[9,9,9,4]]` must give 10."
+    ],
+    "related": [
+      {
+        "title": "Minimum Falling Path Sum",
+        "slug": "minimum-falling-path-sum",
+        "why": "Same row-by-row minimum DP, but on a square matrix with three moves (down-left, down, down-right) and boundary checks."
+      },
+      {
+        "title": "Minimum Path Sum",
+        "slug": "minimum-path-sum",
+        "why": "Grid DP where each cell's best cost comes from two neighbours, also solvable with a single 1D row array."
+      },
+      {
+        "title": "Unique Paths II",
+        "slug": "unique-paths-ii",
+        "why": "The same two-move grid recurrence, counting paths instead of minimising, with the same 1D space optimisation."
+      },
+      {
+        "title": "Cherry Pickup II",
+        "slug": "cherry-pickup-ii",
+        "why": "Extends row-by-row DP to two walkers moving together, with a 2D layer per row instead of a 1D row."
+      }
+    ],
+    "takeaways": [
+      "When the answer at a cell depends only on cells in the next row, define `best(cell)` as the optimal cost from that cell onward and the recurrence writes itself.",
+      "Choose the fill direction so the boundary is trivial and the answer lands in one cell: bottom-up turns a minimum over the last row into just `dp[0]`.",
+      "If row `i` reads only row `i + 1`, one 1D array is enough; pick the update order (here left to right) so you never read a value already overwritten in the current pass.",
+      "Greedy local choices fail when a cheap step can lead into an expensive region; overlapping two-way choices are a strong DP signal."
+    ]
+  }
+}

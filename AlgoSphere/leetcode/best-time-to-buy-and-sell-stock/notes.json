@@ -1,0 +1,1559 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "best-time-to-buy-and-sell-stock",
+  "title": "Best Time to Buy and Sell Stock",
+  "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+  "updatedAt": "2026-11-20T14:58:07.458Z",
+  "problem": {
+    "difficulty": "Easy",
+    "description": "You are given an array prices where prices[i] is the price of a given stock on the i^th day.\n\nYou want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.\n\nReturn the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.\n\nExample 1:\n\nInput: prices = [7,1,5,3,6,4]\nOutput: 5\nExplanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.\nNote that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.\n\nExample 2:\n\nInput: prices = [7,6,4,3,1]\nOutput: 0\nExplanation: In this case, no transactions are done and the max profit = 0.\n\nConstraints:\n\n- 1 <= prices.length <= 10^5\n\n- 0 <= prices[i] <= 10^4"
+  },
+  "hints": [
+    "You pick one day to buy and a strictly later day to sell, and want the largest `sell price - buy price`. If no later price is ever higher than an earlier one, you simply do not trade and the answer is 0.",
+    "In Example 1 the best sale (price 6 at index 4) is paired with the cheapest price that came before it (1 at index 1). For any sell day, the best buy day is the cheapest earlier day; the global minimum is useless if it comes after the sale, as in `[2,4,1]` where the answer is 2, not 3.",
+    "With `prices.length` up to `10^5`, checking every buy/sell pair is about `5·10^9` operations, far too slow. You need a single linear pass, `O(n)`.",
+    "This is a prefix-minimum (one-state DP) pattern: as you sweep left to right, the best buy for today depends only on a summary of the days before it, which can be updated in constant time per day.",
+    "Fix the sell day `i`: the best profit from selling then is `prices[i] - min(prices[0..i-1])`. The answer is the largest of these values (or 0), and the prefix minimum can be maintained incrementally instead of recomputed.",
+    "Track two numbers: `minPrice`, the cheapest price on the days before the current one (starts as `prices[0]`), and `best`, the largest profit found so far (starts at 0).",
+    "Set `minPrice` to `prices[0]` and `best` to 0.\nFor each day `i` from 1 to `n - 1`:\nCompute `profit = prices[i] - minPrice`.\nIf `profit` is larger than `best`, store it in `best`.\nIf `prices[i]` is lower than `minPrice`, store it in `minPrice`.\nReturn `best`.",
+    "Never reset `best` when a new minimum appears (in `[3,8,1,2]` the answer stays 5), and start `best` at 0 so falling prices like Example 2 return 0. A single day `[5]` skips the loop and returns 0, and equal prices give 0 because the profit is never greater than 0. Time is `O(n)` and extra space is `O(1)`."
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[3,8,2,9,1,4]"
+          }
+        ],
+        "output": "7",
+        "note": "The global minimum 1 comes late; the best pair is 2 then 9."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[2,4,1]"
+          }
+        ],
+        "output": "2",
+        "note": "The minimum is on the last day, so max(prices) - min(prices) = 3 would be wrong."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[5,11,3,50,60,90]"
+          }
+        ],
+        "output": "87",
+        "note": "A new minimum 3 appears after an early small gain and leads to the best sale at 90."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[10,7,5,8,11,9]"
+          }
+        ],
+        "output": "6",
+        "note": "Prices fall first, then rise: buy at the bottom 5 and sell at the peak 11."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[4,7,2,6,3,8,1,5]"
+          }
+        ],
+        "output": "6",
+        "note": "Several dips and peaks; buy at 2 and sell at 8 beats every adjacent swing."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[5]"
+          }
+        ],
+        "output": "0",
+        "note": "Single day: there is no later day to sell, so the answer is 0."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[9,7,4,1]"
+          }
+        ],
+        "output": "0",
+        "note": "Strictly decreasing: every trade loses money, so not trading gives 0."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[3,3,3,3]"
+          }
+        ],
+        "output": "0",
+        "note": "All equal: every profit is 0, so the answer is 0."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[1,2]"
+          }
+        ],
+        "output": "1",
+        "note": "Two days, increasing: the only possible trade earns 1."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[0,10000]"
+          }
+        ],
+        "output": "10000",
+        "note": "Value bounds: buy at the minimum price 0 and sell at the maximum 10^4."
+      },
+      {
+        "args": [
+          {
+            "name": "prices",
+            "value": "[1,2,3,4,5]"
+          }
+        ],
+        "output": "4",
+        "note": "Strictly increasing: buy on the first day and sell on the last; at n = 10^5 this still needs an O(n) pass."
+      }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Choose a buy day `i` and a later sell day `j` to maximise `prices[j] - prices[i]`, returning 0 if no such pair makes money.",
+    "pattern": "Running minimum (one-pass prefix DP)",
+    "signals": [
+      "\"choosing a different day in the future to sell that stock\" → only earlier days can be the buy day for a given sell day, so each day needs a summary of the prefix before it.",
+      "\"a single day to buy ... a different day ... to sell\" → exactly one pair, so the answer is the best over sell days of the price minus the cheapest earlier price.",
+      "\"1 <= prices.length <= 10^5\" → checking all `n(n - 1)/2` pairs is about `5·10^9`, so one linear pass is needed.",
+      "\"If you cannot achieve any profit, return 0\" → start the answer at 0; falling prices like Example 2 must return 0, not a negative number."
+    ],
+    "constraints": "With `n = 10^5`, all pairs is `n(n - 1)/2 ≈ 5·10^9` checks, far too slow; sorting would destroy the day order anyway. One pass is `10^5` constant-time steps, so the target is `O(n)` time and ideally `O(1)` extra space.",
+    "thinking": [
+      {
+        "q": "What is the simplest correct method?",
+        "a": "Try every buy day `i` and every later sell day `j`, keeping the largest `prices[j] - prices[i]`. Example 1 has 15 pairs, and the best is `6 - 1 = 5`."
+      },
+      {
+        "q": "If I fix the sell day `j`, which buy day should I pair it with?",
+        "a": "The cheapest day before `j`, because a lower buy price always means more profit for the same sell price. For selling at 6 (index 4) in Example 1, the cheapest earlier price is 1 (index 1), which is the statement's \"buy on day 2, sell on day 5\" in 1-based days."
+      },
+      {
+        "q": "Why not just buy at the global minimum and sell at the global maximum?",
+        "a": "The minimum may come after the maximum. In `[2,4,1]` the global minimum 1 is the last day, so the real answer is `4 - 2 = 2`, not `4 - 1 = 3`."
+      },
+      {
+        "q": "How do I get the cheapest earlier price for every day without rescanning?",
+        "a": "The cheapest price on days `0..i` is `min(cheapest on days 0..i-1, prices[i])`, so a prefix-minimum array `minLeft` can be filled in one left-to-right pass."
+      },
+      {
+        "q": "Do I need to keep the whole `minLeft` array?",
+        "a": "No. Day `i` only reads `minLeft[i - 1]`, once. So a single variable `minPrice` works: compute today's profit against it, then lower it if today is cheaper. That gives `O(n)` time and `O(1)` space."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Check every buy/sell pair",
+        "aha": "The answer is the largest `prices[j] - prices[i]` over pairs with `i < j`, so the obvious first move is to try every pair of days.",
+        "idea": "An outer loop picks the buy day `i` and an inner loop tries every later sell day `j`, computing `prices[j] - prices[i]` and keeping the largest value in `best`. Starting `best` at 0 covers the case where every pair loses money, as in Example 2. It is correct because it examines every legal transaction, so the maximum cannot be missed.",
+        "steps": [
+          "Set `best` to 0.",
+          "For each buy day `i` from 0 to `n - 2`, read `buy = prices[i]`.",
+          "For each sell day `j` from `i + 1` to `n - 1`, compute `profit = prices[j] - buy`.",
+          "If `profit` is larger than `best`, store it in `best`.",
+          "After all pairs, return `best`."
+        ],
+        "time": "O(n^2)",
+        "space": "O(1)",
+        "complexity": "The nested loops examine `n(n - 1)/2` pairs with `O(1)` work each, which dominates everything else. Only a few scalars are stored, so extra space is `O(1)`.",
+        "tradeoff": "For `n = 10^5` that is about `5·10^9` pairs, far beyond the time limit. For every sell day it effectively rescans all earlier days to find the cheapest one, repeating the same minimum search again and again.",
+        "deep": {
+          "pseudocode": [
+            "function maxProfit(prices)",
+            "  n ← length(prices)",
+            "  best ← 0  // not trading is allowed, so the answer is never below 0",
+            "  for i ← 0 to n - 2  // buy on day i",
+            "    buy ← prices[i]",
+            "    for j ← i + 1 to n - 1  // sell on a strictly later day j",
+            "      sell ← prices[j]",
+            "      profit ← sell - buy",
+            "      if profit > best",
+            "        best ← profit  // new best pair (i, j)",
+            "  return best"
+          ],
+          "time": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Buy-day loop (lines 4-5)",
+                "cost": "n − 1 iterations × O(1)",
+                "why": "Every day except the last is tried as the buy day."
+              },
+              {
+                "part": "Sell-day loop (lines 6-10)",
+                "cost": "n − 1 − i iterations × O(1) for buy day i",
+                "why": "Every later day is tried as the sell day, with a subtraction and a comparison each."
+              }
+            ],
+            "sum": "(n − 1) + (n − 2) + … + 1 = n(n − 1)/2 = O(n^2); the inner loop dominates the O(n) outer loop.",
+            "cases": "",
+            "feel": "n = 10^5 → about 5·10^9 pair checks, several seconds even in C++, so it gets Time Limit Exceeded.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(1)",
+            "parts": [
+              {
+                "part": "Scalars n, best, i, buy, j, sell, profit (lines 2-8)",
+                "cost": "O(1)",
+                "why": "A fixed number of variables regardless of n."
+              }
+            ],
+            "sum": "O(1).",
+            "cases": "",
+            "feel": "",
+            "note": "The input prices is only read and the output is a single integer."
+          },
+          "dryRun": {
+            "input": "prices = [7,1,5,3,6,4]",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "There are n = 6 days and no trade has been made, so best = 0.",
+                "vars": {
+                  "n": "6",
+                  "best": "0"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "Buy day i = 0 (price 7), sell day j = 1 (price 1): profit = 1 - 7 = -6, which is not > 0, so best stays 0.",
+                "vars": {
+                  "n": "6",
+                  "best": "0",
+                  "i": "0",
+                  "buy": "7",
+                  "j": "1",
+                  "sell": "1",
+                  "profit": "-6"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 0,
+                      "j": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "Skipping j = 2..4 for i = 0: profits 5-7, 3-7 and 6-7 are all negative. At j = 5 profit = 4 - 7 = -3; buying at 7 never pays, best stays 0.",
+                "vars": {
+                  "n": "6",
+                  "best": "0",
+                  "i": "0",
+                  "buy": "7",
+                  "j": "5",
+                  "sell": "4",
+                  "profit": "-3"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 0,
+                      "j": 5
+                    },
+                    "highlight": [
+                      0,
+                      5
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "4 > 0, so best = 4: buying at 1 (index 1) and selling at 5 (index 2) is the best pair so far.",
+                "vars": {
+                  "n": "6",
+                  "best": "4",
+                  "i": "1",
+                  "buy": "1",
+                  "j": "2",
+                  "sell": "5",
+                  "profit": "4"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1,
+                      "j": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 1, j = 3: profit = 3 - 1 = 2, not > 4; best stays 4.",
+                "vars": {
+                  "n": "6",
+                  "best": "4",
+                  "i": "1",
+                  "buy": "1",
+                  "j": "3",
+                  "sell": "3",
+                  "profit": "2"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1,
+                      "j": 3
+                    },
+                    "highlight": [
+                      1,
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "5 > 4, so best = 5: buy at 1 (index 1), sell at 6 (index 4).",
+                "vars": {
+                  "n": "6",
+                  "best": "5",
+                  "i": "1",
+                  "buy": "1",
+                  "j": "4",
+                  "sell": "6",
+                  "profit": "5"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1,
+                      "j": 4
+                    },
+                    "highlight": [
+                      1,
+                      4
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 1, j = 5: profit = 4 - 1 = 3, not > 5. All sell days for buy index 1 are done.",
+                "vars": {
+                  "n": "6",
+                  "best": "5",
+                  "i": "1",
+                  "buy": "1",
+                  "j": "5",
+                  "sell": "4",
+                  "profit": "3"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1,
+                      "j": 5
+                    },
+                    "highlight": [
+                      1,
+                      5
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "Buy day i = 2 (price 5): j = 3 gives -2, j = 4 gives 1, and j = 5 gives profit = 4 - 5 = -1; none beats 5.",
+                "vars": {
+                  "n": "6",
+                  "best": "5",
+                  "i": "2",
+                  "buy": "5",
+                  "j": "5",
+                  "sell": "4",
+                  "profit": "-1"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 2,
+                      "j": 5
+                    },
+                    "highlight": [
+                      2,
+                      5
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "Buy day i = 3 (price 3): j = 4 gives 3 and j = 5 gives profit = 4 - 3 = 1; none beats 5.",
+                "vars": {
+                  "n": "6",
+                  "best": "5",
+                  "i": "3",
+                  "buy": "3",
+                  "j": "5",
+                  "sell": "4",
+                  "profit": "1"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 3,
+                      "j": 5
+                    },
+                    "highlight": [
+                      3,
+                      5
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "Last pair: buy at 6 (index 4), sell at 4 (index 5), profit = -2; best stays 5.",
+                "vars": {
+                  "n": "6",
+                  "best": "5",
+                  "i": "4",
+                  "buy": "6",
+                  "j": "5",
+                  "sell": "4",
+                  "profit": "-2"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 4,
+                      "j": 5
+                    },
+                    "highlight": [
+                      4,
+                      5
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "All 15 pairs have been checked; return best = 5.",
+                "vars": {
+                  "n": "6",
+                  "best": "5"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "5 — the pair buy at 1 (index 1), sell at 6 (index 4) has the largest difference among all 15 pairs with buy before sell."
+          },
+          "solution": "class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int n = prices.size();\n        int best = 0;                            // not trading gives profit 0\n        for (int i = 0; i < n - 1; i++) {        // buy on day i\n            int buy = prices[i];\n            for (int j = i + 1; j < n; j++) {    // sell on a strictly later day j\n                int sell = prices[j];\n                int profit = sell - buy;         // profit of the pair (i, j)\n                if (profit > best) {\n                    best = profit;               // new best pair found\n                }\n            }\n        }\n        return best;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<int> prices1 = {7, 1, 5, 3, 6, 4};\n    cout << \"Example 1: \" << sol.maxProfit(prices1) << \" (expected 5)\\n\";\n\n    vector<int> prices2 = {7, 6, 4, 3, 1};\n    cout << \"Example 2: \" << sol.maxProfit(prices2) << \" (expected 0)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Better",
+        "name": "Prefix minimum array",
+        "aha": "For a fixed sell day `j`, the brute force scans every earlier day, yet the only one that matters is the cheapest, `min(prices[0..j-1])`, and those prefix minimums can be computed for all days in one pass.",
+        "idea": "Precompute `minLeft[i]`, the cheapest price on days `0..i`, with `minLeft[i] = min(minLeft[i - 1], prices[i])`. Selling on day `i` then earns at most `prices[i] - minLeft[i - 1]`, and the answer is the largest of these values, or 0. This is correct because for a fixed sell price a lower buy price always gives a higher profit, so the cheapest earlier day is the best partner for every sell day.",
+        "steps": [
+          "Create `minLeft` of length `n` and set `minLeft[0] = prices[0]`.",
+          "For `i` from 1 to `n - 1`, set `minLeft[i]` to the smaller of `minLeft[i - 1]` and `prices[i]`.",
+          "Set `best` to 0.",
+          "For each sell day `i` from 1 to `n - 1`, compute `profit = prices[i] - minLeft[i - 1]`.",
+          "Keep the largest `profit` in `best`, then return `best`."
+        ],
+        "time": "O(n)",
+        "space": "O(n)",
+        "complexity": "Two separate linear passes, one to build `minLeft` and one to evaluate each sell day, give `O(n)` time. The `minLeft` array of length `n` is the extra memory.",
+        "tradeoff": "It meets the time limit, but it stores `n` prefix minimums even though each `minLeft[i - 1]` is read exactly once, right when day `i` is processed.",
+        "deep": {
+          "pseudocode": [
+            "function maxProfit(prices)",
+            "  n ← length(prices)",
+            "  minLeft ← array of n values  // minLeft[i] = cheapest price on days 0..i",
+            "  minLeft[0] ← prices[0]",
+            "  for i ← 1 to n - 1",
+            "    minLeft[i] ← min(minLeft[i - 1], prices[i])  // extend the prefix by one day",
+            "  best ← 0  // doing nothing earns 0",
+            "  for i ← 1 to n - 1",
+            "    profit ← prices[i] - minLeft[i - 1]  // sell on day i, buy at the cheapest earlier day",
+            "    if profit > best",
+            "      best ← profit",
+            "  return best"
+          ],
+          "time": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Prefix-minimum fill (lines 4-6)",
+                "cost": "n − 1 iterations × O(1)",
+                "why": "Each minLeft[i] is one min of two numbers."
+              },
+              {
+                "part": "Profit scan (lines 8-11)",
+                "cost": "n − 1 iterations × O(1)",
+                "why": "Each sell day does one subtraction and one comparison."
+              }
+            ],
+            "sum": "(n − 1) + (n − 1) = 2n − 2 = O(n); two linear passes stay linear.",
+            "cases": "",
+            "feel": "n = 10^5 → about 2·10^5 simple steps, well under a millisecond.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Array minLeft (line 3)",
+                "cost": "n integers",
+                "why": "One prefix minimum is stored per day."
+              },
+              {
+                "part": "Scalars n, best, i, profit",
+                "cost": "O(1)",
+                "why": "A fixed number of variables."
+              }
+            ],
+            "sum": "n + O(1) = O(n); the minLeft array dominates.",
+            "cases": "",
+            "feel": "",
+            "note": "The input prices is not counted."
+          },
+          "dryRun": {
+            "input": "prices = [7,1,5,3,6,4]",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "Allocate minLeft (unfilled cells shown as -) and set minLeft[0] = prices[0] = 7: at index 0 the only price seen is 7.",
+                "vars": {
+                  "n": "6"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "-",
+                      "-",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 1: minLeft[1] = min(minLeft[0] 7, prices[1] 1) = 1; index 1 is the new cheapest day.",
+                "vars": {
+                  "n": "6",
+                  "i": "1"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "-",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 2: minLeft[2] = min(1, 5) = 1; 5 is not cheaper, so the minimum stays 1.",
+                "vars": {
+                  "n": "6",
+                  "i": "2"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 3..5 (skipped to the last one): prices 3, 6 and 4 are all above 1, so minLeft[3], minLeft[4] and minLeft[5] all stay 1. minLeft = [7, 1, 1, 1, 1, 1].",
+                "vars": {
+                  "n": "6",
+                  "i": "5"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 5
+                    },
+                    "highlight": [
+                      5
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 5
+                    },
+                    "highlight": [
+                      4,
+                      5
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 7,
+                "explain": "minLeft is complete. Start best at 0, the profit of not trading.",
+                "vars": {
+                  "n": "6",
+                  "best": "0"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "i = 1: profit = prices[1] - minLeft[0] = 1 - 7 = -6; selling at index 1 loses money, best stays 0.",
+                "vars": {
+                  "n": "6",
+                  "best": "0",
+                  "i": "1",
+                  "profit": "-6"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 2: profit = prices[2] - minLeft[1] = 5 - 1 = 4 > previous best, so best = 4.",
+                "vars": {
+                  "n": "6",
+                  "best": "4",
+                  "i": "2",
+                  "profit": "4"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "i = 3: profit = prices[3] - minLeft[2] = 3 - 1 = 2, not > 4; best stays 4.",
+                "vars": {
+                  "n": "6",
+                  "best": "4",
+                  "i": "3",
+                  "profit": "2"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 4: profit = prices[4] - minLeft[3] = 6 - 1 = 5 > previous best, so best = 5.",
+                "vars": {
+                  "n": "6",
+                  "best": "5",
+                  "i": "4",
+                  "profit": "5"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "i = 5: profit = prices[5] - minLeft[4] = 4 - 1 = 3, not > 5; best stays 5.",
+                "vars": {
+                  "n": "6",
+                  "best": "5",
+                  "i": "5",
+                  "profit": "3"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 5
+                    },
+                    "highlight": [
+                      5
+                    ]
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 5
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 12,
+                "explain": "Every sell day was paired with its cheapest earlier day; return best = 5.",
+                "vars": {
+                  "n": "6",
+                  "best": "5"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "minLeft": {
+                    "values": [
+                      "7",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "5 — minLeft = [7,1,1,1,1,1], and the best sell day is index 4: prices[4] - minLeft[3] = 6 - 1 = 5."
+          },
+          "solution": "class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int n = prices.size();\n        // minLeft[i] = cheapest price on days 0..i\n        vector<int> minLeft(n);\n        minLeft[0] = prices[0];                  // day 0 is the only price seen so far\n        for (int i = 1; i < n; i++) {\n            minLeft[i] = min(minLeft[i - 1], prices[i]);  // extend the prefix by day i\n        }\n        int best = 0;                            // doing nothing earns 0\n        for (int i = 1; i < n; i++) {\n            // sell on day i, buying at the cheapest strictly earlier day\n            int profit = prices[i] - minLeft[i - 1];\n            if (profit > best) {\n                best = profit;\n            }\n        }\n        return best;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<int> prices1 = {7, 1, 5, 3, 6, 4};\n    cout << \"Example 1: \" << sol.maxProfit(prices1) << \" (expected 5)\\n\";\n\n    vector<int> prices2 = {7, 6, 4, 3, 1};\n    cout << \"Example 2: \" << sol.maxProfit(prices2) << \" (expected 0)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Optimal",
+        "name": "One pass with a running minimum",
+        "aha": "Since `minLeft[i - 1]` is only needed at day `i`, we can keep just the latest prefix minimum in one variable `minPrice` and fold both passes into one.",
+        "idea": "Scan the days left to right, holding `minPrice` (the cheapest price on the days before `i`) and `best` (the best profit so far). On day `i`, first try selling: `profit = prices[i] - minPrice`, and raise `best` if it is larger. Then let day `i` become a buy candidate by lowering `minPrice` if `prices[i]` is cheaper. The invariant is that when day `i` is examined, `minPrice = min(prices[0..i-1])`, so every sell day is paired with its best buy day, exactly as in the prefix-array version.",
+        "steps": [
+          "Set `minPrice` to `prices[0]` and `best` to 0.",
+          "For each day `i` from 1 to `n - 1`, compute `profit = prices[i] - minPrice`.",
+          "If `profit` is larger than `best`, store it in `best`.",
+          "If `prices[i]` is smaller than `minPrice`, store it in `minPrice`.",
+          "Return `best`."
+        ],
+        "time": "O(n)",
+        "space": "O(1)",
+        "complexity": "One loop over `n - 1` days with constant work per day gives `O(n)` time. Only `minPrice`, `best` and `profit` are stored, so extra space is `O(1)`.",
+        "tradeoff": "Every price must be read at least once, since any unread day could be a new minimum or a better sale, so `O(n)` time is optimal, and `O(1)` space cannot be improved.",
+        "deep": {
+          "pseudocode": [
+            "function maxProfit(prices)",
+            "  n ← length(prices)",
+            "  minPrice ← prices[0]  // cheapest buy price seen so far",
+            "  best ← 0  // not trading is allowed, so the answer is never negative",
+            "  for i ← 1 to n - 1",
+            "    profit ← prices[i] - minPrice  // best profit if we sell on day i",
+            "    if profit > best",
+            "      best ← profit",
+            "    if prices[i] < minPrice",
+            "      minPrice ← prices[i]  // later sell days can buy at this cheaper price",
+            "  return best"
+          ],
+          "time": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Initialisation (lines 2-4)",
+                "cost": "O(1)",
+                "why": "Three assignments."
+              },
+              {
+                "part": "Single loop (lines 5-10)",
+                "cost": "n − 1 iterations × O(1)",
+                "why": "Each day does one subtraction and at most two comparisons and two assignments."
+              }
+            ],
+            "sum": "O(1) + (n − 1)·O(1) = O(n).",
+            "cases": "",
+            "feel": "n = 10^5 → 10^5 iterations, well under a millisecond.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(1)",
+            "parts": [
+              {
+                "part": "Scalars n, minPrice, best, i, profit (lines 2-6)",
+                "cost": "O(1)",
+                "why": "No array is built; the prefix minimum lives in one variable."
+              }
+            ],
+            "sum": "O(1).",
+            "cases": "",
+            "feel": "",
+            "note": "The input prices is only read and the output is a single integer."
+          },
+          "dryRun": {
+            "input": "prices = [7,1,5,3,6,4]",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "Day 0 is the only day seen, so minPrice = prices[0] = 7 and best = 0.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "7",
+                  "best": "0"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 1: profit = prices[1] - minPrice = 1 - 7 = -6; selling at index 1 would lose money, so best stays 0.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "7",
+                  "best": "0",
+                  "i": "1",
+                  "profit": "-6"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "prices[1] = 1 is below the old minPrice 7, so minPrice = 1: every later day can now buy at 1.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "1",
+                  "best": "0",
+                  "i": "1",
+                  "profit": "-6"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 2: profit = prices[2] - minPrice = 5 - 1 = 4, which is greater than best = 0.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "1",
+                  "best": "0",
+                  "i": "2",
+                  "profit": "4"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "So best = 4: selling at 5 (index 2) after buying at 1 is the best trade so far; 5 is not a new minimum, so minPrice will stay 1.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "1",
+                  "best": "4",
+                  "i": "2",
+                  "profit": "4"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 3: profit = 3 - 1 = 2, not > 4. Price 3 is not below minPrice 1, so nothing else changes.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "1",
+                  "best": "4",
+                  "i": "3",
+                  "profit": "2"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      1,
+                      3
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 4: profit = prices[4] - minPrice = 6 - 1 = 5, which is greater than best = 4.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "1",
+                  "best": "4",
+                  "i": "4",
+                  "profit": "5"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      1,
+                      4
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "So best = 5: selling at 6 (index 4) after buying at 1 is the best trade so far; 6 is not a new minimum, so minPrice will stay 1.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "1",
+                  "best": "5",
+                  "i": "4",
+                  "profit": "5"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      1,
+                      4
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "i = 5: profit = 4 - 1 = 3, not > 5, and 4 is not a new minimum. The loop ends.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "1",
+                  "best": "5",
+                  "i": "5",
+                  "profit": "3"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 5
+                    },
+                    "highlight": [
+                      1,
+                      5
+                    ]
+                  }
+                },
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "Return best = 5.",
+                "vars": {
+                  "n": "6",
+                  "minPrice": "1",
+                  "best": "5"
+                },
+                "arrays": {
+                  "prices": {
+                    "values": [
+                      "7",
+                      "1",
+                      "5",
+                      "3",
+                      "6",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {}
+              }
+            ],
+            "result": "5 — minPrice became 1 at index 1, and selling at 6 at index 4 gave the largest profit 6 - 1 = 5; no later day did better."
+          },
+          "solution": "class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        int n = prices.size();\n        int minPrice = prices[0];                // cheapest buy price seen so far (n >= 1)\n        int best = 0;                            // not trading is allowed, so never below 0\n        for (int i = 1; i < n; i++) {\n            int profit = prices[i] - minPrice;   // profit if we sell today\n            if (profit > best) {\n                best = profit;                   // best sell seen so far\n            }\n            if (prices[i] < minPrice) {\n                minPrice = prices[i];            // cheaper buy day for all later sells\n            }\n        }\n        return best;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    vector<int> prices1 = {7, 1, 5, 3, 6, 4};\n    cout << \"Example 1: \" << sol.maxProfit(prices1) << \" (expected 5)\\n\";\n\n    vector<int> prices2 = {7, 6, 4, 3, 1};\n    cout << \"Example 2: \" << sol.maxProfit(prices2) << \" (expected 0)\\n\";\n\n    return 0;\n}"
+        }
+      }
+    ],
+    "mistakes": [
+      "Returning `max(prices) - min(prices)` while ignoring the order of days: `[2,4,1]` gives 3, but the minimum comes after the maximum, so the real answer is 2.",
+      "Starting `best` at `INT_MIN` or at `prices[1] - prices[0]`: for falling prices such as Example 2 this returns a negative number instead of 0.",
+      "Resetting `best` when a new minimum price appears: in `[3,8,1,2]` the profit 5 from buying at 3 must survive even after `minPrice` drops to 1.",
+      "Summing every positive day-to-day rise, which solves the unlimited-transactions version: `[1,2,3,1,5]` would give 6, but with one transaction the answer is 4."
+    ],
+    "edgeCases": [
+      "`prices = [5]`: the loop never runs, so the answer is 0; reading `prices[0]` is safe because `prices.length >= 1`.",
+      "Strictly decreasing prices like `[9,7,4,1]`: every profit is negative, so `best` must stay at its starting value 0.",
+      "All equal prices like `[3,3,3,3]`: every profit is exactly 0, and since `0 > 0` is false, `best` stays 0.",
+      "A new minimum after the best pair, like `[3,8,1,2]`: `minPrice` drops to 1 but the answer is still 5, which catches solutions that reset `best`."
+    ],
+    "related": [
+      {
+        "title": "Best Time to Buy and Sell Stock II",
+        "slug": "best-time-to-buy-and-sell-stock-ii",
+        "why": "Same price array with unlimited transactions, which turns the answer into the sum of every positive day-to-day rise."
+      },
+      {
+        "title": "Best Time to Buy and Sell Stock III",
+        "slug": "best-time-to-buy-and-sell-stock-iii",
+        "why": "At most two transactions, solved by extending this running-state idea into a small DP over buy/sell states."
+      },
+      {
+        "title": "Maximum Subarray",
+        "slug": "maximum-subarray",
+        "why": "Kadane's algorithm keeps a running best in one pass; this problem is the maximum subarray sum of the day-to-day price differences."
+      },
+      {
+        "title": "Maximum Difference Between Increasing Elements",
+        "slug": "maximum-difference-between-increasing-elements",
+        "why": "Almost the same task, `max nums[j] - nums[i]` with `i < j` and `nums[i] < nums[j]`, solved with the same running minimum."
+      }
+    ],
+    "takeaways": [
+      "For \"best pair with `i < j`\" problems, fix the right end `j` and ask what the best left partner is; that turns an `O(n^2)` pair search into a prefix query.",
+      "A prefix array that is only read at the current index can be collapsed into one running variable, cutting space from `O(n)` to `O(1)`.",
+      "Initialise the answer to the value of \"doing nothing\" (here 0) when the problem allows not acting.",
+      "Order of updates inside a one-pass loop matters: use the state of the earlier days before letting the current day update it."
+    ]
+  }
+}

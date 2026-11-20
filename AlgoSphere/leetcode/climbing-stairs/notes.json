@@ -1,0 +1,1328 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "climbing-stairs",
+  "title": "Climbing Stairs",
+  "url": "https://leetcode.com/problems/climbing-stairs/",
+  "updatedAt": "2026-11-20T14:58:07.458Z",
+  "problem": {
+    "difficulty": "Easy",
+    "description": "You are climbing a staircase. It takes n steps to reach the top.\n\nEach time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?\n\nExample 1:\n\nInput: n = 2\nOutput: 2\nExplanation: There are two ways to climb to the top.\n1. 1 step + 1 step\n2. 2 steps\n\nExample 2:\n\nInput: n = 3\nOutput: 3\nExplanation: There are three ways to climb to the top.\n1. 1 step + 1 step + 1 step\n2. 1 step + 2 steps\n3. 2 steps + 1 step\n\nConstraints:\n\n- 1 <= n <= 45"
+  },
+  "hints": [
+    "You start on the ground and must land exactly on step `n`, moving up 1 or 2 steps at a time. Count how many different ordered sequences of moves do that; `1 + 2` and `2 + 1` count as two different ways.",
+    "Write out the answers for small `n`: `n = 1` gives 1, `n = 2` gives 2, `n = 3` gives 3, and by hand `n = 4` gives 5 (`1+1+1+1`, `1+1+2`, `1+2+1`, `2+1+1`, `2+2`). Look at how each answer relates to the two answers just before it.",
+    "`n` is at most 45, which is tiny, but the answer for `n = 45` is 1,836,311,903, so listing every sequence one by one is hopeless. You need to count without enumerating; anything linear in `n` is instant, while anything exponential in `n` is not.",
+    "This is one-dimensional dynamic programming with a Fibonacci-style recurrence: the count for a staircase of height `n` is built from the counts for shorter staircases, and those shorter counts are reused many times.",
+    "Group the ways by their last move. A way to reach step `n` either ends with a 1-step from step `n − 1` or with a 2-step from step `n − 2`, and no way is in both groups, so `ways(n) = ways(n − 1) + ways(n − 2)`.",
+    "Let `ways(i)` be the number of ways to stand exactly on step `i`, with `ways(0) = 1` (no moves) and `ways(1) = 1`. Because `ways(i)` reads only the two values below it, you only need two numbers: `prev1 = ways(i − 1)` and `prev2 = ways(i − 2)`.",
+    "Set `prev2` to 1 for step 0 and `prev1` to 1 for step 1.\nIf `n` is 1, the answer is 1.\nFor each step `i` from 2 up to `n`:\nLet `curr` be `prev1 + prev2`.\nMove `prev1` into `prev2`, then `curr` into `prev1`.\nAfter the last step, `curr` is the answer.",
+    "The trickiest part is the slide order: copy `prev1` into `prev2` before overwriting `prev1`, or the old value is lost. `n = 1` must return 1 without entering the loop, and `n = 45` gives 1,836,311,903, just below the `int` limit of 2,147,483,647. Time is `O(n)` and extra space is `O(1)`."
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "4"
+          }
+        ],
+        "output": "5",
+        "note": "Five sequences: 1+1+1+1, 1+1+2, 1+2+1, 2+1+1 and 2+2; the first n where the count is not just n."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "5"
+          }
+        ],
+        "output": "8",
+        "note": "Checks the recurrence one more level: ways(4) + ways(3) = 5 + 3 = 8."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "7"
+          }
+        ],
+        "output": "21",
+        "note": "Mid-sized staircase where hand-listing gets error prone; 13 + 8 = 21."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "10"
+          }
+        ],
+        "output": "89",
+        "note": "Two-digit n; the count keeps following the Fibonacci sequence."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "20"
+          }
+        ],
+        "output": "10946",
+        "note": "Larger n where unmemoised recursion already makes over 20,000 calls."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "1"
+          }
+        ],
+        "output": "1",
+        "note": "Minimum n: only one 1-step; the loop must not run and the answer must not be 0."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "45"
+          }
+        ],
+        "output": "1836311903",
+        "note": "Maximum n: the answer is just under INT_MAX (2,147,483,647), so int is enough but nothing smaller is."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "44"
+          }
+        ],
+        "output": "1134903170",
+        "note": "Near maximum: the last addition for n = 45 combines this value with ways(43); checks no intermediate overflows."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "40"
+          }
+        ],
+        "output": "165580141",
+        "note": "Recursion trap: plain recursion needs about 3.3·10^8 calls here and times out."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "35"
+          }
+        ],
+        "output": "14930352",
+        "note": "Medium-large n: still fine for O(n), but already about 3·10^7 calls for unmemoised recursion."
+      }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Count the ordered sequences of 1-steps and 2-steps whose total is exactly `n`.",
+    "pattern": "1D DP (Fibonacci recurrence)",
+    "signals": [
+      "\"Each time you can either climb 1 or 2 steps\" → every way has a last move that is one of only two options, so the count splits as `ways(n − 1) + ways(n − 2)`.",
+      "\"In how many distinct ways\" → we need a count, not the list of ways, so we can combine counts of smaller staircases instead of enumerating sequences.",
+      "Example outputs 2 for `n = 2` and 3 for `n = 3`, continuing 5, 8, 13 → each answer is the sum of the previous two, the Fibonacci pattern.",
+      "\"1 <= n <= 45\" → the answer tops out at 1,836,311,903, just under `INT_MAX`, and a linear loop of 44 steps is trivial."
+    ],
+    "constraints": "`n ≤ 45`: plain recursion makes `2·ways(45) − 1 ≈ 3.7·10^9` calls, far too slow, while an `O(n)` loop is 44 additions. The largest answer, 1,836,311,903, fits in a 32-bit `int` (limit 2,147,483,647), so the target is `O(n)` time and ideally `O(1)` space.",
+    "thinking": [
+      {
+        "q": "Can I just list every sequence of 1s and 2s that sums to `n`?",
+        "a": "For `n = 3` that works: `1+1+1`, `1+2`, `2+1`. But the count grows by about 1.6× per extra step and reaches 1,836,311,903 for `n = 45`, so we must count the sequences without listing them."
+      },
+      {
+        "q": "What can I say about the very last move of any way to reach step `n`?",
+        "a": "It is either a 1-step from step `n − 1` or a 2-step from step `n − 2`. Those two groups never overlap and together they cover every way."
+      },
+      {
+        "q": "So how does the answer for `n` relate to smaller staircases?",
+        "a": "The first group has exactly `ways(n − 1)` members and the second `ways(n − 2)`, so `ways(n) = ways(n − 1) + ways(n − 2)` with `ways(0) = 1` and `ways(1) = 1`. Check: `ways(2) = 2` and `ways(3) = 3` match the examples."
+      },
+      {
+        "q": "Why is the direct recursion too slow?",
+        "a": "`ways(n − 2)` is computed once directly and again inside `ways(n − 1)`, and this doubling repeats at every level, giving `2·ways(n) − 1` calls. For `n = 45` that is about 3.7 billion calls."
+      },
+      {
+        "q": "How many different subproblems are really there?",
+        "a": "Only `n + 1`: `ways(0)` up to `ways(n)`. Caching each one in `memo` the first time it is computed brings the work down to `O(n)`."
+      },
+      {
+        "q": "What does computing `ways(i)` actually need?",
+        "a": "Only `ways(i − 1)` and `ways(i − 2)`. So we can compute the values in increasing `i` and keep just two variables, `prev1` and `prev2`, for `O(n)` time and `O(1)` space."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Plain recursion on the last move",
+        "aha": "Splitting the ways by their final move turns the question straight into a recursive function, so writing `ways(i) = ways(i − 1) + ways(i − 2)` as plain recursion is the first thing anyone tries.",
+        "idea": "Let `ways(i)` be the number of move sequences that end exactly on step `i`. Every such sequence ends with either a 1-step from step `i − 1` or a 2-step from step `i − 2`, and no sequence ends both ways, so `ways(i) = ways(i − 1) + ways(i − 2)`. The base cases are `ways(0) = 1` (the empty sequence) and `ways(1) = 1` (a single 1-step); together they give `ways(2) = 2` and `ways(3) = 3`, matching both examples. The recursion counts every sequence exactly once, but it never remembers a result, so in Example 2 (`n = 3`) `ways(1)` is computed twice.",
+        "steps": [
+          "Treat step 0 as the ground and let `ways(i)` count the move sequences that end exactly on step `i`.",
+          "If `i` is 0, return 1 for the empty sequence; if `i` is 1, return 1 for the single 1-step.",
+          "Otherwise count the sequences whose last move is a 1-step by calling `ways(i − 1)`.",
+          "Count the sequences whose last move is a 2-step by calling `ways(i − 2)`.",
+          "Return the sum of the two counts, and answer `ways(n)`."
+        ],
+        "time": "O(2^n)",
+        "space": "O(n)",
+        "complexity": "Each call does O(1) work but spawns two more, so the number of calls satisfies the same recurrence as the answer and equals `2·ways(n) − 1`, which grows like `1.618^n` (bounded by `2^n`). The only extra memory is the recursion stack, at most `n` frames deep along `ways(n) → ways(n − 1) → … → ways(1)`.",
+        "tradeoff": "The bottleneck is recomputing the same subproblems: `n = 45` makes about `3.7·10^9` calls, far beyond the time limit, even though only 46 distinct values `ways(0..45)` exist.",
+        "deep": {
+          "pseudocode": [
+            "function climbStairs(n)",
+            "  return ways(n)  // ways(i) = number of move sequences that end exactly on step i",
+            "function ways(i)",
+            "  if i = 0",
+            "    return 1  // already on the ground: the empty sequence counts once",
+            "  if i = 1",
+            "    return 1  // only a single 1-step reaches step 1",
+            "  oneBack ← ways(i − 1)  // sequences whose last move is a 1-step from i − 1",
+            "  twoBack ← ways(i − 2)  // sequences whose last move is a 2-step from i − 2",
+            "  return oneBack + twoBack  // the two groups never overlap, so add them"
+          ],
+          "time": {
+            "total": "O(2^n)",
+            "parts": [
+              {
+                "part": "Base cases (lines 4-7)",
+                "cost": "O(1) per call",
+                "why": "Two comparisons and a return; every leaf of the call tree ends here."
+              },
+              {
+                "part": "Two recursive calls (lines 8-9)",
+                "cost": "calls(i) = 1 + calls(i − 1) + calls(i − 2) calls in total",
+                "why": "Every non-base call spawns two more and nothing is cached, so identical subtrees are re-expanded."
+              },
+              {
+                "part": "Addition and return (line 10)",
+                "cost": "O(1) per call",
+                "why": "One addition per non-base call."
+              }
+            ],
+            "sum": "calls(0) = calls(1) = 1 and calls(i) = 1 + calls(i − 1) + calls(i − 2) solve to calls(n) = 2·ways(n) − 1 (n = 3: 5 calls, n = 4: 9 calls). ways(n) grows like φ^n with φ ≈ 1.618, so the total is Θ(φ^n) × O(1) ⊆ O(2^n).",
+            "cases": "",
+            "feel": "n = 45 → 2 · 1,836,311,903 − 1 ≈ 3.7·10^9 calls, several seconds even in C++, so it gets Time Limit Exceeded.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Recursion stack (lines 8-9)",
+                "cost": "at most n frames × O(1)",
+                "why": "The deepest chain is ways(n) → ways(n − 1) → … → ways(1), and each frame holds only i, oneBack and twoBack."
+              }
+            ],
+            "sum": "The stack is the only thing that grows: O(n).",
+            "cases": "",
+            "feel": "",
+            "note": "No arrays are allocated. For n = 45 the stack is at most 45 frames deep, so the danger here is time, not stack overflow."
+          },
+          "dryRun": {
+            "input": "n = 3",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "climbStairs(3) calls ways(3), the number of move sequences that end exactly on step 3.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 3,
+                "explain": "ways(3) is not a base case, so line 8 calls ways(2) to count the ways whose last move is a 1-step from step 2; a new frame is pushed.",
+                "vars": {
+                  "i": "2"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)",
+                      "ways(2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 3,
+                "explain": "ways(2) is not a base case, so line 8 calls ways(1) to count the ways whose last move is a 1-step from step 1; a new frame is pushed.",
+                "vars": {
+                  "i": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)",
+                      "ways(2)",
+                      "ways(1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "ways(1) is a base case: the only way to reach step 1 is a single 1-step, so it returns 1.",
+                "vars": {
+                  "i": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)",
+                      "ways(2)",
+                      "ways(1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "ways(1) returned 1, so oneBack = 1: 1 way to reach step 2 ends with a 1-step from step 1.",
+                "vars": {
+                  "i": "2",
+                  "oneBack": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)",
+                      "ways(2): oneBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 3,
+                "explain": "Back in ways(2), line 9 calls ways(0) for the 2-step case; a new frame is pushed.",
+                "vars": {
+                  "i": "0"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)",
+                      "ways(2): oneBack=1",
+                      "ways(0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 5,
+                "explain": "ways(0) is a base case: being on the ground already is one way (no moves), so it returns 1.",
+                "vars": {
+                  "i": "0"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)",
+                      "ways(2): oneBack=1",
+                      "ways(0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "ways(0) returned 1, so twoBack = 1: 1 way ends with a 2-step from step 0.",
+                "vars": {
+                  "i": "2",
+                  "oneBack": "1",
+                  "twoBack": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)",
+                      "ways(2): oneBack=1, twoBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "ways(2) returns oneBack + twoBack = 1 + 1 = 2; the two groups never overlap, so adding is exact.",
+                "vars": {
+                  "i": "2",
+                  "oneBack": "1",
+                  "twoBack": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3)",
+                      "ways(2): oneBack=1, twoBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "ways(2) returned 2, so oneBack = 2: 2 ways to reach step 3 end with a 1-step from step 2.",
+                "vars": {
+                  "i": "3",
+                  "oneBack": "2"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3): oneBack=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 3,
+                "explain": "ways(3) line 9 calls ways(1) for the 2-step case. ways(1) was already solved inside an earlier call, but plain recursion remembers nothing, so it starts over.",
+                "vars": {
+                  "i": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3): oneBack=2",
+                      "ways(1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 7,
+                "explain": "ways(1) is a base case: the only way to reach step 1 is a single 1-step, so it returns 1.",
+                "vars": {
+                  "i": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3): oneBack=2",
+                      "ways(1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "ways(1) returned 1, so twoBack = 1: 1 way ends with a 2-step from step 1.",
+                "vars": {
+                  "i": "3",
+                  "oneBack": "2",
+                  "twoBack": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3): oneBack=2, twoBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "ways(3) returns oneBack + twoBack = 2 + 1 = 3; the two groups never overlap, so adding is exact.",
+                "vars": {
+                  "i": "3",
+                  "oneBack": "2",
+                  "twoBack": "1"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(3): oneBack=2, twoBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 2,
+                "explain": "ways(3) returned 3, so climbStairs returns 3. It took 5 calls, and ways(1) was computed twice: that repeated work is what makes plain recursion exponential.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {},
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              }
+            ],
+            "result": "3: the ways are 1+1+1 and 2+1 (ending with a 1-step, counted by ways(2) = 2) plus 1+2 (ending with a 2-step, counted by ways(1) = 1)."
+          },
+          "solution": "class Solution {\npublic:\n    int climbStairs(int n) {\n        return ways(n); // count the move sequences that end exactly on step n\n    }\n\nprivate:\n    // ways(i) = number of distinct sequences of 1-steps and 2-steps that end exactly on step i\n    int ways(int i) {\n        if (i == 0) return 1;      // already on the ground: the empty sequence counts once\n        if (i == 1) return 1;      // only a single 1-step reaches step 1\n        int oneBack = ways(i - 1); // sequences whose last move is a 1-step from step i - 1\n        int twoBack = ways(i - 2); // sequences whose last move is a 2-step from step i - 2\n        return oneBack + twoBack;  // the two groups never overlap, so their sizes add up\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    int n1 = 2;\n    cout << \"Example 1: n = \" << n1 << \" -> \" << sol.climbStairs(n1) << \" (expected 2)\\n\";\n\n    int n2 = 3;\n    cout << \"Example 2: n = \" << n2 << \" -> \" << sol.climbStairs(n2) << \" (expected 3)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Better",
+        "name": "Top-down recursion with a memo array",
+        "aha": "In the brute-force call tree `ways(i)` depends only on `i`, yet `ways(1)` is solved twice for `n = 3` and the duplicates multiply as `n` grows; there are only `n + 1` distinct arguments, so remembering each answer removes every repeated subtree.",
+        "idea": "Keep the same recurrence but add an array `memo` of size `n + 1` filled with -1, meaning not computed yet. Base cases `i ≤ 1` still return 1 directly; for larger `i`, check `memo[i]` first and return it if it is set, otherwise compute `ways(i − 1) + ways(i − 2)`, store it in `memo[i]` and return it. This is correct because `ways(i)` is a pure function of `i`, so a cached value is exactly what recomputing would produce. Each state `2..n` is expanded only once, which turns the exponential tree into a chain of `2n − 1` calls.",
+        "steps": [
+          "Create `memo` of size `n + 1` filled with -1.",
+          "In `ways(i)`, return 1 immediately when `i` is 0 or 1.",
+          "If `memo[i]` is not -1, return the stored value without recursing.",
+          "Otherwise compute `ways(i − 1) + ways(i − 2)` recursively.",
+          "Store the sum in `memo[i]` before returning it.",
+          "Return `ways(n)` from `climbStairs`."
+        ],
+        "time": "O(n)",
+        "space": "O(n)",
+        "complexity": "Lines 9-11 run once for each `i` from 2 to `n`, and every other call returns in O(1) from a base case or the memo, so there are `2n − 1` calls of O(1) work each. The extra memory is the `memo` array of `n + 1` ints plus a recursion stack up to `n` frames deep.",
+        "tradeoff": "It is fast enough for `n ≤ 45`, but it keeps `n + 1` memo cells and up to `n` stack frames even though `ways(i)` only ever reads the two values just below `i`; for a much larger `n` the deep recursion could also overflow the stack.",
+        "deep": {
+          "pseudocode": [
+            "function climbStairs(n)",
+            "  memo ← array of size n + 1 filled with −1  // −1 means \"not computed yet\"",
+            "  return ways(n, memo)",
+            "function ways(i, memo)",
+            "  if i ≤ 1",
+            "    return 1  // ways(0) = 1 (no moves), ways(1) = 1 (one 1-step)",
+            "  if memo[i] ≠ −1",
+            "    return memo[i]  // already solved: reuse it instead of re-expanding the subtree",
+            "  oneBack ← ways(i − 1, memo)  // last move was a 1-step from i − 1",
+            "  twoBack ← ways(i − 2, memo)  // last move was a 2-step from i − 2",
+            "  memo[i] ← oneBack + twoBack  // store before returning so later calls are O(1)",
+            "  return memo[i]"
+          ],
+          "time": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Memo allocation (line 2)",
+                "cost": "n + 1 cells × O(1)",
+                "why": "Every cell is set to −1 once."
+              },
+              {
+                "part": "First evaluation of ways(i) for i = 2..n (lines 9-12)",
+                "cost": "n − 1 states × O(1)",
+                "why": "memo[i] is filled before returning, so lines 9-11 never run twice for the same i."
+              },
+              {
+                "part": "Calls answered by a base case or the memo (lines 5-8)",
+                "cost": "n calls × O(1)",
+                "why": "Each of the n − 1 expanded states makes 2 calls, and n of all these calls stop immediately at line 6 or line 8."
+              }
+            ],
+            "sum": "Total calls = 1 + 2(n − 1) = 2n − 1 (n = 4: 7 calls instead of 9), each O(1), plus the O(n) allocation: O(n) + O(n) = O(n).",
+            "cases": "",
+            "feel": "n = 45 → 89 calls and 46 memo cells: a few microseconds.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "memo array (line 2)",
+                "cost": "n + 1 ints",
+                "why": "One cell per possible argument 0..n."
+              },
+              {
+                "part": "Recursion stack (lines 9-10)",
+                "cost": "at most n frames × O(1)",
+                "why": "The first descent ways(n) → ways(n − 1) → … → ways(1) is n frames deep."
+              }
+            ],
+            "sum": "O(n) + O(n) = O(n).",
+            "cases": "",
+            "feel": "",
+            "note": "memo[0] and memo[1] are never written because the base cases answer them; the output is a single int."
+          },
+          "dryRun": {
+            "input": "n = 4 (the examples n = 2 and n = 3 never reach a memo hit, so one step higher shows the cache working)",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "memo has n + 1 = 5 cells, all -1 (not computed yet). Nothing is on the call stack yet.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "No base case or memo entry applies to ways(4), ways(3) or ways(2), so each pauses at line 9 and calls the next: ways(4) → ways(3) → ways(2) → ways(1). ways(1) is a base case and returns 1.",
+                "vars": {
+                  "i": "1"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3)",
+                      "ways(2)",
+                      "ways(1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Back in ways(2): ways(1) returned 1, so oneBack = 1.",
+                "vars": {
+                  "i": "2",
+                  "oneBack": "1"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3)",
+                      "ways(2): oneBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "ways(2) line 10 calls ways(0) for the 2-step case. It is a base case (checked before the memo), so line 6 returns 1.",
+                "vars": {
+                  "i": "0"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3)",
+                      "ways(2): oneBack=1",
+                      "ways(0)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "ways(0) returned 1, so twoBack = 1.",
+                "vars": {
+                  "i": "2",
+                  "oneBack": "1",
+                  "twoBack": "1"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3)",
+                      "ways(2): oneBack=1, twoBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "memo[2] = oneBack + twoBack = 1 + 1 = 2. It is stored before returning, so every later call to ways(2) costs O(1).",
+                "vars": {
+                  "i": "2",
+                  "oneBack": "1",
+                  "twoBack": "1"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3)",
+                      "ways(2): oneBack=1, twoBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Back in ways(3): ways(2) returned 2, so oneBack = 2.",
+                "vars": {
+                  "i": "3",
+                  "oneBack": "2"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3): oneBack=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 6,
+                "explain": "ways(3) line 10 calls ways(1) for the 2-step case. It is a base case (checked before the memo), so line 6 returns 1.",
+                "vars": {
+                  "i": "1"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3): oneBack=2",
+                      "ways(1)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "ways(1) returned 1, so twoBack = 1.",
+                "vars": {
+                  "i": "3",
+                  "oneBack": "2",
+                  "twoBack": "1"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "-1",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3): oneBack=2, twoBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "memo[3] = oneBack + twoBack = 2 + 1 = 3. It is stored before returning, so every later call to ways(3) costs O(1).",
+                "vars": {
+                  "i": "3",
+                  "oneBack": "2",
+                  "twoBack": "1"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "3",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4)",
+                      "ways(3): oneBack=2, twoBack=1"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Back in ways(4): ways(3) returned 3, so oneBack = 3.",
+                "vars": {
+                  "i": "4",
+                  "oneBack": "3"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "3",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4): oneBack=3"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 8,
+                "explain": "ways(4) line 10 calls ways(2). memo[2] = 2 is already filled, so line 8 returns 2 immediately; without the memo this call would re-expand ways(1) and ways(0).",
+                "vars": {
+                  "i": "2"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "3",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4): oneBack=3",
+                      "ways(2)"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "ways(2) returned 2, so twoBack = 2.",
+                "vars": {
+                  "i": "4",
+                  "oneBack": "3",
+                  "twoBack": "2"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "3",
+                      "-1"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4): oneBack=3, twoBack=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "memo[4] = oneBack + twoBack = 3 + 2 = 5. It is stored before returning, so every later call to ways(4) costs O(1).",
+                "vars": {
+                  "i": "4",
+                  "oneBack": "3",
+                  "twoBack": "2"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "3",
+                      "5"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": [
+                      "ways(4): oneBack=3, twoBack=2"
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 3,
+                "explain": "climbStairs returns ways(4) = 5. Only 7 calls were made (plain recursion needs 9); memo[0] and memo[1] stay -1 because the base cases answer them directly.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "memo": {
+                    "values": [
+                      "-1",
+                      "-1",
+                      "2",
+                      "3",
+                      "5"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "call stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                }
+              }
+            ],
+            "result": "5: ways(4) = ways(3) + ways(2) = 3 + 2, and the second request for ways(2) was answered from memo[2] instead of being recomputed."
+          },
+          "solution": "class Solution {\npublic:\n    int climbStairs(int n) {\n        vector<int> memo(n + 1, -1); // memo[i] = ways(i) once computed; -1 means not computed yet\n        return ways(n, memo);\n    }\n\nprivate:\n    int ways(int i, vector<int>& memo) {\n        if (i <= 1) return 1;              // ways(0) = 1 (no moves) and ways(1) = 1 (one 1-step)\n        if (memo[i] != -1) return memo[i]; // already solved: reuse it instead of re-expanding the subtree\n        int oneBack = ways(i - 1, memo);   // last move was a 1-step from step i - 1\n        int twoBack = ways(i - 2, memo);   // last move was a 2-step from step i - 2\n        memo[i] = oneBack + twoBack;       // store before returning so later calls cost O(1)\n        return memo[i];\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    int n1 = 2;\n    cout << \"Example 1: n = \" << n1 << \" -> \" << sol.climbStairs(n1) << \" (expected 2)\\n\";\n\n    int n2 = 3;\n    cout << \"Example 2: n = \" << n2 << \" -> \" << sol.climbStairs(n2) << \" (expected 3)\\n\";\n\n    return 0;\n}"
+        }
+      },
+      {
+        "level": "Optimal",
+        "name": "Bottom-up with two rolling variables",
+        "aha": "The memoised recursion ends up filling `memo[2], memo[3], …, memo[n]` in increasing order, and `memo[i]` reads only `memo[i − 1]` and `memo[i − 2]`; so we can loop upward and keep just the last two values instead of the array and the call stack.",
+        "idea": "Hold `prev2 = ways(i − 2)` and `prev1 = ways(i − 1)`, starting from `ways(0) = 1` and `ways(1) = 1`. For each `i` from 2 to `n`, compute `curr = prev1 + prev2`, then slide the window: `prev2` takes the old `prev1` and `prev1` takes `curr`. The invariant \"before iteration `i`, `prev1 = ways(i − 1)` and `prev2 = ways(i − 2)`\" holds at the start and is restored by the slide, so after `i = n` the value `curr` is `ways(n)`. For `n = 1` the loop would not run and `curr` would still be 0, which is why `prev1 = 1` is returned early.",
+        "steps": [
+          "Set `prev2 = 1` for `ways(0)` and `prev1 = 1` for `ways(1)`.",
+          "If `n` is 1, return 1 immediately.",
+          "For `i` from 2 to `n`, compute `curr = prev1 + prev2`.",
+          "Copy `prev1` into `prev2`, then `curr` into `prev1`, so they describe steps `i − 1` and `i` for the next round.",
+          "After the loop, return `curr`, which equals `ways(n)`."
+        ],
+        "time": "O(n)",
+        "space": "O(1)",
+        "complexity": "The single loop of `n − 1` iterations, each one addition and two copies, is the whole running time. Only four integers (`prev2`, `prev1`, `curr`, `i`) are stored, no matter how large `n` is.",
+        "tradeoff": "With `O(1)` space and at most 44 additions for `n ≤ 45` it is effectively optimal here. Matrix exponentiation of `[[1,1],[1,0]]` reaches `O(log n)` time and Binet's formula is `O(1)` but needs floating point that loses exactness for large `n`; neither pays off at this input size.",
+        "deep": {
+          "pseudocode": [
+            "function climbStairs(n)",
+            "  prev2 ← 1  // ways(0): one way to be on the ground",
+            "  prev1 ← 1  // ways(1): a single 1-step",
+            "  if n = 1",
+            "    return prev1  // the loop below starts at i = 2",
+            "  curr ← 0  // will hold ways(i)",
+            "  for i ← 2 to n",
+            "    curr ← prev1 + prev2  // a 1-step from i − 1 or a 2-step from i − 2",
+            "    prev2 ← prev1  // must happen before prev1 is overwritten",
+            "    prev1 ← curr  // now prev2 = ways(i − 1), prev1 = ways(i)",
+            "  return curr  // after i = n, curr = ways(n)"
+          ],
+          "time": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Initialisation and n = 1 check (lines 2-6)",
+                "cost": "O(1)",
+                "why": "A fixed number of assignments and one comparison."
+              },
+              {
+                "part": "Main loop (lines 7-10)",
+                "cost": "n − 1 iterations × O(1)",
+                "why": "Each iteration does one addition and two copies."
+              }
+            ],
+            "sum": "O(1) + (n − 1) · O(1) = O(n); the loop dominates.",
+            "cases": "Best case n = 1 returns at line 5 without looping; every other n runs exactly n − 1 iterations.",
+            "feel": "n = 45 → 44 iterations, effectively instant.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(1)",
+            "parts": [
+              {
+                "part": "prev2, prev1, curr, i (lines 2-7)",
+                "cost": "4 ints",
+                "why": "The window holds only the two most recent counts plus the loop counter."
+              }
+            ],
+            "sum": "A constant number of ints: O(1).",
+            "cases": "",
+            "feel": "",
+            "note": "No array and no recursion; the input n and the int answer are not counted."
+          },
+          "dryRun": {
+            "input": "n = 4 (Example 1, n = 2, finishes in a single iteration, so a slightly taller staircase shows the window sliding)",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "prev2 = 1 stands for ways(0): there is exactly one way to be on the ground, making no moves.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 3,
+                "explain": "prev1 = 1 stands for ways(1): a single 1-step.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1",
+                  "prev1": "1"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 6,
+                "explain": "n = 4 is not 1, so line 4's check fails and the early return is skipped. curr starts at 0.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1",
+                  "prev1": "1",
+                  "curr": "0"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 2: curr = prev1 + prev2 = 1 + 1 = 2, the number of ways to reach step 2.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1",
+                  "prev1": "1",
+                  "curr": "2",
+                  "i": "2"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Lines 9-10 slide the window: prev2 = 1 (ways(1)) and prev1 = 2 (ways(2)).",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1",
+                  "prev1": "2",
+                  "curr": "2",
+                  "i": "2"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 3: curr = prev1 + prev2 = 2 + 1 = 3, the number of ways to reach step 3.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "1",
+                  "prev1": "2",
+                  "curr": "3",
+                  "i": "3"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 9,
+                "explain": "prev2 = prev1 = 2. This must happen before prev1 is overwritten, otherwise ways(2) would be lost.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "2",
+                  "prev1": "2",
+                  "curr": "3",
+                  "i": "3"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "prev1 = curr = 3. Now prev2 = ways(2) and prev1 = ways(3), ready for i = 4.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "2",
+                  "prev1": "3",
+                  "curr": "3",
+                  "i": "3"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 8,
+                "explain": "i = 4: curr = prev1 + prev2 = 3 + 2 = 5, the number of ways to reach step 4.",
+                "vars": {
+                  "n": "4",
+                  "prev2": "2",
+                  "prev1": "3",
+                  "curr": "5",
+                  "i": "4"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 10,
+                "explain": "Lines 9-10 slide the window: prev2 = 3 (ways(3)) and prev1 = 5 (ways(4)).",
+                "vars": {
+                  "n": "4",
+                  "prev2": "3",
+                  "prev1": "5",
+                  "curr": "5",
+                  "i": "4"
+                },
+                "arrays": {},
+                "structures": {}
+              },
+              {
+                "line": 11,
+                "explain": "The loop ends after i = 4, so climbStairs returns curr = 5 = ways(4).",
+                "vars": {
+                  "n": "4",
+                  "prev2": "3",
+                  "prev1": "5",
+                  "curr": "5"
+                },
+                "arrays": {},
+                "structures": {}
+              }
+            ],
+            "result": "5: the loop produced ways(2) = 2, ways(3) = 3 and ways(4) = 5, the same values the memo held, using only two variables."
+          },
+          "solution": "class Solution {\npublic:\n    int climbStairs(int n) {\n        int prev2 = 1;            // ways(0): one way to be on the ground (no moves)\n        int prev1 = 1;            // ways(1): a single 1-step\n        if (n == 1) return prev1; // the loop starts at i = 2, so answer n = 1 directly\n        int curr = 0;             // will hold ways(i) inside the loop\n        for (int i = 2; i <= n; ++i) {\n            curr = prev1 + prev2; // arrive by a 1-step from i - 1 or a 2-step from i - 2\n            prev2 = prev1;        // ways(i - 1) becomes the \"two back\" value for step i + 1\n            prev1 = curr;         // ways(i) becomes the \"one back\" value for step i + 1\n        }\n        return curr; // ways(n); at most 1836311903 for n = 45, which still fits in int\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n\n    int n1 = 2;\n    cout << \"Example 1: n = \" << n1 << \" -> \" << sol.climbStairs(n1) << \" (expected 2)\\n\";\n\n    int n2 = 3;\n    cout << \"Example 2: n = \" << n2 << \" -> \" << sol.climbStairs(n2) << \" (expected 3)\\n\";\n\n    return 0;\n}"
+        }
+      }
+    ],
+    "mistakes": [
+      "Counting unordered combinations instead of ordered sequences: treating `1+2` and `2+1` as one way gives 2 for `n = 3` instead of 3.",
+      "Wrong base cases, such as `ways(0) = 0`, which makes `ways(2) = 1` instead of 2, or checking only `i == 1` so the recursion reaches `ways(-1)` and never stops.",
+      "Submitting the plain recursion: it passes the examples but makes hundreds of millions of calls from around `n = 40` and gets Time Limit Exceeded.",
+      "Sliding the window in the wrong order (`prev1 = curr` before `prev2 = prev1`), which copies the new value into both variables and doubles the count every step."
+    ],
+    "edgeCases": [
+      "`n = 1`: the answer is 1 and the loop never runs, so code that returns a `curr` initialised to 0 must handle it separately.",
+      "`n = 2`: the smallest staircase with two different ways (`1+1` and `2`), confirming the base cases add up correctly.",
+      "`n = 45`: the answer 1,836,311,903 is close to `INT_MAX`, so `int` is fine but any extra iteration (computing `ways(46)`) would overflow.",
+      "`n` around 40 to 45 with unmemoised recursion: correct answers but billions of calls, the exact case that separates the brute force from the DP."
+    ],
+    "related": [
+      {
+        "title": "Fibonacci Number",
+        "slug": "fibonacci-number",
+        "why": "The identical recurrence `F(n) = F(n − 1) + F(n − 2)`, only with base cases 0 and 1."
+      },
+      {
+        "title": "Min Cost Climbing Stairs",
+        "slug": "min-cost-climbing-stairs",
+        "why": "Same 1-or-2 step staircase, but each state takes the minimum cost of the two previous states instead of summing counts."
+      },
+      {
+        "title": "N-th Tribonacci Number",
+        "slug": "n-th-tribonacci-number",
+        "why": "The same rolling-window DP with a window of three previous values."
+      },
+      {
+        "title": "Decode Ways",
+        "slug": "decode-ways",
+        "why": "Counts ways to consume a string 1 or 2 characters at a time, the climbing-stairs recurrence with validity checks on each move."
+      }
+    ],
+    "takeaways": [
+      "For counting problems, split the possibilities by the last choice made; if the groups are disjoint and complete, their counts add up to a recurrence.",
+      "When a recursion keeps solving the same arguments, memoise it: the cost drops from the size of the call tree to the number of distinct states.",
+      "If each DP state depends only on a fixed window of earlier states, keep just that window in variables to cut space to `O(1)`.",
+      "Always check whether order matters: ordered sequences (this problem) and unordered combinations (Coin Change II) need different DPs."
+    ]
+  }
+}

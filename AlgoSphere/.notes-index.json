@@ -220,7 +220,10 @@
     "space": "O(n + E)",
     "dir": "leetcode/network-delay-time",
     "solution": "",
-    "mine": null,
-    "updatedAt": "2026-11-20T15:15:46.458Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/network-delay-time/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-20T15:16:35.644Z"
   }
 }

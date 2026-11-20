@@ -1,10 +1,10 @@
 # Network Delay Time
 
-**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/network-delay-time/) · Pattern: **Single-source shortest paths (Dijkstra)**
+**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/network-delay-time/) · Pattern: **Single-source shortest paths (Dijkstra)** · ✅ Solved in C++
 
 > In a directed graph with non-negative edge weights, find the largest shortest-path distance from node `k` to any node, or return -1 if some node cannot be reached.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -242,6 +242,23 @@ Dijkstra: repeatedly pop the closest unfinalised node from a min-heap, finalise 
 **Complexity:** time `O(E log E), i.e. O(E log n)`, space `O(n + E)`. Each edge causes at most one push, and each push or pop costs log of the heap size, so about 6000·13 operations. Memory holds the adjacency list (E entries), the heap (up to E entries) and the finalised set (n entries).
 
 **Why this is the best:** Every edge must be read at least once, so the bound is optimal up to the log factor. The price is the heap and the requirement of non-negative weights; a negative weight would break it, and that is guaranteed not to happen here.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 2 of 8 | 2026-11-20 |
+
+For comparison, the optimal approach (Dijkstra with a min-heap) runs in `O(E log E), i.e. O(E log n)` time and `O(n + E)` space.
+
+```cpp
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        submit
+    }
+};
+```
 
 ## Test cases
 

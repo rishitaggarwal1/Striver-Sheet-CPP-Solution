@@ -160,15 +160,15 @@
     "site": "leetcode",
     "slug": "rotate-array",
     "difficulty": "Medium",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Array reversal (three reverses)",
+    "time": "O(n)",
+    "space": "O(1)",
     "dir": "leetcode/rotate-array",
     "solution": "",
     "mine": {
       "lang": "C++",
       "path": "leetcode/rotate-array/my-solution.cpp"
     },
-    "updatedAt": "2026-11-20T15:04:42.345Z"
+    "updatedAt": "2026-11-20T15:05:04.103Z"
   }
 }

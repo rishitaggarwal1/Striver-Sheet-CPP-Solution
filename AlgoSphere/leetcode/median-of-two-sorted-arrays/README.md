@@ -2,6 +2,8 @@
 
 **LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/median-of-two-sorted-arrays/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -106,6 +108,30 @@ If the total is even, return the average of `max(leftA, leftB)` and `min(rightA,
 The trickiest part is handling cuts at the very ends (`i = 0`, `i = len(A)`, `j = 0`, `j = len(B)`) with infinity sentinels, which also covers the case where one array is empty. Searching on the shorter array guarantees `j` always stays within `0..len(B)`, and the `+1` in `half` puts the odd median on the left side. Use floating-point division for the even-length average. Time is `O(log(min(m, n)))`, which beats the required bound, and space is `O(1)`.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| nums1 = [1,5,9]<br>nums2 = [2,3,10,11] | 5.00000 | Odd total length with interleaved values; merged [1,2,3,5,9,10,11]. |
+| nums1 = [1,2,3]<br>nums2 = [4,5,6] | 3.50000 | Disjoint ranges, even total; merged [1,2,3,4,5,6]. |
+| nums1 = [-5,-3,0,7]<br>nums2 = [-4,2] | -1.50000 | Negatives mixed in; merged [-5,-4,-3,0,2,7], median (-3+0)/2. |
+| nums1 = [10,20,30,40,50]<br>nums2 = [15] | 25.00000 | Very unequal lengths; merged [10,15,20,30,40,50]. |
+| nums1 = [1,4,7]<br>nums2 = [2,6,8,9,12] | 6.50000 | Interleaved, even total; merged [1,2,4,6,7,8,9,12]. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single element | nums1 = []<br>nums2 = [1] | 1.00000 | First array empty. |
+| Empty second array | nums1 = [2]<br>nums2 = [] | 2.00000 | Median is the sole element. |
+|   | nums1 = []<br>nums2 = [2,3] | 2.50000 | Empty first array with even length. |
+| All equal | nums1 = [3,3,3]<br>nums2 = [3,3] | 3.00000 | Duplicates throughout. |
+| Extreme values | nums1 = [-1000000]<br>nums2 = [1000000] | 0.00000 | Min and max bounds average to zero. |
+| Max values | nums1 = [1000000,1000000]<br>nums2 = [1000000] | 1000000.00000 | No overflow when duplicates at upper bound. |
+| Partition crossing | nums1 = [1,2]<br>nums2 = [-1,3] | 1.50000 | Median spans both arrays; merged [-1,1,2,3]. |
 
 ---
 

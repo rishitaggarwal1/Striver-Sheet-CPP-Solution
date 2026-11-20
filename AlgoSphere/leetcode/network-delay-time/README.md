@@ -396,7 +396,7 @@ int main() {
 
 | Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
 | --- | --- | --- | --- | --- | --- | --- |
-| C++ |   |   |   | 4 | 2 of 8 | 2026-11-20 |
+| C++ |   |   |   | 5 | 2 of 8 | 2026-11-20 |
 
 For comparison, the optimal approach (Dijkstra with a min-heap) runs in `O(E log E), i.e. O(E log n)` time and `O(n + E)` space.
 

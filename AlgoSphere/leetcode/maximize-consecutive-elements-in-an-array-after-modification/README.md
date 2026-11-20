@@ -247,19 +247,19 @@ If we updated `dp[x]` before `dp[x + 1]`, then `dp[x + 1]` could read the newly 
 
 | Step | Line | What happens | State (step 1) / what changed |
 | --- | --- | --- | --- |
-| 1 | 4 | Initialize n = 5, best = 1, and working array cur of 5 zeros before starting dfs(0). | `n = 5`<br>`best = 1`<br>`nums = [2, 1, 5, 1, 1]`<br>`cur = [0, 0, 0, 0, 0]` |
-| 2 | 17 | Enter dfs(0) and take the +0 branch for index 0, setting cur[0] = nums[0] = 2. | `i = 0`<br>`nums = [2, 1, 5, 1, 1]` (i→0)<br>`cur = [2, 0, 0, 0, 0]` (i→0) |
-| 3 | 17 | Continue taking the +0 branch down through indices 1, 2, 3, and 4; at i = 4, cur[4] becomes nums[4] = 1. | `i = 4`<br>`nums = [2, 1, 5, 1, 1]` (i→4)<br>`cur = [2, 1, 5, 1, 1]` (i→4) |
-| 4 | 7 | Reach the base case i = 5 for the all-+0 choice; copy, sort, and deduplicate cur into sorted = [1, 2, 5]. | `i = 5`<br>`nums = [2, 1, 5, 1, 1]`<br>`cur = [2, 1, 5, 1, 1]`<br>`sorted = [1, 2, 5]` |
-| 5 | 13 | At j = 1, sorted[1] (2) equals sorted[0] + 1 (1 + 1), so run increments to 2 and best updates from 1 to 2. | `best = 2`<br>`run = 2`<br>`j = 1`<br>`sorted = [1, 2, 5]` (j→1) |
-| 6 | 15 | At j = 2, sorted[2] (5) is not 2 + 1, so the streak breaks and run resets to 1 before returning. | `run = 1`<br>`j = 2`<br>`sorted = [1, 2, 5]` (j→2) |
-| 7 | 19 | Skip the remaining 15 leaves under cur[0] = 2 (none exceed best = 2, ending on [2, 2, 6, 2, 2]). Back at i = 0, take the +1 branch and set cur[0] = 3. | `i = 0`<br>`nums = [2, 1, 5, 1, 1]` (i→0)<br>`cur = [3, 2, 6, 2, 2]` (i→0) |
-| 8 | 19 | After taking +0 at i = 1 (cur[1] = 1) and +0 at i = 2 (cur[2] = 5), skip the +0 branch at i = 3 and take +1 at i = 3, setting cur[3] = 2. | `i = 3`<br>`nums = [2, 1, 5, 1, 1]` (i→3)<br>`cur = [3, 1, 5, 2, 2]` (i→3) |
-| 9 | 17 | At i = 4, take the +0 branch and set cur[4] = nums[4] = 1, forming [3, 1, 5, 2, 1]. | `i = 4`<br>`nums = [2, 1, 5, 1, 1]` (i→4)<br>`cur = [3, 1, 5, 2, 1]` (i→4) |
-| 10 | 7 | Reach the base case i = 5; sorting and deduplicating cur = [3, 1, 5, 2, 1] produces sorted = [1, 2, 3, 5]. | `i = 5`<br>`nums = [2, 1, 5, 1, 1]`<br>`cur = [3, 1, 5, 2, 1]`<br>`sorted = [1, 2, 3, 5]` |
-| 11 | 11 | At j = 1, sorted[1] (2) equals sorted[0] + 1, increasing run to 2; best remains 2 because 2 > 2 is false. | `run = 2`<br>`j = 1`<br>`sorted = [1, 2, 3, 5]` (j→1) |
-| 12 | 13 | At j = 2, sorted[2] (3) equals sorted[1] + 1, so run increases to 3 and best updates to 3. | `best = 3`<br>`run = 3`<br>`j = 2`<br>`sorted = [1, 2, 3, 5]` (j→2) |
-| 13 | 15 | At j = 3, sorted[3] (5) is not 3 + 1, so run resets to 1 before returning from this leaf. | `run = 1`<br>`j = 3`<br>`sorted = [1, 2, 3, 5]` (j→3) |
+| 1 | 4 | Initialize n = 5, best = 1, and working array cur of 5 zeros before starting dfs(0). | `best = 1`<br>`n = 5`<br>`cur = [0, 0, 0, 0, 0]`<br>`nums = [2, 1, 5, 1, 1]` |
+| 2 | 17 | Enter dfs(0) and take the +0 branch for index 0, setting cur[0] = nums[0] = 2. | `i = 0`<br>`cur = [2, 0, 0, 0, 0]` (i→0)<br>`nums = [2, 1, 5, 1, 1]` (i→0) |
+| 3 | 17 | Continue taking the +0 branch down through indices 1, 2, 3, and 4; at i = 4, cur[4] becomes nums[4] = 1. | `i = 4`<br>`cur = [2, 1, 5, 1, 1]` (i→4)<br>`nums = [2, 1, 5, 1, 1]` (i→4) |
+| 4 | 7 | Reach the base case i = 5 for the all-+0 choice; copy, sort, and deduplicate cur into sorted = [1, 2, 5]. | `i = 5`<br>`cur = [2, 1, 5, 1, 1]`<br>`nums = [2, 1, 5, 1, 1]`<br>`sorted = [1, 2, 5]` |
+| 5 | 13 | At j = 1, sorted[1] (2) equals sorted[0] + 1 (1 + 1), so run increments to 2 and best updates from 1 to 2. | `best = 2`<br>`j = 1`<br>`run = 2`<br>`sorted = [1, 2, 5]` (j→1) |
+| 6 | 15 | At j = 2, sorted[2] (5) is not 2 + 1, so the streak breaks and run resets to 1 before returning. | `j = 2`<br>`run = 1`<br>`sorted = [1, 2, 5]` (j→2) |
+| 7 | 19 | Skip the remaining 15 leaves under cur[0] = 2 (none exceed best = 2, ending on [2, 2, 6, 2, 2]). Back at i = 0, take the +1 branch and set cur[0] = 3. | `i = 0`<br>`cur = [3, 2, 6, 2, 2]` (i→0)<br>`nums = [2, 1, 5, 1, 1]` (i→0) |
+| 8 | 19 | After taking +0 at i = 1 (cur[1] = 1) and +0 at i = 2 (cur[2] = 5), skip the +0 branch at i = 3 and take +1 at i = 3, setting cur[3] = 2. | `i = 3`<br>`cur = [3, 1, 5, 2, 2]` (i→3)<br>`nums = [2, 1, 5, 1, 1]` (i→3) |
+| 9 | 17 | At i = 4, take the +0 branch and set cur[4] = nums[4] = 1, forming [3, 1, 5, 2, 1]. | `i = 4`<br>`cur = [3, 1, 5, 2, 1]` (i→4)<br>`nums = [2, 1, 5, 1, 1]` (i→4) |
+| 10 | 7 | Reach the base case i = 5; sorting and deduplicating cur = [3, 1, 5, 2, 1] produces sorted = [1, 2, 3, 5]. | `i = 5`<br>`cur = [3, 1, 5, 2, 1]`<br>`nums = [2, 1, 5, 1, 1]`<br>`sorted = [1, 2, 3, 5]` |
+| 11 | 11 | At j = 1, sorted[1] (2) equals sorted[0] + 1, increasing run to 2; best remains 2 because 2 > 2 is false. | `j = 1`<br>`run = 2`<br>`sorted = [1, 2, 3, 5]` (j→1) |
+| 12 | 13 | At j = 2, sorted[2] (3) equals sorted[1] + 1, so run increases to 3 and best updates to 3. | `best = 3`<br>`j = 2`<br>`run = 3`<br>`sorted = [1, 2, 3, 5]` (j→2) |
+| 13 | 15 | At j = 3, sorted[3] (5) is not 3 + 1, so run resets to 1 before returning from this leaf. | `j = 3`<br>`run = 1`<br>`sorted = [1, 2, 3, 5]` (j→3) |
 | 14 | 22 | Skip the remaining branches (none yield more than 3 consecutive values). All 32 combinations are complete, so return best = 3. | `cur = [3, 2, 6, 2, 2]` |
 
 **Result:** 3 — incrementing indices 0 and 3 yields [3, 1, 5, 2, 1], whose distinct sorted values [1, 2, 3, 5] contain the longest possible consecutive run of length 3 across all 2^5 = 32 choices.
@@ -431,15 +431,15 @@ int main() {
 | 1 | 2 | Sort nums in non-decreasing order so the greedy scan encounters smaller values first. | `nums = [1, 1, 1, 2, 5]` |
 | 2 | 6 | At i = 0 (nums[0] = 1), add 1 and 2 as candidate starting values. | `i = 0`<br>`nums = [1, 1, 1, 2, 5]` (i→0)<br>`candidates = {1, 2}` |
 | 3 | 6 | Skipping repetitive i = 1..3 (which add duplicate 1, 2 and new 3), at i = 4 (nums[4] = 5) we add 5 and 6 to candidates. | `i = 4`<br>`nums = [1, 1, 1, 2, 5]` (i→4)<br>`candidates = {1, 2, 3, 5, 6}` |
-| 4 | 9 | Initialize best = 0 and test the first candidate start = 1 with need = 1. | `best = 0`<br>`start = 1`<br>`need = 1`<br>`nums = [1, 1, 1, 2, 5]` |
-| 5 | 13 | At i = 0, x = 1 equals need = 1, so we use it without incrementing and advance need to 2. | `need = 2`<br>`i = 0`<br>`x = 1`<br>`nums = [1, 1, 1, 2, 5]` (i→0) |
-| 6 | 13 | At i = 1, x = 1 satisfies x + 1 = 2 = need, so we increment it to 2 and advance need to 3. | `need = 3`<br>`i = 1`<br>`nums = [1, 1, 1, 2, 5]` (i→1) |
+| 4 | 9 | Initialize best = 0 and test the first candidate start = 1 with need = 1. | `best = 0`<br>`need = 1`<br>`start = 1`<br>`nums = [1, 1, 1, 2, 5]` |
+| 5 | 13 | At i = 0, x = 1 equals need = 1, so we use it without incrementing and advance need to 2. | `i = 0`<br>`need = 2`<br>`x = 1`<br>`nums = [1, 1, 1, 2, 5]` (i→0) |
+| 6 | 13 | At i = 1, x = 1 satisfies x + 1 = 2 = need, so we increment it to 2 and advance need to 3. | `i = 1`<br>`need = 3`<br>`nums = [1, 1, 1, 2, 5]` (i→1) |
 | 7 | 12 | At i = 2, x = 1 can only form 1 or 2, neither of which equals need = 3, so we skip it. | `i = 2`<br>`nums = [1, 1, 1, 2, 5]` (i→2) |
-| 8 | 13 | At i = 3, x = 2 satisfies x + 1 = 3 = need, so we increment it to 3 and advance need to 4. | `need = 4`<br>`i = 3`<br>`x = 2`<br>`nums = [1, 1, 1, 2, 5]` (i→3) |
+| 8 | 13 | At i = 3, x = 2 satisfies x + 1 = 3 = need, so we increment it to 3 and advance need to 4. | `i = 3`<br>`need = 4`<br>`x = 2`<br>`nums = [1, 1, 1, 2, 5]` (i→3) |
 | 9 | 14 | At i = 4, x = 5 cannot form 4. The chain for start = 1 has length 4 - 1 = 3, updating best to 3. | `best = 3`<br>`nums = [1, 1, 1, 2, 5]` |
-| 10 | 9 | Test the next candidate start = 2 with need = 2. | `start = 2`<br>`need = 2` |
+| 10 | 9 | Test the next candidate start = 2 with need = 2. | `need = 2`<br>`start = 2` |
 | 11 | 14 | For start = 2, nums[0] = 1 forms 2 and nums[3] = 2 forms 3, ending with need = 4 (length 4 - 2 = 2); best stays 3. | `need = 4` |
-| 12 | 14 | Skipping remaining scans for start = 3, 5, and 6: each achieves chain length 1 (need = start + 1), leaving best = 3. | `start = 6`<br>`need = 7` |
+| 12 | 14 | Skipping remaining scans for start = 3, 5, and 6: each achieves chain length 1 (need = start + 1), leaving best = 3. | `need = 7`<br>`start = 6` |
 | 13 | 15 | All candidate starting values have been tested, so return best = 3. | (no change) |
 
 **Result:** 3 — Starting at 1, we greedily form [1, 2, 3] using nums[0]=1, nums[1]=1 (+1), and nums[3]=2 (+1), which is the longest possible consecutive sequence.

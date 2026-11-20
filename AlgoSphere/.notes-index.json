@@ -215,12 +215,12 @@
     "site": "leetcode",
     "slug": "network-delay-time",
     "difficulty": "Medium",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Single-source shortest paths (Dijkstra)",
+    "time": "O(E log E), i.e. O(E log n)",
+    "space": "O(n + E)",
     "dir": "leetcode/network-delay-time",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-20T15:14:43.683Z"
+    "updatedAt": "2026-11-20T15:15:15.032Z"
   }
 }

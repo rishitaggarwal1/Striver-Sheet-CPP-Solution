@@ -4,7 +4,7 @@
   "slug": "maximize-consecutive-elements-in-an-array-after-modification",
   "title": "Maximize Consecutive Elements in an Array After Modification",
   "url": "https://leetcode.com/problems/maximize-consecutive-elements-in-an-array-after-modification/",
-  "updatedAt": "2026-11-20T11:56:55.734Z",
+  "updatedAt": "2026-11-20T11:59:43.680Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given a 0-indexed array nums consisting of positive integers.\n\nInitially, you can increase the value of any element in the array by at most 1.\n\nAfter that, you need to select one or more elements from the final array such that those elements are consecutive when sorted in increasing order. For example, the elements [3, 4, 5] are consecutive while [3, 4, 6] and [1, 1, 2, 3] are not.\n\nReturn the maximum number of elements that you can select.\n\nExample 1:\n\nInput: nums = [2,1,5,1,1]\nOutput: 3\nExplanation: We can increase the elements at indices 0 and 3. The resulting array is nums = [3,1,5,2,1].\nWe select the elements [3,1,5,2,1] and we sort them to obtain [1,2,3], which are consecutive.\nIt can be shown that we cannot select more than 3 consecutive elements.\n\nExample 2:\n\nInput: nums = [1,4,7,10]\nOutput: 1\nExplanation: The maximum consecutive elements that we can select is 1.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^6"
@@ -133,6 +133,126 @@
         "output": "1",
         "note": "Large gaps: no two elements are within distance 2 so the longest consecutive sequence has length 1."
       }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Given an array `nums` where each element can be increased by `0` or `1`, find the maximum number of elements you can choose whose modified values form a strictly consecutive integer sequence.",
+    "pattern": "Sorting + Dynamic Programming",
+    "signals": [
+      "\"consecutive when sorted in increasing order\" → The original order of `nums` does not matter, and duplicates are forbidden in the chosen subset, which points to sorting `nums` first.",
+      "\"increase the value of any element ... by at most 1\" → Each element `x` has only two candidate roles in the final sequence (`x` or `x + 1`), allowing a simple local state transition.",
+      "\"1 <= nums.length <= 10^5\" and \"1 <= nums[i] <= 10^6\" → An `O(n^2)` approach will time out, while sorting plus a linear DP pass in `O(n log n)` will pass comfortably."
+    ],
+    "constraints": "With `nums.length <= 10^5`, an exponential `O(2^n)` search over `+0/+1` choices is impossible, and an `O(n^2)` loop takes roughly `10^10` operations, which is far too slow. Sorting `nums` takes `O(n log n)` ≈ `1.7 * 10^6` operations, and a linear DP pass adds `O(n)` ≈ `10^5` operations. Therefore, we need an `O(n log n)` time algorithm (or `O(n + max(nums))` using counting).",
+    "thinking": [
+      {
+        "q": "Do the original indices of `nums` matter after we modify elements?",
+        "a": "No, because we can select any subset and sort it to check consecutiveness. Moreover, if `x < y`, then `x`'s modified value (`x` or `x + 1`) is at most `y`, which can never strictly exceed `y`'s modified value (`y` or `y + 1`), so sorting `nums` lets us build consecutive chains strictly from smaller elements to larger ones."
+      },
+      {
+        "q": "In Example 1 (`nums = [2, 1, 5, 1, 1]`), why do repeated values like `1` still help?",
+        "a": "Even though a consecutive sequence cannot contain duplicates, one `1` can stay `1` while a second `1` is increased to `2`. Notice the third `1` cannot become `3`, so duplicates beyond two occurrences of the same value cannot both extend the same chain at that value."
+      },
+      {
+        "q": "If we sort `nums` and fix a starting value `start`, how would we check the longest chain starting at `start`?",
+        "a": "We can scan sorted `nums` left-to-right tracking the next integer `need` (initially `start`) and greedily match `x` or `x + 1` to `need`. However, trying all ~`2n` candidate values of `start` takes `O(n^2)` time, which repeats a lot of work across overlapping sequences."
+      },
+      {
+        "q": "How can we compute all chains in a single pass over sorted `nums` instead of restarting for every `start`?",
+        "a": "Define `dp[v]` as the maximum length of a consecutive sequence ending at value `v` using elements processed so far. When we see `x`, it can extend a sequence ending at `x - 1` (by staying `x`) or a sequence ending at `x` (by becoming `x + 1`)."
+      },
+      {
+        "q": "When processing a single element `x`, how do we avoid using that same `x` twice?",
+        "a": "If we updated `dp[x]` before `dp[x + 1]`, then `dp[x + 1]` could read the newly updated `dp[x]` and effectively count the same `x` as both `x` and `x + 1`. Updating `dp[x + 1] = max(dp[x + 1], dp[x] + 1)` first, and then `dp[x] = max(dp[x], dp[x - 1] + 1)`, guarantees `x` is used in at most one position."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Enumerate all +0/+1 choices",
+        "aha": "Because every `nums[i]` independently has two options (`nums[i]` or `nums[i] + 1`), the most direct way to remove the modification freedom is to try every possible final array.",
+        "idea": "Generate all `2^n` modified arrays by deciding for each index `i` whether to add `0` or `1`. For each resulting array, sort it (or insert into a set) and scan for the longest run of consecutive distinct integers. By exhaustively checking every valid modification, the maximum run found across all arrays is guaranteed to be optimal.",
+        "steps": [
+          "Recurse over index `i` from `0` to `n - 1`, branching on keeping `nums[i]` or replacing it with `nums[i] + 1`.",
+          "At `i == n`, put all modified values into a sorted list or hash set to remove duplicates.",
+          "Scan the distinct sorted values to find the longest contiguous run where `val[j] == val[j - 1] + 1`.",
+          "Return the maximum run length seen across all `2^n` branches."
+        ],
+        "time": "O(2^n * n log n)",
+        "space": "O(n)",
+        "complexity": "There are `2^n` leaf states in the recursion tree, and each leaf takes `O(n log n)` to sort (or `O(n)` with a hash set) to measure the longest consecutive sequence. Extra space is `O(n)` for the recursion stack and the temporary modified array.",
+        "tradeoff": "Completely infeasible beyond `n ≈ 20` because `2^n` explodes exponentially against the `n <= 10^5` constraint."
+      },
+      {
+        "level": "Better",
+        "name": "Sort + greedy check per starting value",
+        "aha": "Instead of branching exponentially on every element, sorting `nums` first lets us greedily build the chain for any fixed starting integer `start` in one linear scan.",
+        "idea": "Sort `nums` in non-decreasing order. Any optimal consecutive sequence must start at some value `start` equal to `nums[i]` or `nums[i] + 1`. For a fixed `start`, scanning sorted `nums` and always taking the earliest element that can form `need` (either `x == need` or `x + 1 == need`) is optimal because delaying `need` to a later element can never yield a smaller `x` or unlock more choices.",
+        "steps": [
+          "Sort `nums` in increasing order.",
+          "Collect all distinct candidate starting values from `nums[i]` and `nums[i] + 1`.",
+          "For each candidate `start`, initialize `need = start`.",
+          "Scan `x` in sorted `nums`: if `x == need` or `x + 1 == need`, increment `need` by `1`.",
+          "Record `need - start` as the chain length for this `start`, and return the maximum length across all candidates."
+        ],
+        "time": "O(n^2)",
+        "space": "O(n)",
+        "complexity": "Sorting takes `O(n log n)`, while collecting up to `2n` candidate starts and running an `O(n)` scan for each takes `O(n^2)` time, which dominates. Storing the candidate set uses `O(n)` auxiliary space.",
+        "tradeoff": "Re-scans `nums` from scratch for every candidate `start`, resulting in ~`10^10` operations when `n = 10^5` and timing out."
+      },
+      {
+        "level": "Optimal",
+        "name": "Sort + end-value DP",
+        "aha": "Rather than testing each starting value independently, we can track the longest consecutive chain ending at every value `v` in a single pass over sorted `nums`.",
+        "idea": "Sort `nums` in non-decreasing order and maintain a map `dp[v]` representing the length of the longest valid consecutive sequence ending at integer `v`. Because `nums` is sorted, all elements capable of contributing to values `< x` have already been processed before `x`. For each `x`, updating `dp[x + 1]` from `dp[x] + 1` before updating `dp[x]` from `dp[x - 1] + 1` ensures `x` either becomes `x + 1` or stays `x`, never both, which makes the DP transition exact.",
+        "steps": [
+          "Sort `nums` in increasing order.",
+          "Initialize an empty hash map (or array of size `max(nums) + 2`) `dp` where missing entries default to `0`.",
+          "For each `x` in sorted `nums`, update `dp[x + 1] = max(dp[x + 1], dp[x] + 1)` first.",
+          "Next, update `dp[x] = max(dp[x], dp[x - 1] + 1)`.",
+          "Return the maximum value stored in `dp`."
+        ],
+        "time": "O(n log n)",
+        "space": "O(n)",
+        "complexity": "Sorting `nums` in `O(n log n)` dominates the running time, since the DP loop performs `O(1)` expected hash map lookups and updates per element (`O(n)` total). The `dp` hash map stores at most `2n` keys, using `O(n)` auxiliary space.",
+        "tradeoff": "Uses `O(n)` space for the DP table and requires sorting; if `max(nums)` were much smaller than `n`, counting sort could achieve `O(n + max(nums))`, though `O(n log n)` is already optimal for comparison-based processing and independent of the value range."
+      }
+    ],
+    "mistakes": [
+      "Updating `dp[x]` before `dp[x + 1]`: if `dp[x]` increases first, then `dp[x + 1] = max(dp[x + 1], dp[x] + 1)` will chain onto the same element `x` twice, creating a phantom sequence of length 2 from a single number.",
+      "Not sorting `nums` before running the DP: processing `2` before `1` means `1 -> 2` will not propagate forward to `3` from the already-processed `2`.",
+      "Forgetting to take `max` in the DP updates (writing `dp[x + 1] = dp[x] + 1` directly): a third duplicate like `[1, 1, 1]` would overwrite `dp[2] = 2` with `dp[1] + 1` or corrupt an existing longer chain ending at `x + 1` if `x` had a shorter chain.",
+      "Skipping duplicates when deduplicating `nums` upfront: keeping at most two copies of each value is necessary (for `x` and `x + 1`), so converting `nums` into a set loses valid extensions like `[1, 1]` forming `[1, 2]`."
+    ],
+    "edgeCases": [
+      "Single element (`nums = [5]`): must return `1`, checking that `dp` handles arrays of length `1` without returning `0`.",
+      "All identical elements (`nums = [3, 3, 3, 3]`): can form `[3, 4]` of length `2`, verifying that duplicates beyond two do not artificially inflate `dp[4]` to `3` or `4`.",
+      "Large gaps between elements (`nums = [1, 4, 7, 10]`): even after `+1`, consecutive gaps remain `>= 2`, so the answer must be `1`.",
+      "Bridging a gap of 2 (`nums = [1, 3]`): `1` can become `2` while `3` stays `3`, yielding `[2, 3]` of length `2`; this verifies that `x` increasing to `x + 1` is correctly picked up by `x + 2` later in the sorted array."
+    ],
+    "related": [
+      {
+        "title": "Longest Consecutive Sequence",
+        "slug": "longest-consecutive-sequence",
+        "why": "Finds the longest consecutive integer sequence without modifications, introducing the core idea of tracking chain lengths by value."
+      },
+      {
+        "title": "Longest Arithmetic Subsequence of Given Difference",
+        "slug": "longest-arithmetic-subsequence-of-given-difference",
+        "why": "Uses the exact same `dp[val] = dp[val - d] + 1` hash-map DP pattern for difference `d = 1`, without the `+0/+1` choice."
+      },
+      {
+        "title": "Maximum Element After Decreasing and Rearranging",
+        "slug": "maximum-element-after-decreasing-and-rearranging",
+        "why": "Combines sorting with bounded element modifications to build consecutive integers `1, 2, ..., k` greedily."
+      }
+    ],
+    "takeaways": [
+      "When elements can shift by a small bounded amount (`+0` or `+1`), sorting first often restores a one-way dependency so DP can process elements in a single pass.",
+      "Reverse-order updates (`dp[x + 1]` before `dp[x]`) are the standard 0/1-knapsack-style trick to prevent a single item from transitioning to itself multiple times in the same iteration.",
+      "For sequence problems where you can pick any subset regardless of original positions, keying DP states by element value (`dp[value]`) is often much cleaner than keying by array index."
     ]
   }
 }

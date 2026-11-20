@@ -4,7 +4,7 @@
   "slug": "zigzag-conversion",
   "title": "Zigzag Conversion",
   "url": "https://leetcode.com/problems/zigzag-conversion/",
-  "updatedAt": "2026-11-20T17:18:45.302Z",
+  "updatedAt": "2026-11-20T17:18:58.808Z",
   "problem": {
     "difficulty": "Medium",
     "description": "The string \"PAYPALISHIRING\" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)\n\nP   A   H   N\nA P L S I I G\nY   I   R\n\nAnd then read line by line: \"PAHNAPLSIIGYIR\"\n\nWrite the code that will take a string and make this conversion given a number of rows:\n\nstring convert(string s, int numRows);\n\nExample 1:\n\nInput: s = \"PAYPALISHIRING\", numRows = 3\nOutput: \"PAHNAPLSIIGYIR\"\n\nExample 2:\n\nInput: s = \"PAYPALISHIRING\", numRows = 4\nOutput: \"PINALSIGYAHRPI\"\nExplanation:\nP     I    N\nA   L S  I G\nY A   H R\nP     I\n\nExample 3:\n\nInput: s = \"A\", numRows = 1\nOutput: \"A\"\n\nConstraints:\n\n- 1 <= s.length <= 1000\n\n- s consists of English letters (lower-case and upper-case), ',' and '.'.\n\n- 1 <= numRows <= 1000"
@@ -18,5 +18,165 @@
     "Store one growing string (or list of characters) per row, a current row index starting at 0, and a step of +1 or -1. Bucket `i` holds the characters of row `i` in left-to-right order, and the step says whether you are moving down or up.",
     "If `numRows` is 1 or at least the string length, return `s` unchanged.\nCreate `numRows` empty buckets, set row = 0 and step = +1.\nFor each character, append it to the bucket for the current row.\nIf row is 0, set step to +1; if row is `numRows-1`, set step to -1.\nAdd step to row.\nConcatenate all buckets from top to bottom and return the result.",
     "The trickiest case is `numRows = 1`: the top and bottom rows are the same, so the direction flips every step and the row index goes out of range unless you return early. Also handle strings shorter than `numRows`, where some buckets stay empty, and update the direction before you move the row. Time is `O(n)` and extra space is `O(n)` for the buckets, or `O(1)` beyond the output if you use the cycle formula `2*numRows-2` and read each row directly."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"ABCDEFGHIJ\""
+          },
+          {
+            "name": "numRows",
+            "value": "3"
+          }
+        ],
+        "output": "\"AEIBDFHJCG\"",
+        "note": "Basic 3-row zigzag with partial final cycle."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"abcdefgh\""
+          },
+          {
+            "name": "numRows",
+            "value": "2"
+          }
+        ],
+        "output": "\"acegbdfh\"",
+        "note": "Two rows alternate characters."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"HelloWorld\""
+          },
+          {
+            "name": "numRows",
+            "value": "4"
+          }
+        ],
+        "output": "\"HoeWrlolld\"",
+        "note": "Mixed case with 4 rows including diagonal characters."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"a,b.c\""
+          },
+          {
+            "name": "numRows",
+            "value": "3"
+          }
+        ],
+        "output": "\"ac,.b\"",
+        "note": "Punctuation characters handled."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"ABCDEFGHIJKLMN\""
+          },
+          {
+            "name": "numRows",
+            "value": "5"
+          }
+        ],
+        "output": "\"AIBHJCGKDFLNEM\"",
+        "note": "Five rows with multiple diagonal entries."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"AB\""
+          },
+          {
+            "name": "numRows",
+            "value": "1"
+          }
+        ],
+        "output": "\"AB\"",
+        "note": "Single row: string unchanged."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"ABC\""
+          },
+          {
+            "name": "numRows",
+            "value": "1000"
+          }
+        ],
+        "output": "\"ABC\"",
+        "note": "Rows exceed length: string unchanged."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"ABCD\""
+          },
+          {
+            "name": "numRows",
+            "value": "4"
+          }
+        ],
+        "output": "\"ABCD\"",
+        "note": "Rows equal length: one vertical column."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"ABCDE\""
+          },
+          {
+            "name": "numRows",
+            "value": "4"
+          }
+        ],
+        "output": "\"ABCED\"",
+        "note": "Length one more than rows: single diagonal character."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"aaaa\""
+          },
+          {
+            "name": "numRows",
+            "value": "2"
+          }
+        ],
+        "output": "\"aaaa\"",
+        "note": "All equal characters: output identical."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"z\""
+          },
+          {
+            "name": "numRows",
+            "value": "2"
+          }
+        ],
+        "output": "\"z\"",
+        "note": "Single character: minimum length."
+      }
+    ]
+  }
 }

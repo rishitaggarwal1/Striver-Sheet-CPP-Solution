@@ -2,6 +2,8 @@
 
 **LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/zigzag-conversion/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -115,6 +117,29 @@ Concatenate all buckets from top to bottom and return the result.
 The trickiest case is `numRows = 1`: the top and bottom rows are the same, so the direction flips every step and the row index goes out of range unless you return early. Also handle strings shorter than `numRows`, where some buckets stay empty, and update the direction before you move the row. Time is `O(n)` and extra space is `O(n)` for the buckets, or `O(1)` beyond the output if you use the cycle formula `2*numRows-2` and read each row directly.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| s = "ABCDEFGHIJ"<br>numRows = 3 | "AEIBDFHJCG" | Basic 3-row zigzag with partial final cycle. |
+| s = "abcdefgh"<br>numRows = 2 | "acegbdfh" | Two rows alternate characters. |
+| s = "HelloWorld"<br>numRows = 4 | "HoeWrlolld" | Mixed case with 4 rows including diagonal characters. |
+| s = "a,b.c"<br>numRows = 3 | "ac,.b" | Punctuation characters handled. |
+| s = "ABCDEFGHIJKLMN"<br>numRows = 5 | "AIBHJCGKDFLNEM" | Five rows with multiple diagonal entries. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single row | s = "AB"<br>numRows = 1 | "AB" | String unchanged. |
+| Rows exceed length | s = "ABC"<br>numRows = 1000 | "ABC" | String unchanged. |
+| Rows equal length | s = "ABCD"<br>numRows = 4 | "ABCD" | One vertical column. |
+| Length one more than rows | s = "ABCDE"<br>numRows = 4 | "ABCED" | Single diagonal character. |
+| All equal characters | s = "aaaa"<br>numRows = 2 | "aaaa" | Output identical. |
+| Single character | s = "z"<br>numRows = 2 | "z" | Minimum length. |
 
 ---
 

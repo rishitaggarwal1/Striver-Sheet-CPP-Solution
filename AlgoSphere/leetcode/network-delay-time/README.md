@@ -396,9 +396,23 @@ int main() {
 
 | Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
 | --- | --- | --- | --- | --- | --- | --- |
-| C++ |   |   |   | 1 | 2 of 8 | 2026-11-20 |
+| C++ |   |   |   | 2 | 2 of 8 | 2026-11-20 |
 
 For comparison, the optimal approach (Dijkstra with a min-heap) runs in `O(E log E), i.e. O(E log n)` time and `O(n + E)` space.
+
+```cpp
+class Solution {
+public:
+    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+        Hello
+    }
+};
+```
+
+<details>
+<summary>Earlier accepted versions (1)</summary>
+
+**C++ · 2026-11-20**
 
 ```cpp
 class Solution {
@@ -408,6 +422,8 @@ public:
     }
 };
 ```
+
+</details>
 
 ## Test cases
 

@@ -154,5 +154,21 @@
     "solution": "leetcode/best-time-to-buy-and-sell-stock/best-time-to-buy-and-sell-stock.cpp",
     "mine": null,
     "updatedAt": "2026-11-20T14:58:07.458Z"
+  },
+  "leetcode/rotate-array": {
+    "title": "Rotate Array",
+    "site": "leetcode",
+    "slug": "rotate-array",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/rotate-array",
+    "solution": "",
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/rotate-array/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-20T15:04:24.516Z"
   }
 }

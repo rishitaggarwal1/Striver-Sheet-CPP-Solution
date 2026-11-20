@@ -209,5 +209,18 @@
     "solution": "",
     "mine": null,
     "updatedAt": "2026-11-20T15:09:17.799Z"
+  },
+  "leetcode/network-delay-time": {
+    "title": "Network Delay Time",
+    "site": "leetcode",
+    "slug": "network-delay-time",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/network-delay-time",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-20T15:14:43.683Z"
   }
 }

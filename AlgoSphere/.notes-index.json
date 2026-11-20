@@ -196,5 +196,18 @@
     "solution": "",
     "mine": null,
     "updatedAt": "2026-11-20T15:07:01.798Z"
+  },
+  "gfg/k-th-element-of-two-sorted-array1317": {
+    "title": "K-th of Two Sorted Arrays",
+    "site": "gfg",
+    "slug": "k-th-element-of-two-sorted-array1317",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "gfg/k-th-element-of-two-sorted-array1317",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-20T15:09:17.799Z"
   }
 }

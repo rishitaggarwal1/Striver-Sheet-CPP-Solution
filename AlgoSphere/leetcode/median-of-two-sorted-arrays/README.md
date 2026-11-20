@@ -115,23 +115,23 @@ The trickiest part is handling cuts at the very ends (`i = 0`, `i = len(A)`, `j 
 
 | Input | Expected | What it checks |
 | --- | --- | --- |
-| nums1 = [1,5,9]<br>nums2 = [2,3,10,11] | 5.00000 | Odd total length with interleaved values; merged [1,2,3,5,9,10,11]. |
-| nums1 = [1,2,3]<br>nums2 = [4,5,6] | 3.50000 | Disjoint ranges, even total; merged [1,2,3,4,5,6]. |
-| nums1 = [-5,-3,0,7]<br>nums2 = [-4,2] | -1.50000 | Negatives mixed in; merged [-5,-4,-3,0,2,7], median (-3+0)/2. |
-| nums1 = [10,20,30,40,50]<br>nums2 = [15] | 25.00000 | Very unequal lengths; merged [10,15,20,30,40,50]. |
-| nums1 = [1,4,7]<br>nums2 = [2,6,8,9,12] | 6.50000 | Interleaved, even total; merged [1,2,4,6,7,8,9,12]. |
+| nums1 = [1,5,9]<br>nums2 = [2,3,10,12] | 5.00000 | Odd total length with interleaved values; merged [1,2,3,5,9,10,12]. |
+| nums1 = [1,2,7,8]<br>nums2 = [3,4,5,6] | 4.50000 | Even total length; merged [1,2,3,4,5,6,7,8]. |
+| nums1 = [-5,-3,0]<br>nums2 = [-4,2] | -3.00000 | Negative values; merged [-5,-4,-3,0,2]. |
+| nums1 = [10]<br>nums2 = [1,2,3,4,5] | 3.50000 | Very unequal lengths; merged [1,2,3,4,5,10]. |
+| nums1 = [1,3,5,7,9]<br>nums2 = [2,4,6] | 4.50000 | Alternating interleave; merged [1..7,9]. |
 
 **Edge cases**
 
 | Case | Input | Expected | Why it matters |
 | --- | --- | --- | --- |
-| Single element | nums1 = []<br>nums2 = [1] | 1.00000 | First array empty. |
-| Empty second array | nums1 = [2]<br>nums2 = [] | 2.00000 | Median is the sole element. |
-|   | nums1 = []<br>nums2 = [2,3] | 2.50000 | Empty first array with even length. |
-| All equal | nums1 = [3,3,3]<br>nums2 = [3,3] | 3.00000 | Duplicates throughout. |
+| Single element | nums1 = []<br>nums2 = [1] | 1.00000 | Nums1 is empty. |
+| Empty nums2 | nums1 = [2,3]<br>nums2 = [] | 2.50000 | Median comes from nums1 only. |
+| All equal | nums1 = [0,0]<br>nums2 = [0,0] | 0.00000 | Every element is zero. |
+| Disjoint ranges | nums1 = [1,2,3]<br>nums2 = [4,5,6] | 3.50000 | All of nums1 precedes nums2. |
 | Extreme values | nums1 = [-1000000]<br>nums2 = [1000000] | 0.00000 | Min and max bounds average to zero. |
-| Max values | nums1 = [1000000,1000000]<br>nums2 = [1000000] | 1000000.00000 | No overflow when duplicates at upper bound. |
-| Partition crossing | nums1 = [1,2]<br>nums2 = [-1,3] | 1.50000 | Median spans both arrays; merged [-1,1,2,3]. |
+|   | nums1 = [1000000,1000000]<br>nums2 = [1000000] | 1000000.00000 | Max values duplicated across arrays. |
+| Duplicates | nums1 = [2,2,2]<br>nums2 = [1,3] | 2.00000 | Repeated median value spanning partition. |
 
 ---
 

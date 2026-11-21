@@ -251,5 +251,18 @@
     "solution": "",
     "mine": null,
     "updatedAt": "2026-11-20T17:18:58.808Z"
+  },
+  "leetcode/find-subtree-sizes-after-changes": {
+    "title": "Find Subtree Sizes After Changes",
+    "site": "leetcode",
+    "slug": "find-subtree-sizes-after-changes",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/find-subtree-sizes-after-changes",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-21T03:20:40.985Z"
   }
 }

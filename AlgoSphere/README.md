@@ -2,7 +2,7 @@
 
 Problem-by-problem notes. Each folder walks through one problem: progressive hints, the intuition behind it, every approach from brute force to optimal with a complexity breakdown and a step-by-step dry run, a commented C++ solution, and test cases.
 
-**20 problems** · 2 solved · Easy 2 · Medium 12 · Hard 6 · 13 patterns
+**20 problems** · 2 solved · Easy 2 · Medium 12 · Hard 6 · 14 patterns
 
 **How to use these notes:** try the problem first, then open the hints one at a time. Read the intuition and the approaches only after you've made an attempt.
 
@@ -13,7 +13,7 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 3 | [Climbing Stairs](leetcode/climbing-stairs/) | LeetCode | Easy | 1D DP (Fibonacci recurrence) | `O(n)` time, `O(1)` space | [C++](leetcode/climbing-stairs/climbing-stairs.cpp) |   |
 | 4 | [Count Square Submatrices with All Ones](leetcode/count-square-submatrices-with-all-ones/) | LeetCode | Medium | 2D DP: largest square ending at each cell | `O(m·n)` time, `O(n)` space | [C++](leetcode/count-square-submatrices-with-all-ones/count-square-submatrices-with-all-ones.cpp) |   |
 | 5 | [Expression Add Operators](leetcode/expression-add-operators/) | LeetCode | Hard |   |   |   |   |
-| 6 | [Find Subtree Sizes After Changes](leetcode/find-subtree-sizes-after-changes/) | LeetCode | Medium |   |   |   |   |
+| 6 | [Find Subtree Sizes After Changes](leetcode/find-subtree-sizes-after-changes/) | LeetCode | Medium | DFS with per-character ancestor state (backtracking), then subtree-size accumulation | `O(n)` time, `O(n)` space |   |   |
 | 7 | [House Robber](leetcode/house-robber/) | LeetCode | Medium | 1D DP on prefixes (pick / skip) | `O(n)` time, `O(1)` space | [C++](leetcode/house-robber/house-robber.cpp) |   |
 | 8 | [House Robber II](leetcode/house-robber-ii/) | LeetCode | Medium | 1D take/skip DP, run twice to break the circle | `O(n)` time, `O(1)` space | [C++](leetcode/house-robber-ii/house-robber-ii.cpp) |   |
 | 9 | [K-th of Two Sorted Arrays](gfg/k-th-element-of-two-sorted-array1317/) | GeeksforGeeks | Medium |   |   |   |   |

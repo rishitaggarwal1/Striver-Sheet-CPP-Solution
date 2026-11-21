@@ -1,8 +1,10 @@
 # Find Subtree Sizes After Changes
 
-**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/find-subtree-sizes-after-changes/)
+**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/find-subtree-sizes-after-changes/) · Pattern: **DFS with per-character ancestor state (backtracking), then subtree-size accumulation**
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+> Re-hang every non-root node under its nearest original ancestor that has the same letter (if one exists), all at once, then report the subtree size of every node in the resulting tree.
+
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -130,6 +132,144 @@ The trickiest step is the size accumulation. You must add sizes in an order wher
 
 </details>
 
+## Intuition
+
+### Clues in the problem
+
+| Clue | What it suggests |
+| --- | --- |
+| "closest node y ... such that y is an ancestor of x, and s[x] == s[y]" | while a DFS is at x, its ancestors are exactly the current root-to-x path. Keep, for each letter, the deepest node on that path with that letter. |
+| "s consists only of lowercase English letters" | only 26 letters, so a fixed array `last[26]` (or 26 stacks) holds the whole path state. |
+| "simultaneously for all nodes" | every new parent is looked up in the ORIGINAL tree, so all lookups can happen in one pass before any edge changes. |
+| The new parent y is always an ancestor of x in the original tree | the original DFS preorder is still a valid topological order for the new tree, so sizes can be summed in reverse preorder. |
+
+### What the constraints tell you
+
+n ≤ 10^5. Walking up ancestor chains costs O(n^2) on a path-shaped tree, about 10^10 steps, which is far too slow. O(26·n) ≈ 2.6·10^6 is fine, and O(n) is ideal. Depth can also reach 10^5, so deep recursion is a real risk.
+
+### Think it through
+
+Answer each question yourself before opening it.
+
+**Q1. What is the most literal way to find y for one node x?**
+
+<details>
+<summary>Answer</summary>
+
+Walk `parent` upward from x until you reach a node with `s[y] == s[x]` or fall off the root. That costs O(depth) per node.
+
+</details>
+
+**Q2. Why is that too slow here?**
+
+<details>
+<summary>Answer</summary>
+
+If parent forms a chain 0→1→2→… and s has all different letters, every walk goes to the root. That is about n^2/2 = 5·10^9 steps.
+
+</details>
+
+**Q3. What information do I actually need at node x?**
+
+<details>
+<summary>Answer</summary>
+
+Only one fact: the deepest ancestor carrying letter s[x]. During a DFS the ancestors of x are exactly the current recursion path, and that path changes by one node per step.
+
+</details>
+
+**Q4. How do I maintain 'deepest ancestor per letter' as the DFS moves?**
+
+<details>
+<summary>Answer</summary>
+
+Keep `last[c]`. On entering x, its new parent is `last[s[x]]` (if set). Save the old value, set `last[s[x]] = x`, visit the children, then restore the saved value when leaving x. This is standard backtracking.
+
+</details>
+
+**Q5. Do the changes interfere with each other because they are simultaneous?**
+
+<details>
+<summary>Answer</summary>
+
+No. Every y is defined on the original tree, so all lookups use the original structure. In Example 2, node 4 moves to 0 and node 2 moves to 1, and both are computed from the original edges.
+
+</details>
+
+**Q6. How do I get subtree sizes of the new tree cheaply?**
+
+<details>
+<summary>Answer</summary>
+
+Each new parent is an original ancestor, so it appears earlier in the original preorder. Process nodes in reverse preorder and add `size[x]` into `size[newParent[x]]`. Each child is finished before its parent receives its total.
+
+</details>
+
+## Approaches
+
+| # | Approach | Time | Space |
+| --- | --- | --- | --- |
+| 1 | [Brute force: Walk up ancestors per node](#1-brute-force-walk-up-ancestors-per-node) | `O(n^2)` | `O(n)` |
+| 2 | [Better: Per-node table of nearest ancestor per letter](#2-better-per-node-table-of-nearest-ancestor-per-letter) | `O(26·n)` | `O(26·n)` |
+| 3 | [Optimal: DFS with backtracked last[26]](#3-optimal-dfs-with-backtracked-last26) | `O(n)` | `O(n)` |
+
+### 1. Brute force: Walk up ancestors per node
+
+> **Where you start:** The statement literally says 'find the closest ancestor', so climbing parent pointers is the direct translation.
+
+**Idea.** For each x from 1 to n-1, follow `parent` upward until a node with the same letter appears. That node becomes newParent[x]; if none appears, keep parent[x]. Build children lists for the new tree and compute subtree sizes with a DFS from 0. It is correct because climbing checks the ancestors in order of increasing distance, so the first match is the closest one.
+
+**Steps**
+
+1. Copy parent into newParent.
+2. For each x ≥ 1, set y = parent[x].
+3. While y != -1 and s[y] != s[x], set y = parent[y].
+4. If y != -1, set newParent[x] = y.
+5. Build children lists from newParent.
+6. Run a DFS (or reverse-order accumulation) from 0 to compute sizes.
+
+**Complexity:** time `O(n^2)`, space `O(n)`. The upward walks dominate: each costs up to the depth, which is n on a chain. Extra memory is the newParent array and the children lists.
+
+**Why move on:** A chain of 10^5 nodes with no letter matches makes about 5·10^9 steps, which is far over the time limit.
+
+### 2. Better: Per-node table of nearest ancestor per letter
+
+> **How you get here:** Sibling nodes repeat exactly the same climb above their shared parent. That shared answer can be computed once at the parent and inherited by its children.
+
+**Idea.** Define `near[x][c]` as the nearest node on the path from root to x (including x) with letter c. Then `near[x] = near[parent[x]]` with entry s[x] replaced by x. The new parent of x is `near[parent[x]][s[x]]`. Filling the table in BFS or preorder guarantees each parent row exists before its children read it.
+
+**Steps**
+
+1. Build children lists and get a BFS or preorder order from 0.
+2. Set near[0] all to -1, then set near[0][s[0]] = 0.
+3. For each x in order: read y = near[parent[x]][s[x]] and record it as newParent[x] if y != -1.
+4. Copy near[parent[x]] into near[x] and set near[x][s[x]] = x.
+5. Accumulate sizes in reverse order along newParent.
+
+**Complexity:** time `O(26·n)`, space `O(26·n)`. Copying a 26-entry row per node dominates, about 2.6·10^6 operations. The table itself stores 26·n integers.
+
+**Why move on:** The time is acceptable, but storing 2.6 million ints is wasteful, because only the current root-to-node path ever needs to be remembered.
+
+### 3. Optimal: DFS with backtracked last[26]
+
+> **How you get here:** In the table, row x is just row parent[x] with one entry changed. A single shared array can therefore be updated on entry and restored on exit.
+
+**Idea.** Do an (iterative) DFS from 0 and keep `last[c]`, the deepest node on the current path with letter c. On entering x, newParent[x] = last[s[x]] if that is set, otherwise parent[x]. Then save old = last[s[x]], set last[s[x]] = x, explore the children, and restore old on exit. The invariant is that, whenever x is entered, last holds exactly the information about x's ancestors. Record the preorder as you go. Every newParent is an ancestor, so it comes earlier in that order, and reverse-preorder accumulation of size[x] into size[newParent[x]] gives the correct sizes.
+
+**Steps**
+
+1. Build children lists from parent.
+2. Initialize last[26] = -1 and size[i] = 1 for every node.
+3. Run an iterative DFS from 0 with explicit enter/exit events.
+4. On enter x: set newParent[x] = last[s[x]] if it is not -1, else parent[x]. Push x to the preorder list, save the old last[s[x]], and set it to x.
+5. On exit x: restore last[s[x]] to the saved value.
+6. Go through preorder in reverse; for x ≠ 0, add size[x] to size[newParent[x]].
+7. Return size.
+
+**Complexity:** time `O(n)`, space `O(n)`. Each node is entered and exited once with O(1) work, and the accumulation pass is linear. Memory goes to the children lists, the DFS stack, the saved values, newParent and the preorder list.
+
+**Why this is the best:** Every node must be read at least once, so O(n) is optimal. The only cost is careful bookkeeping of save/restore in an iterative DFS, needed to avoid recursion overflow at depth 10^5.
+
 ## Test cases
 
 **Normal cases**
@@ -152,6 +292,35 @@ The trickiest step is the size accumulation. You must add sizes in an order wher
 | Two nodes with different characters | parent = [-1,0]<br>s = "ab" | [2,1] | No change. |
 | Repeated characters in a chain | parent = [-1,0,1,2,3]<br>s = "abbbb" | [5,4,3,2,1] | Each node's closest match is already its parent. |
 | Parent indices not in order | parent = [-1,2,0,1]<br>s = "abca" | [4,1,2,1] | Node 3 jumps up to the root. |
+
+## Mistakes and edge cases
+
+**Common mistakes**
+
+- Applying changes one at a time and looking up ancestors in the partially modified tree. The statement says simultaneous, so all lookups must use the original parent array.
+- Forgetting to restore last[s[x]] on exit. A node in a sibling branch then picks a non-ancestor (a 'cousin') as its new parent.
+- Using recursive DFS in Python or Java on a 10^5-deep chain, which crashes with a stack overflow or recursion limit. Use an explicit stack.
+- Accumulating sizes in index order 0..n-1. Indices are not a topological order (in Example 2, node 2's parent is 4), so sizes must follow reverse preorder or come from a DFS of the new tree.
+
+**Edge cases to check**
+
+- n = 1: the answer is [1] and no changes happen.
+- All letters equal, e.g. a chain 'aaaa': every node's closest match is its own parent, so the tree is unchanged.
+- Chain with distinct letters: nothing moves. This is the worst case for the brute-force climb and for recursion depth.
+- Star with root 'a' and children mixing 'a' and 'b' whose own children are 'a': the grandchildren jump to the root. This checks that sizes are recomputed on the new tree and not reused from the old one.
+
+## Practice next
+
+- [Tree of Coprimes](https://leetcode.com/problems/tree-of-coprimes/) · Finds the nearest ancestor satisfying a value condition, using per-value stacks maintained during DFS and backtracking. This is the same technique.
+- [Number of Nodes in the Sub-Tree With the Same Label](https://leetcode.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/) · Uses per-letter counts over a tree DFS with 26 lowercase labels.
+- [Count Good Nodes in Binary Tree](https://leetcode.com/problems/count-good-nodes-in-binary-tree/) · Carries root-to-node path state down the DFS and answers each node from it in O(1).
+
+## Takeaways
+
+- 'Nearest ancestor with property P' becomes path state in a DFS: update on entry, restore on exit.
+- A small alphabet (26 letters) means the path state can be a fixed array instead of a per-node table.
+- If every new parent is an original ancestor, the original preorder is still a topological order, so sizes can be accumulated in reverse preorder without building a new tree.
+- With n up to 10^5 and possible chain-shaped trees, use an iterative DFS.
 
 ---
 

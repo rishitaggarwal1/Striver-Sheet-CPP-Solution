@@ -257,12 +257,12 @@
     "site": "leetcode",
     "slug": "find-subtree-sizes-after-changes",
     "difficulty": "Medium",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "DFS with per-character ancestor state (backtracking), then subtree-size accumulation",
+    "time": "O(n)",
+    "space": "O(n)",
     "dir": "leetcode/find-subtree-sizes-after-changes",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-21T03:21:08.261Z"
+    "updatedAt": "2026-11-21T04:17:25.653Z"
   }
 }

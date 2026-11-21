@@ -4,7 +4,7 @@
   "slug": "n-queens",
   "title": "N-Queens",
   "url": "https://leetcode.com/problems/n-queens/",
-  "updatedAt": "2026-11-21T05:30:26.699Z",
+  "updatedAt": "2026-11-21T05:31:32.864Z",
   "problem": {
     "difficulty": "Hard",
     "description": "The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.\n\nGiven an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.\n\nEach solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.\n\nExample 1:\n\nInput: n = 4\nOutput: [[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]\nExplanation: There exist two distinct solutions to the 4-queens puzzle as shown above\n\nExample 2:\n\nInput: n = 1\nOutput: [[\"Q\"]]\n\nConstraints:\n\n- 1 <= n <= 9"
@@ -179,7 +179,623 @@
         "time": "O(n! · n^2)",
         "space": "O(n) besides output",
         "complexity": "There are n! permutations and each pairwise diagonal check costs O(n^2), so for n = 9 this is about 3·10^7 operations. The extra memory is the permutation array and the recursion that generates it.",
-        "tradeoff": "Every permutation is built in full even when its first two queens already clash, so most of the work is spent completing boards that were dead after two or three rows. It passes for n = 9 but grows badly and wastes effort."
+        "tradeoff": "Every permutation is built in full even when its first two queens already clash, so most of the work is spent completing boards that were dead after two or three rows. It passes for n = 9 but grows badly and wastes effort.",
+        "deep": {
+          "pseudocode": [
+            "function solveNQueens(n)",
+            "  ans ← empty list of boards",
+            "  cols ← [0, 1, …, n−1]  // cols[r] = column of the queen in row r; start at the smallest permutation",
+            "  repeat",
+            "    valid ← true",
+            "    for i ← 0 to n−2",
+            "      for j ← i+1 to n−1  // every pair of rows i < j",
+            "        if |cols[i] − cols[j]| = j − i  // row gap equals column gap, so they share a diagonal",
+            "          valid ← false",
+            "    if valid",
+            "      board ← n strings, each n copies of '.'",
+            "      for r ← 0 to n−1",
+            "        board[r][cols[r]] ← 'Q'  // place row r's queen",
+            "      append board to ans",
+            "  until not nextPermutation(cols)  // stops once the last (descending) permutation has been tested",
+            "  return ans"
+          ],
+          "time": {
+            "total": "O(n! · n^2)",
+            "parts": [
+              {
+                "part": "Permutation loop (lines 4-15)",
+                "cost": "n! iterations × O(n) amortized for nextPermutation",
+                "why": "Every arrangement of the n distinct columns is visited exactly once."
+              },
+              {
+                "part": "Diagonal pair check (lines 6-9)",
+                "cost": "n! permutations × n(n−1)/2 pairs × O(1)",
+                "why": "Each permutation compares every pair of rows once."
+              },
+              {
+                "part": "Board building (lines 10-14)",
+                "cost": "S solutions × O(n^2)",
+                "why": "Only valid permutations are turned into n strings of length n, and S ≤ n!."
+              }
+            ],
+            "sum": "n! · n(n−1)/2 + n! · O(n) + S · n^2 ≤ n! · O(n^2) = O(n! · n^2); the pair check dominates",
+            "cases": "Every case costs the same, because all n! permutations are generated and fully checked no matter what the value of n is.",
+            "feel": "n = 9 → 362,880 permutations × 36 pairs ≈ 1.3·10^7 checks (a few times more in the C++ code, which rebuilds the board for every permutation), well under 0.1 s",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "cols array (line 3)",
+                "cost": "O(n)",
+                "why": "It holds one column index per row."
+              },
+              {
+                "part": "Scalars valid, i, j, r (lines 5-13)",
+                "cost": "O(1)",
+                "why": "These are a constant number of loop variables."
+              }
+            ],
+            "sum": "O(n) + O(1) = O(n)",
+            "cases": "",
+            "feel": "",
+            "note": "The output ans (S boards × n^2 characters) is not counted. The board being built is one future output board, so it is not counted either. There is no recursion, because nextPermutation is iterative."
+          },
+          "dryRun": {
+            "input": "n = 4",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "Start with the identity permutation, which puts each row's queen in column r. The answer list is empty.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 5,
+                "explain": "Assume permutation [0,1,2,3] is valid until a diagonal clash shows otherwise.",
+                "vars": {
+                  "n": "4",
+                  "valid": "true"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "Pair i=0, j=1 gives |0−1| = 1 = j−i, so both queens sit on one diagonal and valid becomes false. The remaining pairs are still scanned but cannot undo this.",
+                "vars": {
+                  "n": "4",
+                  "valid": "false",
+                  "i": "0",
+                  "j": "1"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 0,
+                      "j": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "Because valid is false, no board is built. Skipping ahead: 0132, 0213, 0231, 0312, 0321, 1023, 1032, 1203, 1230 and 1302 all hit a diagonal clash. nextPermutation then produces [1,3,0,2].",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "1",
+                      "3",
+                      "0",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 5,
+                "explain": "Reset valid to true for permutation [1,3,0,2].",
+                "vars": {
+                  "n": "4",
+                  "valid": "true"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "1",
+                      "3",
+                      "0",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 8,
+                "explain": "Pair i=0, j=1 gives |1−3| = 2 ≠ 1, so no clash. Pairs (0,2) and (0,3) give 1 ≠ 2 and 1 ≠ 3, also fine.",
+                "vars": {
+                  "n": "4",
+                  "valid": "true",
+                  "i": "0",
+                  "j": "1"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "1",
+                      "3",
+                      "0",
+                      "2"
+                    ],
+                    "pointers": {
+                      "i": 0,
+                      "j": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 8,
+                "explain": "Pair i=1, j=2 gives |3−0| = 3 ≠ 1, no clash. Pair (1,3) gives |3−2| = 1 ≠ 2, fine too.",
+                "vars": {
+                  "n": "4",
+                  "valid": "true",
+                  "i": "1",
+                  "j": "2"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "1",
+                      "3",
+                      "0",
+                      "2"
+                    ],
+                    "pointers": {
+                      "i": 1,
+                      "j": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 8,
+                "explain": "The last pair i=2, j=3 gives |0−2| = 2 ≠ 1. All 6 pairs pass, so valid stays true.",
+                "vars": {
+                  "n": "4",
+                  "valid": "true",
+                  "i": "2",
+                  "j": "3"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "1",
+                      "3",
+                      "0",
+                      "2"
+                    ],
+                    "pointers": {
+                      "i": 2,
+                      "j": 3
+                    },
+                    "highlight": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "Build the board by putting a 'Q' at column cols[r] in each row r. This shows the state after the loop finishes at r=3.",
+                "vars": {
+                  "n": "4",
+                  "valid": "true",
+                  "r": "3"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "1",
+                      "3",
+                      "0",
+                      "2"
+                    ],
+                    "pointers": {
+                      "r": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      ".Q..",
+                      "...Q",
+                      "Q...",
+                      "..Q."
+                    ],
+                    "pointers": {
+                      "r": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "Append the first solution to ans.",
+                "vars": {
+                  "n": "4",
+                  "valid": "true"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "1",
+                      "3",
+                      "0",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "board": {
+                    "values": [
+                      ".Q..",
+                      "...Q",
+                      "Q...",
+                      "..Q."
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": [
+                      "[.Q.., ...Q, Q..., ..Q.]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "Skipping ahead: 1320, 2013 and 2031 are rejected. nextPermutation then produces [2,0,3,1].",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "2",
+                      "0",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": [
+                      "[.Q.., ...Q, Q..., ..Q.]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 8,
+                "explain": "All 6 pairs of [2,0,3,1] pass. The last pair i=2, j=3 gives |3−1| = 2 ≠ 1, so valid stays true.",
+                "vars": {
+                  "n": "4",
+                  "valid": "true",
+                  "i": "2",
+                  "j": "3"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "2",
+                      "0",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {
+                      "i": 2,
+                      "j": 3
+                    },
+                    "highlight": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": [
+                      "[.Q.., ...Q, Q..., ..Q.]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "Build board [..Q., Q..., ...Q, .Q..] and append it as the second solution.",
+                "vars": {
+                  "n": "4",
+                  "valid": "true"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "2",
+                      "0",
+                      "3",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "board": {
+                    "values": [
+                      "..Q.",
+                      "Q...",
+                      "...Q",
+                      ".Q.."
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": [
+                      "[.Q.., ...Q, Q..., ..Q.]",
+                      "[..Q., Q..., ...Q, .Q..]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "The remaining permutations 2103 through 3210 all clash. After [3,2,1,0], nextPermutation returns false and the loop ends.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "3",
+                      "2",
+                      "1",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": [
+                      "[.Q.., ...Q, Q..., ..Q.]",
+                      "[..Q., Q..., ...Q, .Q..]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 16,
+                "explain": "Return the 2 collected boards.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "cols": {
+                    "values": [
+                      "3",
+                      "2",
+                      "1",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "ans": {
+                    "type": "list",
+                    "items": [
+                      "[.Q.., ...Q, Q..., ..Q.]",
+                      "[..Q., Q..., ...Q, .Q..]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "[[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]. A permutation already rules out shared rows and columns, so the only remaining attacks are diagonal ones. Exactly 2 of the 24 permutations have no diagonal clash."
+          },
+          "solution": "class Solution {\npublic:\n    vector<vector<string>> ans;\n    // Returns true if no two queens on this board share a diagonal.\n    // Rows and columns are already distinct because the board comes from a permutation.\n    bool check(vector<string> board, int n)\n    {\n        vector<int> cols(n);\n        for (int r = 0; r < n; r++)\n            cols[r] = (int)board[r].find('Q');          // recover the queen's column in row r\n        for (int i = 0; i < n - 1; i++)\n            for (int j = i + 1; j < n; j++)               // every pair of rows i < j\n                if (abs(cols[i] - cols[j]) == j - i)      // equal row and column gaps mean same diagonal\n                    return false;\n        return true;\n    }\n    vector<vector<string>> solveNQueens(int n) {\n        string st(n,'.');\n        vector<string> s(n,st);\n        vector<int> cols(n);\n        iota(cols.begin(), cols.end(), 0);                // smallest permutation 0,1,...,n-1\n        do {\n            for (int r = 0; r < n; r++) {\n                s[r] = st;                                // clear row r\n                s[r][cols[r]] = 'Q';                      // place row r's queen at cols[r]\n            }\n            if (check(s, n))                              // keep only boards with no diagonal clash\n                ans.push_back(s);\n        } while (next_permutation(cols.begin(), cols.end())); // visit all n! permutations\n        return ans;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;\n\nstring boardsToString(const vector<vector<string>>& b) {\n    string out = \"[\";\n    for (size_t k = 0; k < b.size(); k++) {\n        if (k) out += \",\";\n        out += \"[\";\n        for (size_t r = 0; r < b[k].size(); r++) {\n            if (r) out += \",\";\n            out += \"\\\"\" + b[k][r] + \"\\\"\";\n        }\n        out += \"]\";\n    }\n    return out + \"]\";\n}",
+          "main": "int main() {\n    {\n        Solution sol;\n        auto res = sol.solveNQueens(4);\n        cout << \"n = 4\\nOutput:   \" << boardsToString(res) << \"\\n\";\n        cout << \"Expected: [[\\\".Q..\\\",\\\"...Q\\\",\\\"Q...\\\",\\\"..Q.\\\"],[\\\"..Q.\\\",\\\"Q...\\\",\\\"...Q\\\",\\\".Q..\\\"]]\\n\\n\";\n    }\n    {\n        Solution sol;\n        auto res = sol.solveNQueens(1);\n        cout << \"n = 1\\nOutput:   \" << boardsToString(res) << \"\\n\";\n        cout << \"Expected: [[\\\"Q\\\"]]\\n\";\n    }\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

@@ -180,9 +180,9 @@
     "time": "O(n!) roughly",
     "space": "O(n) besides output",
     "dir": "leetcode/n-queens",
-    "solution": "",
+    "solution": "leetcode/n-queens/n-queens.cpp",
     "mine": null,
-    "updatedAt": "2026-11-21T05:30:26.699Z"
+    "updatedAt": "2026-11-21T05:31:32.864Z"
   },
   "leetcode/expression-add-operators": {
     "title": "Expression Add Operators",

@@ -196,7 +196,180 @@ When row index `r` reaches `n`, every row has a safe queen. Convert `cols` into 
 4. Otherwise build the board strings from `cols` and add them to the result.
 5. Return the result after all permutations are tested.
 
-**Complexity:** time `O(n! · n^2)`, space `O(n) besides output`. There are n! permutations and each pairwise diagonal check costs O(n^2), so for n = 9 this is about 3·10^7 operations. The extra memory is the permutation array and the recursion that generates it.
+**Pseudocode**
+
+```text
+ 1 │ function solveNQueens(n)
+ 2 │   ans ← empty list of boards
+ 3 │   cols ← [0, 1, …, n−1]  // cols[r] = column of the queen in row r; start at the smallest permutation
+ 4 │   repeat
+ 5 │     valid ← true
+ 6 │     for i ← 0 to n−2
+ 7 │       for j ← i+1 to n−1  // every pair of rows i < j
+ 8 │         if |cols[i] − cols[j]| = j − i  // row gap equals column gap, so they share a diagonal
+ 9 │           valid ← false
+10 │     if valid
+11 │       board ← n strings, each n copies of '.'
+12 │       for r ← 0 to n−1
+13 │         board[r][cols[r]] ← 'Q'  // place row r's queen
+14 │       append board to ans
+15 │   until not nextPermutation(cols)  // stops once the last (descending) permutation has been tested
+16 │   return ans
+```
+
+**Time complexity: `O(n! · n^2)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Permutation loop (lines 4-15) | n! iterations × O(n) amortized for nextPermutation | Every arrangement of the n distinct columns is visited exactly once. |
+| Diagonal pair check (lines 6-9) | n! permutations × n(n−1)/2 pairs × O(1) | Each permutation compares every pair of rows once. |
+| Board building (lines 10-14) | S solutions × O(n^2) | Only valid permutations are turned into n strings of length n, and S ≤ n!. |
+
+- **Adding it up:** n! · n(n−1)/2 + n! · O(n) + S · n^2 ≤ n! · O(n^2) = O(n! · n^2); the pair check dominates
+- **Best vs worst case:** Every case costs the same, because all n! permutations are generated and fully checked no matter what the value of n is.
+- **At the maximum input:** n = 9 → 362,880 permutations × 36 pairs ≈ 1.3·10^7 checks (a few times more in the C++ code, which rebuilds the board for every permutation), well under 0.1 s
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| cols array (line 3) | O(n) | It holds one column index per row. |
+| Scalars valid, i, j, r (lines 5-13) | O(1) | These are a constant number of loop variables. |
+
+- **Adding it up:** O(n) + O(1) = O(n)
+- **Not counted:** The output ans (S boards × n^2 characters) is not counted. The board being built is one future output board, so it is not counted either. There is no recursion, because nextPermutation is iterative.
+
+**Dry run** on `n = 4`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 3 | Start with the identity permutation, which puts each row's queen in column r. The answer list is empty. | `n = 4`<br>`cols = [0, 1, 2, 3]`<br>`ans = []` |
+| 2 | 5 | Assume permutation [0,1,2,3] is valid until a diagonal clash shows otherwise. | `valid = true` |
+| 3 | 9 | Pair i=0, j=1 gives \|0−1\| = 1 = j−i, so both queens sit on one diagonal and valid becomes false. The remaining pairs are still scanned but cannot undo this. | `valid = false`<br>`i = 0`<br>`j = 1`<br>`cols = [0, 1, 2, 3]` (i→0, j→1) |
+| 4 | 15 | Because valid is false, no board is built. Skipping ahead: 0132, 0213, 0231, 0312, 0321, 1023, 1032, 1203, 1230 and 1302 all hit a diagonal clash. nextPermutation then produces [1,3,0,2]. | `cols = [1, 3, 0, 2]` |
+| 5 | 5 | Reset valid to true for permutation [1,3,0,2]. | `valid = true` |
+| 6 | 8 | Pair i=0, j=1 gives \|1−3\| = 2 ≠ 1, so no clash. Pairs (0,2) and (0,3) give 1 ≠ 2 and 1 ≠ 3, also fine. | `i = 0`<br>`j = 1`<br>`cols = [1, 3, 0, 2]` (i→0, j→1) |
+| 7 | 8 | Pair i=1, j=2 gives \|3−0\| = 3 ≠ 1, no clash. Pair (1,3) gives \|3−2\| = 1 ≠ 2, fine too. | `i = 1`<br>`j = 2`<br>`cols = [1, 3, 0, 2]` (i→1, j→2) |
+| 8 | 8 | The last pair i=2, j=3 gives \|0−2\| = 2 ≠ 1. All 6 pairs pass, so valid stays true. | `i = 2`<br>`j = 3`<br>`cols = [1, 3, 0, 2]` (i→2, j→3) |
+| 9 | 13 | Build the board by putting a 'Q' at column cols[r] in each row r. This shows the state after the loop finishes at r=3. | `r = 3`<br>`cols = [1, 3, 0, 2]` (r→3)<br>`board = [.Q.., ...Q, Q..., ..Q.]` (r→3) |
+| 10 | 14 | Append the first solution to ans. | `cols = [1, 3, 0, 2]`<br>`board = [.Q.., ...Q, Q..., ..Q.]`<br>`ans = [[.Q.., ...Q, Q..., ..Q.]]` |
+| 11 | 15 | Skipping ahead: 1320, 2013 and 2031 are rejected. nextPermutation then produces [2,0,3,1]. | `cols = [2, 0, 3, 1]` |
+| 12 | 8 | All 6 pairs of [2,0,3,1] pass. The last pair i=2, j=3 gives \|3−1\| = 2 ≠ 1, so valid stays true. | `valid = true`<br>`i = 2`<br>`j = 3`<br>`cols = [2, 0, 3, 1]` (i→2, j→3) |
+| 13 | 14 | Build board [..Q., Q..., ...Q, .Q..] and append it as the second solution. | `cols = [2, 0, 3, 1]`<br>`board = [..Q., Q..., ...Q, .Q..]`<br>`ans = [[.Q.., ...Q, Q..., ..Q.], [..Q., Q..., ...Q, .Q..]]` |
+| 14 | 15 | The remaining permutations 2103 through 3210 all clash. After [3,2,1,0], nextPermutation returns false and the loop ends. | `cols = [3, 2, 1, 0]` |
+| 15 | 16 | Return the 2 collected boards. | (no change) |
+
+**Result:** [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]. A permutation already rules out shared rows and columns, so the only remaining attacks are diagonal ones. Exactly 2 of the 24 permutations have no diagonal clash.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    vector<vector<string>> ans;
+    // Returns true if no two queens on this board share a diagonal.
+    // Rows and columns are already distinct because the board comes from a permutation.
+    bool check(vector<string> board, int n)
+    {
+        vector<int> cols(n);
+        for (int r = 0; r < n; r++)
+            cols[r] = (int)board[r].find('Q');          // recover the queen's column in row r
+        for (int i = 0; i < n - 1; i++)
+            for (int j = i + 1; j < n; j++)               // every pair of rows i < j
+                if (abs(cols[i] - cols[j]) == j - i)      // equal row and column gaps mean same diagonal
+                    return false;
+        return true;
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        string st(n,'.');
+        vector<string> s(n,st);
+        vector<int> cols(n);
+        iota(cols.begin(), cols.end(), 0);                // smallest permutation 0,1,...,n-1
+        do {
+            for (int r = 0; r < n; r++) {
+                s[r] = st;                                // clear row r
+                s[r][cols[r]] = 'Q';                      // place row r's queen at cols[r]
+            }
+            if (check(s, n))                              // keep only boards with no diagonal clash
+                ans.push_back(s);
+        } while (next_permutation(cols.begin(), cols.end())); // visit all n! permutations
+        return ans;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string boardsToString(const vector<vector<string>>& b) {
+    string out = "[";
+    for (size_t k = 0; k < b.size(); k++) {
+        if (k) out += ",";
+        out += "[";
+        for (size_t r = 0; r < b[k].size(); r++) {
+            if (r) out += ",";
+            out += "\"" + b[k][r] + "\"";
+        }
+        out += "]";
+    }
+    return out + "]";
+}
+
+class Solution {
+public:
+    vector<vector<string>> ans;
+    // Returns true if no two queens on this board share a diagonal.
+    // Rows and columns are already distinct because the board comes from a permutation.
+    bool check(vector<string> board, int n)
+    {
+        vector<int> cols(n);
+        for (int r = 0; r < n; r++)
+            cols[r] = (int)board[r].find('Q');          // recover the queen's column in row r
+        for (int i = 0; i < n - 1; i++)
+            for (int j = i + 1; j < n; j++)               // every pair of rows i < j
+                if (abs(cols[i] - cols[j]) == j - i)      // equal row and column gaps mean same diagonal
+                    return false;
+        return true;
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        string st(n,'.');
+        vector<string> s(n,st);
+        vector<int> cols(n);
+        iota(cols.begin(), cols.end(), 0);                // smallest permutation 0,1,...,n-1
+        do {
+            for (int r = 0; r < n; r++) {
+                s[r] = st;                                // clear row r
+                s[r][cols[r]] = 'Q';                      // place row r's queen at cols[r]
+            }
+            if (check(s, n))                              // keep only boards with no diagonal clash
+                ans.push_back(s);
+        } while (next_permutation(cols.begin(), cols.end())); // visit all n! permutations
+        return ans;
+    }
+};
+
+int main() {
+    {
+        Solution sol;
+        auto res = sol.solveNQueens(4);
+        cout << "n = 4\nOutput:   " << boardsToString(res) << "\n";
+        cout << "Expected: [[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]\n\n";
+    }
+    {
+        Solution sol;
+        auto res = sol.solveNQueens(1);
+        cout << "n = 1\nOutput:   " << boardsToString(res) << "\n";
+        cout << "Expected: [[\"Q\"]]\n";
+    }
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** Every permutation is built in full even when its first two queens already clash, so most of the work is spent completing boards that were dead after two or three rows. It passes for n = 9 but grows badly and wastes effort.
 

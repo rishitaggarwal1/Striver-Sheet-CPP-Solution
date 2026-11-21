@@ -176,13 +176,13 @@
     "site": "leetcode",
     "slug": "n-queens",
     "difficulty": "Hard",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Backtracking with constant-time conflict sets",
+    "time": "O(n!) roughly",
+    "space": "O(n) besides output",
     "dir": "leetcode/n-queens",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-21T05:20:36.311Z"
+    "updatedAt": "2026-11-21T05:30:26.699Z"
   },
   "leetcode/expression-add-operators": {
     "title": "Expression Add Operators",

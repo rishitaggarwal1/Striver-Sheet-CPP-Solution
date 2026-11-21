@@ -2,6 +2,8 @@
 
 **LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/find-subtree-sizes-after-changes/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -127,6 +129,29 @@ Process nodes in post-order (children before parents) and add `size[x]` into `si
 The trickiest step is the size accumulation. You must add sizes in an order where every node's new descendants are finished first. Post-order of the original DFS works because the new parent is always an original ancestor. Remember to restore `last` on backtrack, and never reassign the root. Use an iterative DFS (or raise the recursion limit), since a chain of `10^5` nodes can overflow the call stack. `n = 1` simply returns [1]. Time is `O(n)` and space is `O(n + 26)`.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| parent = [-1,0,1,2]<br>s = "abab" | [4,3,1,1] | Chain where node 2 moves to node 0 and node 3 moves to node 1. |
+| parent = [-1,0,0,1,2]<br>s = "abcde" | [5,2,2,1,1] | All characters distinct, so the tree is unchanged. |
+| parent = [-1,0,1,1,2]<br>s = "abcbb" | [5,4,1,1,1] | Nodes 3 and 4 both re-attach to node 1, and node 4 skips past node 2. |
+| parent = [-1,0,0,1,1,2,2]<br>s = "abbaabb" | [7,1,3,1,1,1,1] | Nodes 3 and 4 move up to the root, and nodes 5 and 6 stay under node 2. |
+| parent = [-1,0,1,2,3]<br>s = "abcba" | [5,3,2,1,1] | Node 3 moves to node 1 and node 4 moves to node 0, both at the same time. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single node | parent = [-1]<br>s = "a" | [1] | Only the root exists. |
+| All equal chain | parent = [-1,0,1,2]<br>s = "aaaa" | [4,3,2,1] | Each node's closest match is its own parent, so nothing changes. |
+| Star with all equal characters | parent = [-1,0,0,0]<br>s = "aaaa" | [4,1,1,1] | The tree is unchanged. |
+| Two nodes with different characters | parent = [-1,0]<br>s = "ab" | [2,1] | No change. |
+| Repeated characters in a chain | parent = [-1,0,1,2,3]<br>s = "abbbb" | [5,4,3,2,1] | Each node's closest match is already its parent. |
+| Parent indices not in order | parent = [-1,2,0,1]<br>s = "abca" | [4,1,2,1] | Node 3 jumps up to the root. |
 
 ---
 

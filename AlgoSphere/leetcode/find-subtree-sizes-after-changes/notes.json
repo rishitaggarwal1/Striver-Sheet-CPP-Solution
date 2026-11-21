@@ -4,7 +4,7 @@
   "slug": "find-subtree-sizes-after-changes",
   "title": "Find Subtree Sizes After Changes",
   "url": "https://leetcode.com/problems/find-subtree-sizes-after-changes/",
-  "updatedAt": "2026-11-21T04:18:30.417Z",
+  "updatedAt": "2026-11-21T04:37:48.175Z",
   "problem": {
     "difficulty": "Medium",
     "description": "You are given a tree rooted at node 0 that consists of n nodes numbered from 0 to n - 1. The tree is represented by an array parent of size n, where parent[i] is the parent of node i. Since node 0 is the root, parent[0] == -1.\n\nYou are also given a string s of length n, where s[i] is the character assigned to node i.\n\nWe make the following changes on the tree one time simultaneously for all nodes x from 1 to n - 1:\n\n- Find the closest node y to node x such that y is an ancestor of x, and s[x] == s[y].\n\n- If node y does not exist, do nothing.\n\n- Otherwise, remove the edge between x and its current parent and make node y the new parent of x by adding an edge between them.\n\nReturn an array answer of size n where answer[i] is the size of the subtree rooted at node i in the final tree.\n\nExample 1:\n\nInput: parent = [-1,0,0,1,1,1], s = \"abaabc\"\n\nOutput: [6,3,1,1,1,1]\n\nExplanation:\n\nThe parent of node 3 will change from node 1 to node 0.\n\nExample 2:\n\nInput: parent = [-1,0,4,0,1], s = \"abbba\"\n\nOutput: [5,2,1,1,1]\n\nExplanation:\n\nThe following changes will happen at the same time:\n\n- The parent of node 4 will change from node 1 to node 0.\n\n- The parent of node 2 will change from node 4 to node 1.\n\nConstraints:\n\n- n == parent.length == s.length\n\n- 1 <= n <= 10^5\n\n- 0 <= parent[i] <= n - 1 for all i >= 1.\n\n- parent[0] == -1\n\n- parent represents a valid tree.\n\n- s consists only of lowercase English letters."
@@ -1295,5 +1295,63 @@
       "If every new parent is an original ancestor, the original preorder is still a topological order, so sizes can be accumulated in reverse preorder without building a new tree.",
       "With n up to 10^5 and possible chain-shaped trees, use an iterative DFS."
     ]
-  }
+  },
+  "review": {
+    "verdict": "wont_compile",
+    "summary": "Your plan of collecting each node's ancestors and picking the first one with the same letter is a valid way to find the new parent, but the code has several compile errors and an infinite loop, never computes subtree sizes, never returns anything, and the ancestor lists would be too big on a long chain.",
+    "yourIdea": "You collect, for every node, its ancestors ordered from closest to farthest, using the original `parent` array. Then you scan that list for the first ancestor with the same character and make it the new parent. Because all lists are built before any parent is changed, the simultaneous update is handled correctly.",
+    "gaps": [
+      {
+        "title": "Storing every ancestor list costs O(n^2)",
+        "explanation": "On a chain of 10^5 nodes, the ancestor lists together hold about 5*10^9 entries. That blows both time and memory. You never need the whole ancestor list. You only need, for each of the 26 letters, the closest ancestor that has that letter. If you walk the tree with a DFS from the root, you can keep an array `last[26]`. On entering x, read `last[s[x]]` as its new parent, set `last[s[x]] = x`, recurse into the children, then restore the old value when you leave x.",
+        "lines": "6-16"
+      },
+      {
+        "title": "No plan yet for computing subtree sizes (your question)",
+        "explanation": "A subtree size is 1 plus the sizes of the children, so a node's size is only known after all its descendants are done. You cannot just loop i from 0 to n-1, because `parent` indices are not guaranteed to be smaller than their children's. Here is the key observation. The new parent of x is always an ancestor of x in the original tree. So in a post-order DFS of the original tree, x finishes before its new parent does. When x finishes, add `size[x]` into `size[newParent[x]]`, or into its original parent if nothing changed. That gives you the final sizes in the same single DFS.",
+        "lines": "17-30"
+      },
+      {
+        "title": "The function never produces an answer",
+        "explanation": "After computing the new parents there is no size array and no `return`. In C++, falling off the end of a non-void function is undefined behavior. You still need to build the answer array and return it.",
+        "lines": "29-30"
+      }
+    ],
+    "bugs": [
+      {
+        "lines": "5",
+        "issue": "`vector<int>` used as a value is a type name, not an object, so this does not compile.",
+        "fix": "Write `vector<vector<int>> v(n);`."
+      },
+      {
+        "lines": "11-14",
+        "issue": "`x` is never updated inside the loop, so it runs forever (and keeps pushing until memory runs out).",
+        "fix": "Add `x = parent[x];` after the push."
+      },
+      {
+        "lines": "15",
+        "issue": "Pushing a `vector<int>` into a `vector<int>` does not compile.",
+        "fix": "Use `v[i] = temp;` (or push directly into `v[i]` in the loop)."
+      },
+      {
+        "lines": "22",
+        "issue": "The bracket is mismatched: `s[v[i][j])`.",
+        "fix": "Write `s[i] == s[v[i][j]]`."
+      }
+    ],
+    "counterexample": null,
+    "complexity": {
+      "time": "O(n^2) once the loop is fixed (sum of depths); currently an infinite loop",
+      "space": "O(n^2) for the ancestor lists",
+      "verdict": "On a chain with n = 10^5 that is about 5*10^9 stored ancestors, far beyond the limits; you need O(n * 26) or O(n)."
+    },
+    "nudge": "While you DFS down from the root, how few pieces of information do you actually need to answer 'who is my closest ancestor with letter c?' for every letter at once? And for sizes: in what order must nodes finish so that a child's size is ready before its new parent needs it?",
+    "correctIdea": "Build a children list and do one DFS from node 0, keeping `last[c]`, the deepest node with letter c on the current root-to-node path. On entering x, set its new parent to `last[s[x]]` if that exists, otherwise keep the original parent. Then save the old `last[s[x]]`, set it to x, visit the children, and restore it on exit. Since the new parent is always an original ancestor, you can, when x finishes in post-order, add `size[x]` (starting at 1) to its new parent's size. Everything is O(n).",
+    "strengths": [
+      "Building all ancestor lists from the original parents before changing any of them correctly models the simultaneous update.",
+      "Scanning ancestors from closest to farthest and breaking on the first match correctly picks the closest matching ancestor.",
+      "Handling the root by letting the loop stop at -1 is right."
+    ]
+  },
+  "reviewFor": "class Solution {\npublic:\n    vector<int> findSubtreeSizes(vector<int>& parent, string s) {\n       int n = s.length();\n       vector<vector<int>> v(n,vector<int>);\n       for(int i=0;i<n;i++)\n       {\n           int x = parent[i];\n           vector<int> temp;\n           \n           while(x!=-1)\n           {\n               temp.push_back(x);\n           }\n           v[i].push_back(temp);\n       }\n       for(int i=0;i<n;i++)\n       {\n           int ns = v[i].size();\n           for(int j=0;j<ns;j++)\n           {\n               if(s[i]==s[v[i][j])\n               {\n                   parent[i]=v[i][j];\n                   break;\n               }\n           }\n       }\n       \n    }\n};"
 }

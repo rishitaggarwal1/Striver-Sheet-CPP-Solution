@@ -261,8 +261,8 @@
     "time": "O(n)",
     "space": "O(n)",
     "dir": "leetcode/find-subtree-sizes-after-changes",
-    "solution": "",
+    "solution": "leetcode/find-subtree-sizes-after-changes/find-subtree-sizes-after-changes.cpp",
     "mine": null,
-    "updatedAt": "2026-11-21T04:17:25.653Z"
+    "updatedAt": "2026-11-21T04:18:30.417Z"
   }
 }

@@ -4,7 +4,7 @@
   "slug": "find-subtree-sizes-after-changes",
   "title": "Find Subtree Sizes After Changes",
   "url": "https://leetcode.com/problems/find-subtree-sizes-after-changes/",
-  "updatedAt": "2026-11-21T04:17:25.653Z",
+  "updatedAt": "2026-11-21T04:18:30.417Z",
   "problem": {
     "difficulty": "Medium",
     "description": "You are given a tree rooted at node 0 that consists of n nodes numbered from 0 to n - 1. The tree is represented by an array parent of size n, where parent[i] is the parent of node i. Since node 0 is the root, parent[0] == -1.\n\nYou are also given a string s of length n, where s[i] is the character assigned to node i.\n\nWe make the following changes on the tree one time simultaneously for all nodes x from 1 to n - 1:\n\n- Find the closest node y to node x such that y is an ancestor of x, and s[x] == s[y].\n\n- If node y does not exist, do nothing.\n\n- Otherwise, remove the edge between x and its current parent and make node y the new parent of x by adding an edge between them.\n\nReturn an array answer of size n where answer[i] is the size of the subtree rooted at node i in the final tree.\n\nExample 1:\n\nInput: parent = [-1,0,0,1,1,1], s = \"abaabc\"\n\nOutput: [6,3,1,1,1,1]\n\nExplanation:\n\nThe parent of node 3 will change from node 1 to node 0.\n\nExample 2:\n\nInput: parent = [-1,0,4,0,1], s = \"abbba\"\n\nOutput: [5,2,1,1,1]\n\nExplanation:\n\nThe following changes will happen at the same time:\n\n- The parent of node 4 will change from node 1 to node 0.\n\n- The parent of node 2 will change from node 4 to node 1.\n\nConstraints:\n\n- n == parent.length == s.length\n\n- 1 <= n <= 10^5\n\n- 0 <= parent[i] <= n - 1 for all i >= 1.\n\n- parent[0] == -1\n\n- parent represents a valid tree.\n\n- s consists only of lowercase English letters."
@@ -234,7 +234,994 @@
         "time": "O(n^2)",
         "space": "O(n)",
         "complexity": "The upward walks dominate: each costs up to the depth, which is n on a chain. Extra memory is the newParent array and the children lists.",
-        "tradeoff": "A chain of 10^5 nodes with no letter matches makes about 5·10^9 steps, which is far over the time limit."
+        "tradeoff": "A chain of 10^5 nodes with no letter matches makes about 5·10^9 steps, which is far over the time limit.",
+        "deep": {
+          "pseudocode": [
+            "function findSubtreeSizes(parent, s):",
+            "  n ← length(parent)",
+            "  newParent ← copy of parent",
+            "  for x ← 1 to n − 1:",
+            "    y ← parent[x]",
+            "    while y ≠ −1 and s[y] ≠ s[x]:  // climb one step at a time, so the first match is the closest",
+            "      y ← parent[y]",
+            "    if y ≠ −1:",
+            "      newParent[x] ← y  // closest ancestor with the same letter",
+            "  children ← array of n empty lists",
+            "  for x ← 1 to n − 1:",
+            "    append x to children[newParent[x]]",
+            "  answer ← array of n values, all 1  // every node counts itself",
+            "  order ← empty list; stack ← [0]",
+            "  while stack is not empty:  // iterative DFS of the new tree (no recursion depth issues)",
+            "    u ← pop(stack)",
+            "    append u to order",
+            "    for each c in children[u]:",
+            "      push c onto stack",
+            "  for i ← n − 1 down to 1:  // reverse preorder: every child is handled before its parent",
+            "    u ← order[i]",
+            "    answer[newParent[u]] ← answer[newParent[u]] + answer[u]  // pass the finished subtree size up",
+            "  return answer"
+          ],
+          "time": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Ancestor climbing (lines 4-9)",
+                "cost": "n−1 nodes × up to depth(x) = O(n) climbs each",
+                "why": "A node may have to walk all the way to the root before it finds a matching letter or runs out of ancestors."
+              },
+              {
+                "part": "Building children lists (lines 10-12)",
+                "cost": "n−1 iterations × O(1)",
+                "why": "Each node is appended exactly once to its new parent's list."
+              },
+              {
+                "part": "DFS preorder (lines 14-19)",
+                "cost": "n pops + n−1 pushes, O(1) each",
+                "why": "Every node is pushed and popped once, and every edge is scanned once."
+              },
+              {
+                "part": "Reverse accumulation (lines 20-22)",
+                "cost": "n−1 iterations × O(1)",
+                "why": "Each node adds its size to its parent once."
+              }
+            ],
+            "sum": "Σ depth(x) + O(n) + O(n) + O(n). In the worst case Σ depth(x) ≈ (n/2)·(n/2) = n²/4 = O(n^2), which dominates the linear work.",
+            "cases": "Best case O(n): every node's parent already has the same letter (e.g. all letters 'a'), so each climb stops after one check. Worst case O(n^2): a 'broom' tree, a path of n/2 'a' nodes with n/2 'b' leaves hanging from its bottom. Each leaf climbs about n/2 steps.",
+            "feel": "n = 10^5 → worst case about 2.5·10^9 climb steps, which takes several seconds and will likely exceed the time limit. Random or shallow trees run fast.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "newParent copy (line 3)",
+                "cost": "n integers",
+                "why": "It stores the reassigned parent of every node."
+              },
+              {
+                "part": "children lists (lines 10-12)",
+                "cost": "n lists holding n−1 entries in total",
+                "why": "Each non-root node appears in exactly one list."
+              },
+              {
+                "part": "order and stack (lines 14-19)",
+                "cost": "at most n entries each",
+                "why": "Each node enters each container at most once."
+              }
+            ],
+            "sum": "O(n) + O(n) + O(n) = O(n)",
+            "cases": "",
+            "feel": "",
+            "note": "The output array answer (n ints) and the inputs are not counted. The DFS is iterative, so there is no recursion stack. A recursive DFS could reach depth 10^5 on a path-shaped tree."
+          },
+          "dryRun": {
+            "input": "parent = [-1,0,0,1,1,1], s = \"abaabc\"",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "n = 6. newParent starts as an exact copy of parent; nodes only change if they find a matching ancestor.",
+                "vars": {
+                  "n": "6"
+                },
+                "arrays": {
+                  "parent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "s": {
+                    "values": [
+                      "a",
+                      "b",
+                      "a",
+                      "a",
+                      "b",
+                      "c"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "x = 1 ('b'): y started at 0, but s[0] = 'a' ≠ 'b', so y climbs to parent[0] = -1. No 'b' ancestor exists, so node 1 keeps its parent.",
+                "vars": {
+                  "n": "6",
+                  "x": "1",
+                  "y": "-1"
+                },
+                "arrays": {
+                  "parent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "x": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "s": {
+                    "values": [
+                      "a",
+                      "b",
+                      "a",
+                      "a",
+                      "b",
+                      "c"
+                    ],
+                    "pointers": {
+                      "x": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  },
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "x = 2 ('a'): y = 0 and s[0] = 'a' matches immediately, so newParent[2] = 0. This is the same as before.",
+                "vars": {
+                  "n": "6",
+                  "x": "2",
+                  "y": "0"
+                },
+                "arrays": {
+                  "parent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "x": 2,
+                      "y": 0
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "s": {
+                    "values": [
+                      "a",
+                      "b",
+                      "a",
+                      "a",
+                      "b",
+                      "c"
+                    ],
+                    "pointers": {
+                      "x": 2,
+                      "y": 0
+                    },
+                    "highlight": [
+                      0,
+                      2
+                    ]
+                  },
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "x = 3 ('a'): y = 1 has 'b' ≠ 'a', so y climbs to parent[1] = 0. Now s[0] = 'a' matches, so the while loop stops.",
+                "vars": {
+                  "n": "6",
+                  "x": "3",
+                  "y": "0"
+                },
+                "arrays": {
+                  "parent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "x": 3,
+                      "y": 0
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "s": {
+                    "values": [
+                      "a",
+                      "b",
+                      "a",
+                      "a",
+                      "b",
+                      "c"
+                    ],
+                    "pointers": {
+                      "x": 3,
+                      "y": 0
+                    },
+                    "highlight": [
+                      0,
+                      3
+                    ]
+                  },
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "y = 0 ≠ -1, so node 3 is re-attached: newParent[3] = 0. This is the change described in the example.",
+                "vars": {
+                  "n": "6",
+                  "x": "3",
+                  "y": "0"
+                },
+                "arrays": {
+                  "parent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "x": 3
+                    },
+                    "highlight": []
+                  },
+                  "s": {
+                    "values": [
+                      "a",
+                      "b",
+                      "a",
+                      "a",
+                      "b",
+                      "c"
+                    ],
+                    "pointers": {
+                      "x": 3,
+                      "y": 0
+                    },
+                    "highlight": [
+                      0,
+                      3
+                    ]
+                  },
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "x = 4 ('b'): y = 1 has 'b', which matches at once, so newParent[4] = 1 (unchanged).",
+                "vars": {
+                  "n": "6",
+                  "x": "4",
+                  "y": "1"
+                },
+                "arrays": {
+                  "parent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "x": 4,
+                      "y": 1
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "s": {
+                    "values": [
+                      "a",
+                      "b",
+                      "a",
+                      "a",
+                      "b",
+                      "c"
+                    ],
+                    "pointers": {
+                      "x": 4,
+                      "y": 1
+                    },
+                    "highlight": [
+                      1,
+                      4
+                    ]
+                  },
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "x = 5 ('c'): y goes 1 ('b'), then 0 ('a'), then -1. There is no 'c' ancestor, so node 5 keeps parent 1.",
+                "vars": {
+                  "n": "6",
+                  "x": "5",
+                  "y": "-1"
+                },
+                "arrays": {
+                  "parent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "x": 5
+                    },
+                    "highlight": [
+                      5
+                    ]
+                  },
+                  "s": {
+                    "values": [
+                      "a",
+                      "b",
+                      "a",
+                      "a",
+                      "b",
+                      "c"
+                    ],
+                    "pointers": {
+                      "x": 5
+                    },
+                    "highlight": [
+                      0,
+                      1,
+                      5
+                    ]
+                  },
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "Children lists are built from newParent = [-1,0,0,0,1,1]. Node 0 now has children 1, 2, 3, and node 1 has children 4 and 5.",
+                "vars": {
+                  "n": "6"
+                },
+                "arrays": {
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1,
+                      2,
+                      3,
+                      4,
+                      5
+                    ]
+                  }
+                },
+                "structures": {
+                  "children": {
+                    "type": "map",
+                    "items": [
+                      "0→[1,2,3]",
+                      "1→[4,5]",
+                      "2→[]",
+                      "3→[]",
+                      "4→[]",
+                      "5→[]"
+                    ]
+                  }
+                },
+                "trees": {
+                  "newTree": {
+                    "values": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": []
+                  }
+                },
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 19,
+                "explain": "The DFS pops 0, records it in order, and pushes its children 1, 2, 3. Node 3 is now on top of the stack. All answers start at 1.",
+                "vars": {
+                  "n": "6",
+                  "u": "0"
+                },
+                "arrays": {
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "answer": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "order": {
+                    "values": [
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "children": {
+                    "type": "map",
+                    "items": [
+                      "0→[1,2,3]",
+                      "1→[4,5]",
+                      "2→[]",
+                      "3→[]",
+                      "4→[]",
+                      "5→[]"
+                    ]
+                  },
+                  "stack": {
+                    "type": "stack",
+                    "items": [
+                      "1",
+                      "2",
+                      "3"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 19,
+                "explain": "The DFS pops 3, then 2 (both have no children), then 1, and pushes node 1's children 4 and 5.",
+                "vars": {
+                  "n": "6",
+                  "u": "1"
+                },
+                "arrays": {
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "answer": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "order": {
+                    "values": [
+                      "0",
+                      "3",
+                      "2",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "children": {
+                    "type": "map",
+                    "items": [
+                      "0→[1,2,3]",
+                      "1→[4,5]",
+                      "2→[]",
+                      "3→[]",
+                      "4→[]",
+                      "5→[]"
+                    ]
+                  },
+                  "stack": {
+                    "type": "stack",
+                    "items": [
+                      "4",
+                      "5"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "The DFS pops 5, then 4. The stack is now empty and order = [0,3,2,1,5,4]. Every parent appears before its children.",
+                "vars": {
+                  "n": "6",
+                  "u": "4"
+                },
+                "arrays": {
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "answer": {
+                    "values": [
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "order": {
+                    "values": [
+                      "0",
+                      "3",
+                      "2",
+                      "1",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4,
+                      5
+                    ]
+                  }
+                },
+                "structures": {
+                  "children": {
+                    "type": "map",
+                    "items": [
+                      "0→[1,2,3]",
+                      "1→[4,5]",
+                      "2→[]",
+                      "3→[]",
+                      "4→[]",
+                      "5→[]"
+                    ]
+                  },
+                  "stack": {
+                    "type": "stack",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 22,
+                "explain": "i = 5, u = order[5] = 4. Node 4's size (1) is added to its parent 1, so answer[1] = 2.",
+                "vars": {
+                  "n": "6",
+                  "i": "5",
+                  "u": "4"
+                },
+                "arrays": {
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "u": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "answer": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "u": 4
+                    },
+                    "highlight": [
+                      1,
+                      4
+                    ]
+                  },
+                  "order": {
+                    "values": [
+                      "0",
+                      "3",
+                      "2",
+                      "1",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 5
+                    },
+                    "highlight": [
+                      5
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 22,
+                "explain": "i = 4 (u = 5) first made answer[1] = 3. Now i = 3, u = 1: node 1's finished size 3 is added to node 0, so answer[0] = 4.",
+                "vars": {
+                  "n": "6",
+                  "i": "3",
+                  "u": "1"
+                },
+                "arrays": {
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "u": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "answer": {
+                    "values": [
+                      "4",
+                      "3",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "u": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  },
+                  "order": {
+                    "values": [
+                      "0",
+                      "3",
+                      "2",
+                      "1",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 22,
+                "explain": "i = 2 (u = 2) made answer[0] = 5. Then i = 1, u = 3 adds 1 more, so answer[0] = 6.",
+                "vars": {
+                  "n": "6",
+                  "i": "1",
+                  "u": "3"
+                },
+                "arrays": {
+                  "newParent": {
+                    "values": [
+                      "-1",
+                      "0",
+                      "0",
+                      "0",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "u": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "answer": {
+                    "values": [
+                      "6",
+                      "3",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "u": 3
+                    },
+                    "highlight": [
+                      0,
+                      3
+                    ]
+                  },
+                  "order": {
+                    "values": [
+                      "0",
+                      "3",
+                      "2",
+                      "1",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 23,
+                "explain": "The loop has finished, so answer = [6,3,1,1,1,1] is returned.",
+                "vars": {
+                  "n": "6"
+                },
+                "arrays": {
+                  "answer": {
+                    "values": [
+                      "6",
+                      "3",
+                      "1",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "[6,3,1,1,1,1]. Only node 3 moves (to node 0), so node 0's subtree holds all 6 nodes and node 1 keeps itself plus nodes 4 and 5."
+          },
+          "solution": "class Solution {\npublic:\n    vector<int> findSubtreeSizes(vector<int>& parent, string s) {\n        int n = parent.size();\n        vector<int> newParent(parent);          // start from the original parents\n        for (int x = 1; x < n; ++x) {\n            int y = parent[x];\n            // climb upward one ancestor at a time; the first match is the closest\n            while (y != -1 && s[y] != s[x]) y = parent[y];\n            if (y != -1) newParent[x] = y;      // re-attach to closest same-letter ancestor\n        }\n        vector<vector<int>> children(n);\n        for (int x = 1; x < n; ++x) children[newParent[x]].push_back(x); // adjacency of new tree\n        vector<int> answer(n, 1);               // each node counts itself\n        vector<int> order;\n        order.reserve(n);\n        vector<int> st = {0};                   // iterative DFS avoids deep recursion\n        while (!st.empty()) {\n            int u = st.back(); st.pop_back();\n            order.push_back(u);                 // preorder: parent before children\n            for (int c : children[u]) st.push_back(c);\n        }\n        // reverse preorder guarantees children are finished before their parent\n        for (int i = n - 1; i >= 1; --i) {\n            int u = order[i];\n            answer[newParent[u]] += answer[u];  // push subtree size up to parent\n        }\n        return answer;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;\n\nstring vecToString(const vector<int>& v) {\n    string r = \"[\";\n    for (size_t i = 0; i < v.size(); ++i) {\n        if (i) r += \",\";\n        r += to_string(v[i]);\n    }\n    return r + \"]\";\n}",
+          "main": "int main() {\n    Solution sol;\n    vector<int> p1 = {-1,0,0,1,1,1};\n    vector<int> r1 = sol.findSubtreeSizes(p1, \"abaabc\");\n    cout << \"Example 1: \" << vecToString(r1) << \"  expected: [6,3,1,1,1,1]\" << endl;\n    vector<int> p2 = {-1,0,4,0,1};\n    vector<int> r2 = sol.findSubtreeSizes(p2, \"abbba\");\n    cout << \"Example 2: \" << vecToString(r2) << \"  expected: [5,2,1,1,1]\" << endl;\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

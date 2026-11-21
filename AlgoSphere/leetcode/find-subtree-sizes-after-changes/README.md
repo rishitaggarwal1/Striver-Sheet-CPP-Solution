@@ -228,7 +228,175 @@ Each new parent is an original ancestor, so it appears earlier in the original p
 5. Build children lists from newParent.
 6. Run a DFS (or reverse-order accumulation) from 0 to compute sizes.
 
-**Complexity:** time `O(n^2)`, space `O(n)`. The upward walks dominate: each costs up to the depth, which is n on a chain. Extra memory is the newParent array and the children lists.
+**Pseudocode**
+
+```text
+ 1 │ function findSubtreeSizes(parent, s):
+ 2 │   n ← length(parent)
+ 3 │   newParent ← copy of parent
+ 4 │   for x ← 1 to n − 1:
+ 5 │     y ← parent[x]
+ 6 │     while y ≠ −1 and s[y] ≠ s[x]:  // climb one step at a time, so the first match is the closest
+ 7 │       y ← parent[y]
+ 8 │     if y ≠ −1:
+ 9 │       newParent[x] ← y  // closest ancestor with the same letter
+10 │   children ← array of n empty lists
+11 │   for x ← 1 to n − 1:
+12 │     append x to children[newParent[x]]
+13 │   answer ← array of n values, all 1  // every node counts itself
+14 │   order ← empty list; stack ← [0]
+15 │   while stack is not empty:  // iterative DFS of the new tree (no recursion depth issues)
+16 │     u ← pop(stack)
+17 │     append u to order
+18 │     for each c in children[u]:
+19 │       push c onto stack
+20 │   for i ← n − 1 down to 1:  // reverse preorder: every child is handled before its parent
+21 │     u ← order[i]
+22 │     answer[newParent[u]] ← answer[newParent[u]] + answer[u]  // pass the finished subtree size up
+23 │   return answer
+```
+
+**Time complexity: `O(n^2)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Ancestor climbing (lines 4-9) | n−1 nodes × up to depth(x) = O(n) climbs each | A node may have to walk all the way to the root before it finds a matching letter or runs out of ancestors. |
+| Building children lists (lines 10-12) | n−1 iterations × O(1) | Each node is appended exactly once to its new parent's list. |
+| DFS preorder (lines 14-19) | n pops + n−1 pushes, O(1) each | Every node is pushed and popped once, and every edge is scanned once. |
+| Reverse accumulation (lines 20-22) | n−1 iterations × O(1) | Each node adds its size to its parent once. |
+
+- **Adding it up:** Σ depth(x) + O(n) + O(n) + O(n). In the worst case Σ depth(x) ≈ (n/2)·(n/2) = n²/4 = O(n^2), which dominates the linear work.
+- **Best vs worst case:** Best case O(n): every node's parent already has the same letter (e.g. all letters 'a'), so each climb stops after one check. Worst case O(n^2): a 'broom' tree, a path of n/2 'a' nodes with n/2 'b' leaves hanging from its bottom. Each leaf climbs about n/2 steps.
+- **At the maximum input:** n = 10^5 → worst case about 2.5·10^9 climb steps, which takes several seconds and will likely exceed the time limit. Random or shallow trees run fast.
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| newParent copy (line 3) | n integers | It stores the reassigned parent of every node. |
+| children lists (lines 10-12) | n lists holding n−1 entries in total | Each non-root node appears in exactly one list. |
+| order and stack (lines 14-19) | at most n entries each | Each node enters each container at most once. |
+
+- **Adding it up:** O(n) + O(n) + O(n) = O(n)
+- **Not counted:** The output array answer (n ints) and the inputs are not counted. The DFS is iterative, so there is no recursion stack. A recursive DFS could reach depth 10^5 on a path-shaped tree.
+
+**Dry run** on `parent = [-1,0,0,1,1,1], s = "abaabc"`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 3 | n = 6. newParent starts as an exact copy of parent; nodes only change if they find a matching ancestor. | `n = 6`<br>`parent = [-1, 0, 0, 1, 1, 1]`<br>`s = [a, b, a, a, b, c]`<br>`newParent = [-1, 0, 0, 1, 1, 1]` |
+| 2 | 7 | x = 1 ('b'): y started at 0, but s[0] = 'a' ≠ 'b', so y climbs to parent[0] = -1. No 'b' ancestor exists, so node 1 keeps its parent. | `x = 1`<br>`y = -1`<br>`parent = [-1, 0, 0, 1, 1, 1]` (x→1)<br>`s = [a, b, a, a, b, c]` (x→1) |
+| 3 | 9 | x = 2 ('a'): y = 0 and s[0] = 'a' matches immediately, so newParent[2] = 0. This is the same as before. | `x = 2`<br>`y = 0`<br>`parent = [-1, 0, 0, 1, 1, 1]` (x→2, y→0)<br>`s = [a, b, a, a, b, c]` (x→2, y→0) |
+| 4 | 7 | x = 3 ('a'): y = 1 has 'b' ≠ 'a', so y climbs to parent[1] = 0. Now s[0] = 'a' matches, so the while loop stops. | `x = 3`<br>`parent = [-1, 0, 0, 1, 1, 1]` (x→3, y→0)<br>`s = [a, b, a, a, b, c]` (x→3, y→0) |
+| 5 | 9 | y = 0 ≠ -1, so node 3 is re-attached: newParent[3] = 0. This is the change described in the example. | `parent = [-1, 0, 0, 1, 1, 1]` (x→3)<br>`newParent = [-1, 0, 0, 0, 1, 1]` |
+| 6 | 9 | x = 4 ('b'): y = 1 has 'b', which matches at once, so newParent[4] = 1 (unchanged). | `x = 4`<br>`y = 1`<br>`parent = [-1, 0, 0, 1, 1, 1]` (x→4, y→1)<br>`s = [a, b, a, a, b, c]` (x→4, y→1) |
+| 7 | 7 | x = 5 ('c'): y goes 1 ('b'), then 0 ('a'), then -1. There is no 'c' ancestor, so node 5 keeps parent 1. | `x = 5`<br>`y = -1`<br>`parent = [-1, 0, 0, 1, 1, 1]` (x→5)<br>`s = [a, b, a, a, b, c]` (x→5) |
+| 8 | 12 | Children lists are built from newParent = [-1,0,0,0,1,1]. Node 0 now has children 1, 2, 3, and node 1 has children 4 and 5. | `children = {0→[1,2,3], 1→[4,5], 2→[], 3→[], 4→[], 5→[]}`<br>`newTree = tree [0, 1, 2, 3]` |
+| 9 | 19 | The DFS pops 0, records it in order, and pushes its children 1, 2, 3. Node 3 is now on top of the stack. All answers start at 1. | `u = 0`<br>`answer = [1, 1, 1, 1, 1, 1]`<br>`order = [0]`<br>`stack = [1, 2, 3] ← top` |
+| 10 | 19 | The DFS pops 3, then 2 (both have no children), then 1, and pushes node 1's children 4 and 5. | `u = 1`<br>`order = [0, 3, 2, 1]`<br>`stack = [4, 5] ← top` |
+| 11 | 17 | The DFS pops 5, then 4. The stack is now empty and order = [0,3,2,1,5,4]. Every parent appears before its children. | `u = 4`<br>`order = [0, 3, 2, 1, 5, 4]`<br>`stack = []` |
+| 12 | 22 | i = 5, u = order[5] = 4. Node 4's size (1) is added to its parent 1, so answer[1] = 2. | `i = 5`<br>`newParent = [-1, 0, 0, 0, 1, 1]` (u→4)<br>`answer = [1, 2, 1, 1, 1, 1]` (u→4)<br>`order = [0, 3, 2, 1, 5, 4]` (i→5) |
+| 13 | 22 | i = 4 (u = 5) first made answer[1] = 3. Now i = 3, u = 1: node 1's finished size 3 is added to node 0, so answer[0] = 4. | `i = 3`<br>`u = 1`<br>`newParent = [-1, 0, 0, 0, 1, 1]` (u→1)<br>`answer = [4, 3, 1, 1, 1, 1]` (u→1)<br>`order = [0, 3, 2, 1, 5, 4]` (i→3) |
+| 14 | 22 | i = 2 (u = 2) made answer[0] = 5. Then i = 1, u = 3 adds 1 more, so answer[0] = 6. | `i = 1`<br>`u = 3`<br>`newParent = [-1, 0, 0, 0, 1, 1]` (u→3)<br>`answer = [6, 3, 1, 1, 1, 1]` (u→3)<br>`order = [0, 3, 2, 1, 5, 4]` (i→1) |
+| 15 | 23 | The loop has finished, so answer = [6,3,1,1,1,1] is returned. | `answer = [6, 3, 1, 1, 1, 1]` |
+
+**Result:** [6,3,1,1,1,1]. Only node 3 moves (to node 0), so node 0's subtree holds all 6 nodes and node 1 keeps itself plus nodes 4 and 5.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    vector<int> findSubtreeSizes(vector<int>& parent, string s) {
+        int n = parent.size();
+        vector<int> newParent(parent);          // start from the original parents
+        for (int x = 1; x < n; ++x) {
+            int y = parent[x];
+            // climb upward one ancestor at a time; the first match is the closest
+            while (y != -1 && s[y] != s[x]) y = parent[y];
+            if (y != -1) newParent[x] = y;      // re-attach to closest same-letter ancestor
+        }
+        vector<vector<int>> children(n);
+        for (int x = 1; x < n; ++x) children[newParent[x]].push_back(x); // adjacency of new tree
+        vector<int> answer(n, 1);               // each node counts itself
+        vector<int> order;
+        order.reserve(n);
+        vector<int> st = {0};                   // iterative DFS avoids deep recursion
+        while (!st.empty()) {
+            int u = st.back(); st.pop_back();
+            order.push_back(u);                 // preorder: parent before children
+            for (int c : children[u]) st.push_back(c);
+        }
+        // reverse preorder guarantees children are finished before their parent
+        for (int i = n - 1; i >= 1; --i) {
+            int u = order[i];
+            answer[newParent[u]] += answer[u];  // push subtree size up to parent
+        }
+        return answer;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string vecToString(const vector<int>& v) {
+    string r = "[";
+    for (size_t i = 0; i < v.size(); ++i) {
+        if (i) r += ",";
+        r += to_string(v[i]);
+    }
+    return r + "]";
+}
+
+class Solution {
+public:
+    vector<int> findSubtreeSizes(vector<int>& parent, string s) {
+        int n = parent.size();
+        vector<int> newParent(parent);          // start from the original parents
+        for (int x = 1; x < n; ++x) {
+            int y = parent[x];
+            // climb upward one ancestor at a time; the first match is the closest
+            while (y != -1 && s[y] != s[x]) y = parent[y];
+            if (y != -1) newParent[x] = y;      // re-attach to closest same-letter ancestor
+        }
+        vector<vector<int>> children(n);
+        for (int x = 1; x < n; ++x) children[newParent[x]].push_back(x); // adjacency of new tree
+        vector<int> answer(n, 1);               // each node counts itself
+        vector<int> order;
+        order.reserve(n);
+        vector<int> st = {0};                   // iterative DFS avoids deep recursion
+        while (!st.empty()) {
+            int u = st.back(); st.pop_back();
+            order.push_back(u);                 // preorder: parent before children
+            for (int c : children[u]) st.push_back(c);
+        }
+        // reverse preorder guarantees children are finished before their parent
+        for (int i = n - 1; i >= 1; --i) {
+            int u = order[i];
+            answer[newParent[u]] += answer[u];  // push subtree size up to parent
+        }
+        return answer;
+    }
+};
+
+int main() {
+    Solution sol;
+    vector<int> p1 = {-1,0,0,1,1,1};
+    vector<int> r1 = sol.findSubtreeSizes(p1, "abaabc");
+    cout << "Example 1: " << vecToString(r1) << "  expected: [6,3,1,1,1,1]" << endl;
+    vector<int> p2 = {-1,0,4,0,1};
+    vector<int> r2 = sol.findSubtreeSizes(p2, "abbba");
+    cout << "Example 2: " << vecToString(r2) << "  expected: [5,2,1,1,1]" << endl;
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** A chain of 10^5 nodes with no letter matches makes about 5·10^9 steps, which is far over the time limit.
 

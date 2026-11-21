@@ -4,7 +4,7 @@
   "slug": "n-queens",
   "title": "N-Queens",
   "url": "https://leetcode.com/problems/n-queens/",
-  "updatedAt": "2026-11-20T15:06:29.942Z",
+  "updatedAt": "2026-11-21T05:20:36.311Z",
   "problem": {
     "difficulty": "Hard",
     "description": "The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.\n\nGiven an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.\n\nEach solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.\n\nExample 1:\n\nInput: n = 4\nOutput: [[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]\nExplanation: There exist two distinct solutions to the 4-queens puzzle as shown above\n\nExample 2:\n\nInput: n = 1\nOutput: [[\"Q\"]]\n\nConstraints:\n\n- 1 <= n <= 9"
@@ -18,5 +18,111 @@
     "Keep three sets or boolean arrays: used columns, used `row - col` diagonals (offset by `n - 1` if you use an array), and used `row + col` anti-diagonals (size `2n - 1`). Also keep the current partial board, or the column chosen for each row, so you can turn it into strings when a solution is complete.",
     "Start a recursive search at row 0 with all markers empty.\nIf the current row equals n, convert the board to a list of strings and add a copy to the results.\nOtherwise, try each column in the current row.\nSkip the column if its column, diagonal, or anti-diagonal is already marked.\nOtherwise, place the queen, mark all three, and recurse to the next row.\nAfter returning, remove the queen and clear all three marks.",
     "The trickiest part is undoing state exactly: every mark set before recursing must be cleared afterward, and you must store a copy of the board, not a reference that later changes. For edge cases, `n = 1` gives one solution, while `n = 2` and `n = 3` give an empty list. Time is roughly `O(n!)` in the worst case plus `O(n^2)` to build each solution, and space is `O(n)` for recursion and markers, excluding the output."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "4"
+          }
+        ],
+        "output": "[[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]",
+        "note": "Smallest board with solutions; it has 2 mirror-image placements."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "5"
+          }
+        ],
+        "output": "[[\"Q....\",\"..Q..\",\"....Q\",\".Q...\",\"...Q.\"],[\"Q....\",\"...Q.\",\".Q...\",\"....Q\",\"..Q..\"],[\".Q...\",\"...Q.\",\"Q....\",\"..Q..\",\"....Q\"],[\".Q...\",\"....Q\",\"..Q..\",\"Q....\",\"...Q.\"],[\"..Q..\",\"Q....\",\"...Q.\",\".Q...\",\"....Q\"],[\"..Q..\",\"....Q\",\".Q...\",\"...Q.\",\"Q....\"],[\"...Q.\",\"Q....\",\"..Q..\",\"....Q\",\".Q...\"],[\"...Q.\",\".Q...\",\"....Q\",\"..Q..\",\"Q....\"],[\"....Q\",\".Q...\",\"...Q.\",\"Q....\",\"..Q..\"],[\"....Q\",\"..Q..\",\"Q....\",\"...Q.\",\".Q...\"]]",
+        "note": "Odd board size with 10 solutions."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "6"
+          }
+        ],
+        "output": "[[\".Q....\",\"...Q..\",\".....Q\",\"Q.....\",\"..Q...\",\"....Q.\"],[\"..Q...\",\".....Q\",\".Q....\",\"....Q.\",\"Q.....\",\"...Q..\"],[\"...Q..\",\"Q.....\",\"....Q.\",\".Q....\",\".....Q\",\"..Q...\"],[\"....Q.\",\"..Q...\",\"Q.....\",\".....Q\",\"...Q..\",\".Q....\"]]",
+        "note": "Has only 4 solutions, fewer than n=5, so the count does not grow steadily."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "7"
+          }
+        ],
+        "output": "40 distinct boards of 7 strings each (list too long to write out)",
+        "note": "Moderate search with 40 solutions."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "8"
+          }
+        ],
+        "output": "92 distinct boards of 8 strings each (list too long to write out)",
+        "note": "Classic 8-queens puzzle with 92 solutions."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "1"
+          }
+        ],
+        "output": "[[\"Q\"]]",
+        "note": "Minimum n: a single queen on a 1x1 board."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "2"
+          }
+        ],
+        "output": "[]",
+        "note": "No solution: two queens always attack each other on a 2x2 board."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "3"
+          }
+        ],
+        "output": "[]",
+        "note": "No solution: largest n with no valid placement."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "9"
+          }
+        ],
+        "output": "352 distinct boards of 9 strings each (list too long to write out)",
+        "note": "Maximum n: checks performance with 352 solutions."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "5"
+          }
+        ],
+        "output": "10 distinct boards (same list as the n=5 normal case)",
+        "note": "Smallest odd solvable board: checks that diagonal handling works when the board has a centre square."
+      }
+    ]
+  }
 }

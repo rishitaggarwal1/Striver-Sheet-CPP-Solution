@@ -2,6 +2,8 @@
 
 **LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/n-queens/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -96,3 +98,29 @@ After returning, remove the queen and clear all three marks.
 The trickiest part is undoing state exactly: every mark set before recursing must be cleared afterward, and you must store a copy of the board, not a reference that later changes. For edge cases, `n = 1` gives one solution, while `n = 2` and `n = 3` give an empty list. Time is roughly `O(n!)` in the worst case plus `O(n^2)` to build each solution, and space is `O(n)` for recursion and markers, excluding the output.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| n = 4 | [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]] | Smallest board with solutions; it has 2 mirror-image placements. |
+| n = 5 | [["Q....","..Q..","....Q",".Q...","...Q."],["Q....","...Q.",".Q...","....Q","..Q.."],[".Q...","...Q.","Q....","..Q..","....Q"],[".Q...","....Q","..Q..","Q....","...Q."],["..Q..","Q....","...Q.",".Q...","....Q"],["..Q..","....Q",".Q...","...Q.","Q...."],["...Q.","Q....","..Q..","....Q",".Q..."],["...Q.",".Q...","....Q","..Q..","Q...."],["....Q",".Q...","...Q.","Q....","..Q.."],["....Q","..Q..","Q....","...Q.",".Q..."]] | Odd board size with 10 solutions. |
+| n = 6 | [[".Q....","...Q..",".....Q","Q.....","..Q...","....Q."],["..Q...",".....Q",".Q....","....Q.","Q.....","...Q.."],["...Q..","Q.....","....Q.",".Q....",".....Q","..Q..."],["....Q.","..Q...","Q.....",".....Q","...Q..",".Q...."]] | Has only 4 solutions, fewer than n=5, so the count does not grow steadily. |
+| n = 7 | 40 distinct boards of 7 strings each (list too long to write out) | Moderate search with 40 solutions. |
+| n = 8 | 92 distinct boards of 8 strings each (list too long to write out) | Classic 8-queens puzzle with 92 solutions. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Minimum n | n = 1 | [["Q"]] | A single queen on a 1x1 board. |
+| No solution | n = 2 | [] | Two queens always attack each other on a 2x2 board. |
+| No solution | n = 3 | [] | Largest n with no valid placement. |
+| Maximum n | n = 9 | 352 distinct boards of 9 strings each (list too long to write out) | Checks performance with 352 solutions. |
+| Smallest odd solvable board | n = 5 | 10 distinct boards (same list as the n=5 normal case) | Checks that diagonal handling works when the board has a centre square. |
+
+---
+
+<sub>Notes made with **AlgoSphere**, designed and built by **Rishit Aggarwal** · [LinkedIn](https://www.linkedin.com/in/rishit-aggarwal/) · [GitHub](https://github.com/rishitaggarwal1) · [Medium](https://medium.com/@rishitaggarwal1)</sub>

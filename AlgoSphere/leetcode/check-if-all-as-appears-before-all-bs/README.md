@@ -2,7 +2,7 @@
 
 **LeetCode** · **Easy** · [Open the problem](https://leetcode.com/problems/check-if-all-as-appears-before-all-bs/) · ✅ Solved in C++
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution) · [Test cases](#test-cases)
 
 ## Problem
 
@@ -135,6 +135,29 @@ public:
     }
 };
 ```
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| s = "aabbb" | true | Block of a's followed by block of b's. |
+| s = "abba" | false | An a appears after b's at the end. |
+| s = "aaab" | true | Single b after several a's. |
+| s = "baaa" | false | Leading b followed by a's. |
+| s = "aabbab" | false | A stray a sits in the middle of the b's. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single a | s = "a" | true | Minimum length with no b's. |
+| Single b | s = "b" | true | Minimum length with no a's. |
+| All a's | s = "aaaa" | true | No b present at all. |
+| Smallest invalid | s = "ba" | false | B directly before a. |
+| Smallest valid mix | s = "ab" | true | A directly before b. |
+| Trailing a | s = "bbbbba" | false | The violation is only at the last index. |
 
 ---
 

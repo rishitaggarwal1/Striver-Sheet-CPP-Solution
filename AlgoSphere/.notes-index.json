@@ -264,5 +264,21 @@
     "solution": "leetcode/find-subtree-sizes-after-changes/find-subtree-sizes-after-changes.cpp",
     "mine": null,
     "updatedAt": "2026-11-21T04:37:48.175Z"
+  },
+  "leetcode/check-if-all-as-appears-before-all-bs": {
+    "title": "Check if All A's Appears Before All B's",
+    "site": "leetcode",
+    "slug": "check-if-all-as-appears-before-all-bs",
+    "difficulty": "Easy",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/check-if-all-as-appears-before-all-bs",
+    "solution": "",
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/check-if-all-as-appears-before-all-bs/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-22T07:22:27.235Z"
   }
 }

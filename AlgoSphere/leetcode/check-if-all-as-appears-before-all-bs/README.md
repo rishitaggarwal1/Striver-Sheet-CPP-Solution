@@ -2,6 +2,8 @@
 
 **LeetCode** · **Easy** · [Open the problem](https://leetcode.com/problems/check-if-all-as-appears-before-all-bs/) · ✅ Solved in C++
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution)
+
 ## Problem
 
 <details>
@@ -39,6 +41,71 @@ Constraints:
 
 - s[i] is either 'a' or 'b'.
 ```
+
+</details>
+
+## Hints
+
+Try the problem first. When you're stuck, open one hint at a time; each one gives away a little more.
+
+<details>
+<summary>Hint 1 · Restate</summary>
+
+You need to decide whether the string looks like some run of 'a's followed by some run of 'b's, with no 'a' ever showing up after a 'b'. Either run is allowed to be empty.
+
+</details>
+
+<details>
+<summary>Hint 2 · Observation</summary>
+
+Look at Example 2, "abab": the problem is caused by a 'b' immediately followed by an 'a'. In any valid string, once the first 'b' appears, every character after it must also be 'b'.
+
+</details>
+
+<details>
+<summary>Hint 3 · Constraints</summary>
+
+The string has at most 100 characters, so even comparing every pair of positions would be fast enough. Still, a single left-to-right pass is easy here and is the natural target.
+
+</details>
+
+<details>
+<summary>Hint 4 · Pattern</summary>
+
+This is a simple linear scan, or equivalently a check for a forbidden adjacent pattern. Validity depends only on the order of characters, so looking at each character once is enough.
+
+</details>
+
+<details>
+<summary>Hint 5 · Key insight</summary>
+
+The string is invalid exactly when some 'b' is directly followed by an 'a', so you only need to check whether the substring "ba" occurs anywhere. If any 'a' comes after any 'b', then somewhere between them there must be an adjacent "ba" pair.
+
+</details>
+
+<details>
+<summary>Hint 6 · What to track</summary>
+
+If you scan instead of searching for a substring, keep one boolean flag meaning 'a b has been seen so far'. When you meet an 'a' while that flag is already true, you can stop and return false.
+
+</details>
+
+<details>
+<summary>Hint 7 · Approach</summary>
+
+Start with the flag `seenB` set to false.
+Walk through the characters from left to right.
+If the character is 'b', set `seenB` to true.
+If the character is 'a' and `seenB` is true, return false.
+If you finish the walk without returning, return true.
+As a shortcut, you can simply return whether "ba" does not occur in `s`.
+
+</details>
+
+<details>
+<summary>Hint 8 · Edge cases & complexity</summary>
+
+The subtle part is that strings with no 'a' ("bbb") or no 'b' ("aaa") are valid, and so is any single-character string. The flag approach handles all of these without special cases. Time is `O(n)` and extra space is `O(1)`.
 
 </details>
 

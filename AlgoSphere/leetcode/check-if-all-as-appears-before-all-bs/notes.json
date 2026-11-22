@@ -4,7 +4,7 @@
   "slug": "check-if-all-as-appears-before-all-bs",
   "title": "Check if All A's Appears Before All B's",
   "url": "https://leetcode.com/problems/check-if-all-as-appears-before-all-bs/",
-  "updatedAt": "2026-11-22T07:22:27.235Z",
+  "updatedAt": "2026-11-22T07:22:33.944Z",
   "problem": {
     "difficulty": "Easy",
     "description": "Given a string s consisting of only the characters 'a' and 'b', return true if every 'a' appears before every 'b' in the string. Otherwise, return false.\n\nExample 1:\n\nInput: s = \"aaabbb\"\nOutput: true\nExplanation:\nThe 'a's are at indices 0, 1, and 2, while the 'b's are at indices 3, 4, and 5.\nHence, every 'a' appears before every 'b' and we return true.\n\nExample 2:\n\nInput: s = \"abab\"\nOutput: false\nExplanation:\nThere is an 'a' at index 2 and a 'b' at index 1.\nHence, not every 'a' appears before every 'b' and we return false.\n\nExample 3:\n\nInput: s = \"bbb\"\nOutput: true\nExplanation:\nThere are no 'a's, hence, every 'a' appears before every 'b' and we return true.\n\nConstraints:\n\n- 1 <= s.length <= 100\n\n- s[i] is either 'a' or 'b'."
@@ -23,5 +23,15 @@
       "acceptedAt": "2026-11-22T07:22:24.117Z",
       "platform": "LeetCode"
     }
+  ],
+  "hints": [
+    "You need to decide whether the string looks like some run of 'a's followed by some run of 'b's, with no 'a' ever showing up after a 'b'. Either run is allowed to be empty.",
+    "Look at Example 2, \"abab\": the problem is caused by a 'b' immediately followed by an 'a'. In any valid string, once the first 'b' appears, every character after it must also be 'b'.",
+    "The string has at most 100 characters, so even comparing every pair of positions would be fast enough. Still, a single left-to-right pass is easy here and is the natural target.",
+    "This is a simple linear scan, or equivalently a check for a forbidden adjacent pattern. Validity depends only on the order of characters, so looking at each character once is enough.",
+    "The string is invalid exactly when some 'b' is directly followed by an 'a', so you only need to check whether the substring \"ba\" occurs anywhere. If any 'a' comes after any 'b', then somewhere between them there must be an adjacent \"ba\" pair.",
+    "If you scan instead of searching for a substring, keep one boolean flag meaning 'a b has been seen so far'. When you meet an 'a' while that flag is already true, you can stop and return false.",
+    "Start with the flag `seenB` set to false.\nWalk through the characters from left to right.\nIf the character is 'b', set `seenB` to true.\nIf the character is 'a' and `seenB` is true, return false.\nIf you finish the walk without returning, return true.\nAs a shortcut, you can simply return whether \"ba\" does not occur in `s`.",
+    "The subtle part is that strings with no 'a' (\"bbb\") or no 'b' (\"aaa\") are valid, and so is any single-character string. The flag approach handles all of these without special cases. Time is `O(n)` and extra space is `O(1)`."
   ]
 }

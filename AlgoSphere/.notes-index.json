@@ -244,13 +244,13 @@
     "site": "leetcode",
     "slug": "zigzag-conversion",
     "difficulty": "Medium",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Simulation, then periodic index arithmetic",
+    "time": "O(n)",
+    "space": "O(1) besides the output",
     "dir": "leetcode/zigzag-conversion",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-20T17:18:58.808Z"
+    "updatedAt": "2026-11-23T04:40:20.360Z"
   },
   "leetcode/find-subtree-sizes-after-changes": {
     "title": "Find Subtree Sizes After Changes",

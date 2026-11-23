@@ -4,7 +4,7 @@
   "slug": "product-of-the-last-k-numbers",
   "title": "Product of the Last K Numbers",
   "url": "https://leetcode.com/problems/product-of-the-last-k-numbers/",
-  "updatedAt": "2026-11-23T08:31:09.027Z",
+  "updatedAt": "2026-11-23T08:31:50.319Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Design an algorithm that accepts a stream of integers and retrieves the product of the last k integers of the stream.\n\nImplement the ProductOfNumbers class:\n\n- ProductOfNumbers() Initializes the object with an empty stream.\n\n- void add(int num) Appends the integer num to the stream.\n\n- int getProduct(int k) Returns the product of the last k numbers in the current list. You can assume that always the current list has at least k numbers.\n\nThe test cases are generated so that, at any time, the product of any contiguous sequence of numbers will fit into a single 32-bit integer without overflowing.\n\nExample:\n\nInput\n[\"ProductOfNumbers\",\"add\",\"add\",\"add\",\"add\",\"add\",\"getProduct\",\"getProduct\",\"getProduct\",\"add\",\"getProduct\"]\n[[],[3],[0],[2],[5],[4],[2],[3],[4],[8],[2]]\n\nOutput\n[null,null,null,null,null,null,20,40,0,null,32]\n\nExplanation\nProductOfNumbers productOfNumbers = new ProductOfNumbers();\nproductOfNumbers.add(3);        // [3]\nproductOfNumbers.add(0);        // [3,0]\nproductOfNumbers.add(2);        // [3,0,2]\nproductOfNumbers.add(5);        // [3,0,2,5]\nproductOfNumbers.add(4);        // [3,0,2,5,4]\nproductOfNumbers.getProduct(2); // return 20. The product of the last 2 numbers is 5 * 4 = 20\nproductOfNumbers.getProduct(3); // return 40. The product of the last 3 numbers is 2 * 5 * 4 = 40\nproductOfNumbers.getProduct(4); // return 0. The product of the last 4 numbers is 0 * 2 * 5 * 4 = 0\nproductOfNumbers.add(8);        // [3,0,2,5,4,8]\nproductOfNumbers.getProduct(2); // return 32. The product of the last 2 numbers is 4 * 8 = 32\n\nConstraints:\n\n- 0 <= num <= 100\n\n- 1 <= k <= 4 * 10^4\n\n- At most 4 * 10^4 calls will be made to add and getProduct.\n\n- The product of the stream at any point in time will fit in a 32-bit integer.\n\nFollow-up: Can you implement both GetProduct and Add to work in O(1) time complexity instead of O(k) time complexity?"
@@ -229,7 +229,529 @@
         "time": "O(1) add, O(k) getProduct",
         "space": "O(n)",
         "complexity": "The loop over `k` elements in each query dominates. With 4·10^4 queries of `k` = 4·10^4 that is about 1.6·10^9 steps. The list holds every added number.",
-        "tradeoff": "Each query redoes multiplications that earlier queries already did. Worst case 1.6·10^9 operations is too slow and fails the O(1) follow-up."
+        "tradeoff": "Each query redoes multiplications that earlier queries already did. Worst case 1.6·10^9 operations is too slow and fails the O(1) follow-up.",
+        "deep": {
+          "pseudocode": [
+            "function ProductOfNumbers()",
+            "  nums ← empty list // the whole stream, kept in arrival order",
+            "function add(num)",
+            "  append num to the end of nums // O(1) amortized",
+            "function getProduct(k)",
+            "  p ← 1 // empty product",
+            "  n ← length(nums)",
+            "  for i ← n − 1 down to n − k // walk the last k entries, newest first",
+            "    if nums[i] = 0",
+            "      return 0 // one zero makes the whole product 0, so stop early",
+            "    p ← p × nums[i]",
+            "  return p"
+          ],
+          "time": {
+            "total": "O(1) per add, O(k) per getProduct",
+            "parts": [
+              {
+                "part": "add (lines 3-4)",
+                "cost": "1 append × O(1) amortized",
+                "why": "A dynamic array append only writes one slot, and it occasionally resizes, which averages out to constant time."
+              },
+              {
+                "part": "getProduct setup (lines 6-7)",
+                "cost": "O(1)",
+                "why": "These lines only make two assignments."
+              },
+              {
+                "part": "getProduct loop (lines 8-11)",
+                "cost": "at most k iterations × O(1)",
+                "why": "Each iteration does one comparison and one multiplication, and the loop covers only the last k entries."
+              }
+            ],
+            "sum": "add = O(1). getProduct = O(1) + k·O(1) = O(k). Over Q calls the total is O(A + Σk), where A is the number of adds.",
+            "cases": "Best case: the newest number is 0, so the loop returns after 1 iteration (O(1)). Worst case: the last k numbers have no 0 (for example a long run of 1s), so all k iterations run.",
+            "feel": "With 4·10^4 total calls, about 2·10^4 adds followed by 2·10^4 calls of getProduct(2·10^4) on all 1s gives about 4·10^8 multiplications. That is a few hundred milliseconds in C++, borderline but usually accepted. The prefix-product follow-up brings this down to O(1) per call.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "nums list (line 2, grown by line 4)",
+                "cost": "n integers",
+                "why": "Every added number is stored forever, because a later getProduct may need any of the last k of them."
+              },
+              {
+                "part": "getProduct locals p, n, i (lines 6-8)",
+                "cost": "O(1)",
+                "why": "These are a fixed number of scalars, whatever k is."
+              }
+            ],
+            "sum": "O(n) + O(1) = O(n), where n is the number of add calls so far.",
+            "cases": "",
+            "feel": "",
+            "note": "There is no recursion. The returned integer is not counted."
+          },
+          "dryRun": {
+            "input": "[\"ProductOfNumbers\",\"add\",\"add\",\"add\",\"add\",\"add\",\"getProduct\",\"getProduct\",\"getProduct\",\"add\",\"getProduct\"]\n[[],[3],[0],[2],[5],[4],[2],[3],[4],[8],[2]]",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "The constructor runs and the stream starts empty.",
+                "vars": {},
+                "arrays": {
+                  "nums": {
+                    "values": [],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 4,
+                "explain": "add(3) appends 3 at index 0.",
+                "vars": {
+                  "num": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 4,
+                "explain": "add(0), add(2), add(5) and add(4) each append one value in the same way (collapsed into one step). The stream is now [3,0,2,5,4].",
+                "vars": {
+                  "num": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "getProduct(2) sets p = 1 and n = 5. The loop will visit i = 4 down to 3.",
+                "vars": {
+                  "k": "2",
+                  "p": "1",
+                  "n": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 4: nums[4] = 4 is not 0, so p = 1 × 4 = 4.",
+                "vars": {
+                  "k": "2",
+                  "p": "4",
+                  "n": "5",
+                  "i": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 3: nums[3] = 5 is not 0, so p = 4 × 5 = 20.",
+                "vars": {
+                  "k": "2",
+                  "p": "20",
+                  "n": "5",
+                  "i": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "The loop has covered the last 2 entries, so the call returns 20.",
+                "vars": {
+                  "k": "2",
+                  "p": "20",
+                  "n": "5",
+                  "returned": "20"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3,
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "getProduct(3) resets p = 1 with n = 5. The loop will visit i = 4 down to 2.",
+                "vars": {
+                  "k": "3",
+                  "p": "1",
+                  "n": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 4: p = 1 × 4 = 4.",
+                "vars": {
+                  "k": "3",
+                  "p": "4",
+                  "n": "5",
+                  "i": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 3: p = 4 × 5 = 20.",
+                "vars": {
+                  "k": "3",
+                  "p": "20",
+                  "n": "5",
+                  "i": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "i = 2: nums[2] = 2, so p = 20 × 2 = 40.",
+                "vars": {
+                  "k": "3",
+                  "p": "40",
+                  "n": "5",
+                  "i": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "All 3 entries have been multiplied, so the call returns 40.",
+                "vars": {
+                  "k": "3",
+                  "p": "40",
+                  "n": "5",
+                  "returned": "40"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2,
+                      3,
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 10,
+                "explain": "getProduct(4) multiplies i = 4, 3, 2 as before, giving p = 40 (skipped). At i = 1, nums[1] = 0, so it returns 0 immediately.",
+                "vars": {
+                  "k": "4",
+                  "p": "40",
+                  "n": "5",
+                  "i": "1",
+                  "returned": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 4,
+                "explain": "add(8) appends 8 at index 5.",
+                "vars": {
+                  "num": "8"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4",
+                      "8"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      5
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "getProduct(2) with n = 6: at i = 5, p = 1 × 8 = 8. At i = 4, p = 8 × 4 = 32.",
+                "vars": {
+                  "k": "2",
+                  "p": "32",
+                  "n": "6",
+                  "i": "4"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4",
+                      "8"
+                    ],
+                    "pointers": {
+                      "i": 4
+                    },
+                    "highlight": [
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "The last 2 entries are done, so the call returns 32.",
+                "vars": {
+                  "k": "2",
+                  "p": "32",
+                  "n": "6",
+                  "returned": "32"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "0",
+                      "2",
+                      "5",
+                      "4",
+                      "8"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4,
+                      5
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "[null,null,null,null,null,null,20,40,0,null,32]. Each getProduct multiplies exactly the last k stored numbers, which is the definition itself, and stopping early on a 0 is safe because any product containing a 0 is 0."
+          },
+          "solution": "class ProductOfNumbers {\npublic:\n    ProductOfNumbers() {\n        // nums starts empty; nothing else to set up\n    }\n    \n    void add(int num) {\n        nums.push_back(num); // store every number so any suffix can be re-multiplied later\n    }\n    \n    int getProduct(int k) {\n        int p = 1;                       // multiplicative identity\n        int n = (int)nums.size();\n        for (int i = n - 1; i >= n - k; --i) { // walk the last k numbers, newest first\n            if (nums[i] == 0) return 0;  // a zero anywhere makes the product 0, so stop early\n            p *= nums[i];                // fits in 32 bits per the problem guarantee\n        }\n        return p;\n    }\n\nprivate:\n    vector<int> nums; // the full stream in arrival order\n};\n\n/**\n * Your ProductOfNumbers object will be instantiated and called as such:\n * ProductOfNumbers* obj = new ProductOfNumbers();\n * obj->add(num);\n * int param_2 = obj->getProduct(k);\n */",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    vector<string> ops = {\"ProductOfNumbers\",\"add\",\"add\",\"add\",\"add\",\"add\",\"getProduct\",\"getProduct\",\"getProduct\",\"add\",\"getProduct\"};\n    vector<int> args = {0,3,0,2,5,4,2,3,4,8,2};\n    vector<string> expected = {\"null\",\"null\",\"null\",\"null\",\"null\",\"null\",\"20\",\"40\",\"0\",\"null\",\"32\"};\n    ProductOfNumbers* obj = nullptr;\n    vector<string> out;\n    for (size_t i = 0; i < ops.size(); ++i) {\n        if (ops[i] == \"ProductOfNumbers\") { obj = new ProductOfNumbers(); out.push_back(\"null\"); }\n        else if (ops[i] == \"add\") { obj->add(args[i]); out.push_back(\"null\"); }\n        else { out.push_back(to_string(obj->getProduct(args[i]))); }\n    }\n    auto show = [](const vector<string>& v) {\n        string s = \"[\";\n        for (size_t i = 0; i < v.size(); ++i) { if (i) s += \",\"; s += v[i]; }\n        return s + \"]\";\n    };\n    cout << \"Output:   \" << show(out) << \"\\n\";\n    cout << \"Expected: \" << show(expected) << \"\\n\";\n    delete obj;\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

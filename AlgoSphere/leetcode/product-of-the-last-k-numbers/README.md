@@ -211,7 +211,166 @@ Reset it to `[1]`, so prefixes start fresh after the zero. Its length minus one 
 4. Loop over the last `k` entries, multiplying into `p`. Return 0 immediately if an entry is 0.
 5. Return `p`.
 
-**Complexity:** time `O(1) add, O(k) getProduct`, space `O(n)`. The loop over `k` elements in each query dominates. With 4·10^4 queries of `k` = 4·10^4 that is about 1.6·10^9 steps. The list holds every added number.
+**Pseudocode**
+
+```text
+ 1 │ function ProductOfNumbers()
+ 2 │   nums ← empty list // the whole stream, kept in arrival order
+ 3 │ function add(num)
+ 4 │   append num to the end of nums // O(1) amortized
+ 5 │ function getProduct(k)
+ 6 │   p ← 1 // empty product
+ 7 │   n ← length(nums)
+ 8 │   for i ← n − 1 down to n − k // walk the last k entries, newest first
+ 9 │     if nums[i] = 0
+10 │       return 0 // one zero makes the whole product 0, so stop early
+11 │     p ← p × nums[i]
+12 │   return p
+```
+
+**Time complexity: `O(1) per add, O(k) per getProduct`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| add (lines 3-4) | 1 append × O(1) amortized | A dynamic array append only writes one slot, and it occasionally resizes, which averages out to constant time. |
+| getProduct setup (lines 6-7) | O(1) | These lines only make two assignments. |
+| getProduct loop (lines 8-11) | at most k iterations × O(1) | Each iteration does one comparison and one multiplication, and the loop covers only the last k entries. |
+
+- **Adding it up:** add = O(1). getProduct = O(1) + k·O(1) = O(k). Over Q calls the total is O(A + Σk), where A is the number of adds.
+- **Best vs worst case:** Best case: the newest number is 0, so the loop returns after 1 iteration (O(1)). Worst case: the last k numbers have no 0 (for example a long run of 1s), so all k iterations run.
+- **At the maximum input:** With 4·10^4 total calls, about 2·10^4 adds followed by 2·10^4 calls of getProduct(2·10^4) on all 1s gives about 4·10^8 multiplications. That is a few hundred milliseconds in C++, borderline but usually accepted. The prefix-product follow-up brings this down to O(1) per call.
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| nums list (line 2, grown by line 4) | n integers | Every added number is stored forever, because a later getProduct may need any of the last k of them. |
+| getProduct locals p, n, i (lines 6-8) | O(1) | These are a fixed number of scalars, whatever k is. |
+
+- **Adding it up:** O(n) + O(1) = O(n), where n is the number of add calls so far.
+- **Not counted:** There is no recursion. The returned integer is not counted.
+
+**Dry run** on `["ProductOfNumbers","add","add","add","add","add","getProduct","getProduct","getProduct","add","getProduct"]
+[[],[3],[0],[2],[5],[4],[2],[3],[4],[8],[2]]`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 2 | The constructor runs and the stream starts empty. | `nums = []` |
+| 2 | 4 | add(3) appends 3 at index 0. | `num = 3`<br>`nums = [3]` |
+| 3 | 4 | add(0), add(2), add(5) and add(4) each append one value in the same way (collapsed into one step). The stream is now [3,0,2,5,4]. | `num = 4`<br>`nums = [3, 0, 2, 5, 4]` |
+| 4 | 7 | getProduct(2) sets p = 1 and n = 5. The loop will visit i = 4 down to 3. | `k = 2`<br>`p = 1`<br>`n = 5` |
+| 5 | 11 | i = 4: nums[4] = 4 is not 0, so p = 1 × 4 = 4. | `p = 4`<br>`i = 4`<br>`nums = [3, 0, 2, 5, 4]` (i→4) |
+| 6 | 11 | i = 3: nums[3] = 5 is not 0, so p = 4 × 5 = 20. | `p = 20`<br>`i = 3`<br>`nums = [3, 0, 2, 5, 4]` (i→3) |
+| 7 | 12 | The loop has covered the last 2 entries, so the call returns 20. | `returned = 20`<br>`nums = [3, 0, 2, 5, 4]` |
+| 8 | 7 | getProduct(3) resets p = 1 with n = 5. The loop will visit i = 4 down to 2. | `k = 3`<br>`p = 1` |
+| 9 | 11 | i = 4: p = 1 × 4 = 4. | `p = 4`<br>`i = 4`<br>`nums = [3, 0, 2, 5, 4]` (i→4) |
+| 10 | 11 | i = 3: p = 4 × 5 = 20. | `p = 20`<br>`i = 3`<br>`nums = [3, 0, 2, 5, 4]` (i→3) |
+| 11 | 11 | i = 2: nums[2] = 2, so p = 20 × 2 = 40. | `p = 40`<br>`i = 2`<br>`nums = [3, 0, 2, 5, 4]` (i→2) |
+| 12 | 12 | All 3 entries have been multiplied, so the call returns 40. | `returned = 40`<br>`nums = [3, 0, 2, 5, 4]` |
+| 13 | 10 | getProduct(4) multiplies i = 4, 3, 2 as before, giving p = 40 (skipped). At i = 1, nums[1] = 0, so it returns 0 immediately. | `k = 4`<br>`i = 1`<br>`returned = 0`<br>`nums = [3, 0, 2, 5, 4]` (i→1) |
+| 14 | 4 | add(8) appends 8 at index 5. | `num = 8`<br>`nums = [3, 0, 2, 5, 4, 8]` |
+| 15 | 11 | getProduct(2) with n = 6: at i = 5, p = 1 × 8 = 8. At i = 4, p = 8 × 4 = 32. | `k = 2`<br>`p = 32`<br>`n = 6`<br>`i = 4`<br>`nums = [3, 0, 2, 5, 4, 8]` (i→4) |
+| 16 | 12 | The last 2 entries are done, so the call returns 32. | `returned = 32`<br>`nums = [3, 0, 2, 5, 4, 8]` |
+
+**Result:** [null,null,null,null,null,null,20,40,0,null,32]. Each getProduct multiplies exactly the last k stored numbers, which is the definition itself, and stopping early on a 0 is safe because any product containing a 0 is 0.
+
+**C++ solution**
+
+```cpp
+class ProductOfNumbers {
+public:
+    ProductOfNumbers() {
+        // nums starts empty; nothing else to set up
+    }
+    
+    void add(int num) {
+        nums.push_back(num); // store every number so any suffix can be re-multiplied later
+    }
+    
+    int getProduct(int k) {
+        int p = 1;                       // multiplicative identity
+        int n = (int)nums.size();
+        for (int i = n - 1; i >= n - k; --i) { // walk the last k numbers, newest first
+            if (nums[i] == 0) return 0;  // a zero anywhere makes the product 0, so stop early
+            p *= nums[i];                // fits in 32 bits per the problem guarantee
+        }
+        return p;
+    }
+
+private:
+    vector<int> nums; // the full stream in arrival order
+};
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers* obj = new ProductOfNumbers();
+ * obj->add(num);
+ * int param_2 = obj->getProduct(k);
+ */
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class ProductOfNumbers {
+public:
+    ProductOfNumbers() {
+        // nums starts empty; nothing else to set up
+    }
+    
+    void add(int num) {
+        nums.push_back(num); // store every number so any suffix can be re-multiplied later
+    }
+    
+    int getProduct(int k) {
+        int p = 1;                       // multiplicative identity
+        int n = (int)nums.size();
+        for (int i = n - 1; i >= n - k; --i) { // walk the last k numbers, newest first
+            if (nums[i] == 0) return 0;  // a zero anywhere makes the product 0, so stop early
+            p *= nums[i];                // fits in 32 bits per the problem guarantee
+        }
+        return p;
+    }
+
+private:
+    vector<int> nums; // the full stream in arrival order
+};
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers* obj = new ProductOfNumbers();
+ * obj->add(num);
+ * int param_2 = obj->getProduct(k);
+ */
+
+int main() {
+    vector<string> ops = {"ProductOfNumbers","add","add","add","add","add","getProduct","getProduct","getProduct","add","getProduct"};
+    vector<int> args = {0,3,0,2,5,4,2,3,4,8,2};
+    vector<string> expected = {"null","null","null","null","null","null","20","40","0","null","32"};
+    ProductOfNumbers* obj = nullptr;
+    vector<string> out;
+    for (size_t i = 0; i < ops.size(); ++i) {
+        if (ops[i] == "ProductOfNumbers") { obj = new ProductOfNumbers(); out.push_back("null"); }
+        else if (ops[i] == "add") { obj->add(args[i]); out.push_back("null"); }
+        else { out.push_back(to_string(obj->getProduct(args[i]))); }
+    }
+    auto show = [](const vector<string>& v) {
+        string s = "[";
+        for (size_t i = 0; i < v.size(); ++i) { if (i) s += ","; s += v[i]; }
+        return s + "]";
+    };
+    cout << "Output:   " << show(out) << "\n";
+    cout << "Expected: " << show(expected) << "\n";
+    delete obj;
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** Each query redoes multiplications that earlier queries already did. Worst case 1.6·10^9 operations is too slow and fails the O(1) follow-up.
 

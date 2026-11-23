@@ -291,7 +291,10 @@
     "space": "O(n)",
     "dir": "leetcode/product-of-the-last-k-numbers",
     "solution": "leetcode/product-of-the-last-k-numbers/product-of-the-last-k-numbers.cpp",
-    "mine": null,
-    "updatedAt": "2026-11-23T08:59:13.462Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/product-of-the-last-k-numbers/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-23T09:09:25.474Z"
   }
 }

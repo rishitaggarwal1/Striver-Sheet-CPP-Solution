@@ -1,10 +1,10 @@
 # Product of the Last K Numbers
 
-**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/product-of-the-last-k-numbers/) · Pattern: **Prefix products reset at zero**
+**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/product-of-the-last-k-numbers/) · Pattern: **Prefix products reset at zero** · ✅ Solved in C++
 
 > Support appending non-negative integers to a list and answering, at any time, the product of the last `k` appended integers.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -563,6 +563,49 @@ int main() {
 </details>
 
 **Why this is the best:** Every query needs at least constant time, so this cannot be beaten asymptotically. The cost is O(n) memory, which the Better approach also needed. The method also relies on exact integer division, which only works because the zeros were removed.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 3 of 8 | 2026-11-23 |
+
+For comparison, the optimal approach (Prefix products reset on zero) runs in `O(1) per add and getProduct (amortised for append)` time and `O(n)` space.
+
+```cpp
+class ProductOfNumbers {
+public:
+    vector<long long> v;
+    int lz = -1;
+    ProductOfNumbers() {
+        v.push_back(1);
+    }
+    
+    void add(int num) {
+        int n = v.size();
+        if(num == 0)
+        {
+            lz = n+1;
+            v.push_back(1);   
+        }
+        else
+            v.push_back(v[n-1]*num);
+    }
+    
+    int getProduct(int k) {
+        int n = v.size();
+        if(n-lz <k)    return 0;
+        return v[n-1]/v[n-k-1];
+    }
+};
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers* obj = new ProductOfNumbers();
+ * obj->add(num);
+ * int param_2 = obj->getProduct(k);
+ */
+```
 
 ## Test cases
 

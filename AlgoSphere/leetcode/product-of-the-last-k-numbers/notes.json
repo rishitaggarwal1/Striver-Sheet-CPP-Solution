@@ -4,7 +4,7 @@
   "slug": "product-of-the-last-k-numbers",
   "title": "Product of the Last K Numbers",
   "url": "https://leetcode.com/problems/product-of-the-last-k-numbers/",
-  "updatedAt": "2026-11-23T08:59:13.462Z",
+  "updatedAt": "2026-11-23T09:09:25.474Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Design an algorithm that accepts a stream of integers and retrieves the product of the last k integers of the stream.\n\nImplement the ProductOfNumbers class:\n\n- ProductOfNumbers() Initializes the object with an empty stream.\n\n- void add(int num) Appends the integer num to the stream.\n\n- int getProduct(int k) Returns the product of the last k numbers in the current list. You can assume that always the current list has at least k numbers.\n\nThe test cases are generated so that, at any time, the product of any contiguous sequence of numbers will fit into a single 32-bit integer without overflowing.\n\nExample:\n\nInput\n[\"ProductOfNumbers\",\"add\",\"add\",\"add\",\"add\",\"add\",\"getProduct\",\"getProduct\",\"getProduct\",\"add\",\"getProduct\"]\n[[],[3],[0],[2],[5],[4],[2],[3],[4],[8],[2]]\n\nOutput\n[null,null,null,null,null,null,20,40,0,null,32]\n\nExplanation\nProductOfNumbers productOfNumbers = new ProductOfNumbers();\nproductOfNumbers.add(3);        // [3]\nproductOfNumbers.add(0);        // [3,0]\nproductOfNumbers.add(2);        // [3,0,2]\nproductOfNumbers.add(5);        // [3,0,2,5]\nproductOfNumbers.add(4);        // [3,0,2,5,4]\nproductOfNumbers.getProduct(2); // return 20. The product of the last 2 numbers is 5 * 4 = 20\nproductOfNumbers.getProduct(3); // return 40. The product of the last 3 numbers is 2 * 5 * 4 = 40\nproductOfNumbers.getProduct(4); // return 0. The product of the last 4 numbers is 0 * 2 * 5 * 4 = 0\nproductOfNumbers.add(8);        // [3,0,2,5,4,8]\nproductOfNumbers.getProduct(2); // return 32. The product of the last 2 numbers is 4 * 8 = 32\n\nConstraints:\n\n- 0 <= num <= 100\n\n- 1 <= k <= 4 * 10^4\n\n- At most 4 * 10^4 calls will be made to add and getProduct.\n\n- The product of the stream at any point in time will fit in a 32-bit integer.\n\nFollow-up: Can you implement both GetProduct and Add to work in O(1) time complexity instead of O(k) time complexity?"
@@ -1279,5 +1279,20 @@
       "add is already O(1)"
     ]
   },
-  "reviewFor": "class ProductOfNumbers {\npublic:\n    vector<long long> v;\n    ProductOfNumbers() {\n        \n    }\n    \n    void add(int num) {\n        int n = v.size();\n        if(n==0)\n            v.push_back(num);\n        else\n            v.push_back(v[n-1]*num);\n    }\n    \n    int getProduct(int k) {\n        int n = v.size();\n        return v[n-1]/v[n-k];\n    }\n};\n\n/**\n * Your ProductOfNumbers object will be instantiated and called as such:\n * ProductOfNumbers* obj = new ProductOfNumbers();\n * obj->add(num);\n * int param_2 = obj->getProduct(k);\n */"
+  "reviewFor": "class ProductOfNumbers {\npublic:\n    vector<long long> v;\n    ProductOfNumbers() {\n        \n    }\n    \n    void add(int num) {\n        int n = v.size();\n        if(n==0)\n            v.push_back(num);\n        else\n            v.push_back(v[n-1]*num);\n    }\n    \n    int getProduct(int k) {\n        int n = v.size();\n        return v[n-1]/v[n-k];\n    }\n};\n\n/**\n * Your ProductOfNumbers object will be instantiated and called as such:\n * ProductOfNumbers* obj = new ProductOfNumbers();\n * obj->add(num);\n * int param_2 = obj->getProduct(k);\n */",
+  "mySolutions": [
+    {
+      "code": "class ProductOfNumbers {\npublic:\n    vector<long long> v;\n    int lz = -1;\n    ProductOfNumbers() {\n        v.push_back(1);\n    }\n    \n    void add(int num) {\n        int n = v.size();\n        if(num == 0)\n        {\n            lz = n+1;\n            v.push_back(1);   \n        }\n        else\n            v.push_back(v[n-1]*num);\n    }\n    \n    int getProduct(int k) {\n        int n = v.size();\n        if(n-lz <k)    return 0;\n        return v[n-1]/v[n-k-1];\n    }\n};\n\n/**\n * Your ProductOfNumbers object will be instantiated and called as such:\n * ProductOfNumbers* obj = new ProductOfNumbers();\n * obj->add(num);\n * int param_2 = obj->getProduct(k);\n */",
+      "lang": "C++",
+      "runtime": "",
+      "memory": "",
+      "runtimePercentile": null,
+      "memoryPercentile": null,
+      "passed": "",
+      "attempts": 1,
+      "hintsUsed": 3,
+      "acceptedAt": "2026-11-23T09:09:23.019Z",
+      "platform": "LeetCode"
+    }
+  ]
 }

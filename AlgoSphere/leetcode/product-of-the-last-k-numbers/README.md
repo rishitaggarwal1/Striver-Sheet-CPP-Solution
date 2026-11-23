@@ -407,7 +407,160 @@ int main() {
 5. If `k >= m`, return 0, because the window includes the last zero.
 6. Otherwise return `prefix[m-1] / prefix[m-1-k]`.
 
-**Complexity:** time `O(1) per add and getProduct (amortised for append)`, space `O(n)`. Each operation does one append or one array lookup plus one division, so the work is constant. The `prefix` array holds at most one entry per number added since the last zero.
+**Pseudocode**
+
+```text
+ 1 │ function ProductOfNumbers()
+ 2 │   prefix ← [1]  // prefix[0] = 1 is the empty product, so a division always has a valid denominator
+ 3 │ function add(num)
+ 4 │   if num = 0
+ 5 │     prefix ← [1]  // every window that reaches this zero has product 0, so earlier prefixes are useless
+ 6 │   else
+ 7 │     last ← prefix[length(prefix) − 1]  // product of all numbers since the last zero
+ 8 │     append last × num to prefix  // new running product, still a contiguous product, so it fits in 32 bits
+ 9 │ function getProduct(k)
+10 │   m ← length(prefix)  // m − 1 = how many numbers have come after the most recent zero
+11 │   if k ≥ m
+12 │     return 0  // the window covers more than the zero-free tail, so it includes the last zero
+13 │   return prefix[m − 1] / prefix[m − 1 − k]  // exact division: all stored factors are non-zero
+```
+
+**Time complexity: `O(1) per call (amortised for append), O(q) for q calls`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Constructor (lines 1-2) | 1 call × O(1) | It only creates a one-element list. |
+| add (lines 3-8) | 1 call × O(1) amortised | Either a reset to [1], or one read, one multiplication and one dynamic-array append, which is amortised O(1). |
+| getProduct (lines 9-13) | 1 call × O(1) | It reads the length, makes one comparison, does two indexed reads and one division. It never loops over k. |
+
+- **Adding it up:** Each call costs O(1), so q calls cost q × O(1) = O(q). Compare this with O(k) per getProduct for the naive loop.
+- **At the maximum input:** At most 4·10^4 calls → about 4·10^4 constant-time operations. That is well under a millisecond.
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| prefix list (lines 2, 5, 8) | up to n + 1 integers | One entry per non-zero number added since the last zero, plus the leading 1. In the worst case (no zeros) that is all n added numbers. |
+
+- **Adding it up:** Only the prefix list grows, so auxiliary space is O(n), where n is the number of add calls.
+- **Not counted:** A reset on zero lets the list shrink back to size 1. There is no recursion.
+
+**Dry run** on `ProductOfNumbers(), add(3), add(0), add(2), add(5), add(4), getProduct(2), getProduct(3), getProduct(4), add(8), getProduct(2)`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 2 | The constructor creates prefix = [1], which is the empty product. | `prefix = [1]` |
+| 2 | 8 | add(3): 3 is non-zero, so last = prefix[0] = 1 and we append 1 × 3 = 3. | `num = 3`<br>`last = 1`<br>`prefix = [1, 3]` |
+| 3 | 5 | add(0): any window that includes this zero has product 0, so prefix resets to [1] and the 3 is forgotten. | `num = 0`<br>`prefix = [1]` |
+| 4 | 8 | add(2): last = 1, so we append 1 × 2 = 2. | `num = 2`<br>`last = 1`<br>`prefix = [1, 2]` |
+| 5 | 8 | add(5): last = 2, so we append 2 × 5 = 10. | `num = 5`<br>`last = 2`<br>`prefix = [1, 2, 10]` |
+| 6 | 8 | add(4): last = 10, so we append 10 × 4 = 40. prefix now holds the running products of 2, 5, 4. | `num = 4`<br>`last = 10`<br>`prefix = [1, 2, 10, 40]` |
+| 7 | 10 | getProduct(2): m = 4, so 3 numbers have arrived since the last zero. Since k = 2 < 4, the window does not reach the zero. | `k = 2`<br>`m = 4`<br>`prefix = [1, 2, 10, 40]` (m-1→3) |
+| 8 | 13 | The answer is prefix[3] / prefix[1] = 40 / 2 = 20, which equals 5 × 4. | `return = 20`<br>`prefix = [1, 2, 10, 40]` (m-1→3, m-1-k→1) |
+| 9 | 13 | getProduct(3): m = 4 and k = 3 < 4, so the answer is prefix[3] / prefix[0] = 40 / 1 = 40, which equals 2 × 5 × 4. | `k = 3`<br>`return = 40`<br>`prefix = [1, 2, 10, 40]` (m-1→3, m-1-k→0) |
+| 10 | 12 | getProduct(4): m = 4 and k = 4 ≥ 4, so the window [0,2,5,4] includes the zero and we return 0. | `k = 4`<br>`return = 0`<br>`prefix = [1, 2, 10, 40]` (m-1→3) |
+| 11 | 8 | add(8): last = 40, so we append 40 × 8 = 320. | `num = 8`<br>`last = 40`<br>`prefix = [1, 2, 10, 40, 320]` |
+| 12 | 10 | getProduct(2): m = 5 and k = 2 < 5, so the window stays inside the zero-free tail. | `k = 2`<br>`m = 5`<br>`prefix = [1, 2, 10, 40, 320]` (m-1→4) |
+| 13 | 13 | The answer is prefix[4] / prefix[2] = 320 / 10 = 32, which equals 4 × 8. | `return = 32`<br>`prefix = [1, 2, 10, 40, 320]` (m-1→4, m-1-k→2) |
+
+**Result:** The output is [null,null,null,null,null,null,20,40,0,null,32]. Each ratio of two prefixes is exactly the product of the last k non-zero numbers, and a k that reaches past the zero-free tail correctly gives 0.
+
+**C++ solution**
+
+```cpp
+class ProductOfNumbers {
+public:
+    vector<int> prefix; // prefix[i] = product of the first i numbers since the most recent zero
+
+    ProductOfNumbers() {
+        prefix = {1}; // empty product; gives a safe denominator for every division
+    }
+    
+    void add(int num) {
+        if (num == 0) {
+            prefix = {1}; // any window crossing this zero is 0, so discard older prefixes
+        } else {
+            prefix.push_back(prefix.back() * num); // contiguous product, guaranteed to fit in 32 bits
+        }
+    }
+    
+    int getProduct(int k) {
+        int m = prefix.size(); // m - 1 numbers have arrived since the last zero
+        if (k >= m) return 0; // window reaches back to the last zero
+        return prefix[m - 1] / prefix[m - 1 - k]; // exact: all factors are non-zero
+    }
+};
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers* obj = new ProductOfNumbers();
+ * obj->add(num);
+ * int param_2 = obj->getProduct(k);
+ */
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class ProductOfNumbers {
+public:
+    vector<int> prefix; // prefix[i] = product of the first i numbers since the most recent zero
+
+    ProductOfNumbers() {
+        prefix = {1}; // empty product; gives a safe denominator for every division
+    }
+    
+    void add(int num) {
+        if (num == 0) {
+            prefix = {1}; // any window crossing this zero is 0, so discard older prefixes
+        } else {
+            prefix.push_back(prefix.back() * num); // contiguous product, guaranteed to fit in 32 bits
+        }
+    }
+    
+    int getProduct(int k) {
+        int m = prefix.size(); // m - 1 numbers have arrived since the last zero
+        if (k >= m) return 0; // window reaches back to the last zero
+        return prefix[m - 1] / prefix[m - 1 - k]; // exact: all factors are non-zero
+    }
+};
+
+/**
+ * Your ProductOfNumbers object will be instantiated and called as such:
+ * ProductOfNumbers* obj = new ProductOfNumbers();
+ * obj->add(num);
+ * int param_2 = obj->getProduct(k);
+ */
+
+int main() {
+    vector<string> ops = {"ProductOfNumbers","add","add","add","add","add","getProduct","getProduct","getProduct","add","getProduct"};
+    vector<int> args = {0,3,0,2,5,4,2,3,4,8,2};
+    vector<string> expected = {"null","null","null","null","null","null","20","40","0","null","32"};
+    ProductOfNumbers* obj = nullptr;
+    vector<string> got;
+    for (size_t i = 0; i < ops.size(); i++) {
+        if (ops[i] == "ProductOfNumbers") { obj = new ProductOfNumbers(); got.push_back("null"); }
+        else if (ops[i] == "add") { obj->add(args[i]); got.push_back("null"); }
+        else { got.push_back(to_string(obj->getProduct(args[i]))); }
+    }
+    auto show = [](const vector<string>& v) {
+        string s = "[";
+        for (size_t i = 0; i < v.size(); i++) { if (i) s += ","; s += v[i]; }
+        return s + "]";
+    };
+    cout << "Output:   " << show(got) << "\n";
+    cout << "Expected: " << show(expected) << "\n";
+    cout << (got == expected ? "PASS" : "FAIL") << "\n";
+    delete obj;
+    return 0;
+}
+```
+
+</details>
 
 **Why this is the best:** Every query needs at least constant time, so this cannot be beaten asymptotically. The cost is O(n) memory, which the Better approach also needed. The method also relies on exact integer division, which only works because the zeros were removed.
 

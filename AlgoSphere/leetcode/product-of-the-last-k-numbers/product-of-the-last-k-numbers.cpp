@@ -2,12 +2,17 @@
  * Problem   : Product of the Last K Numbers (LeetCode, Medium)
  * Link      : https://leetcode.com/problems/product-of-the-last-k-numbers/
  * Pattern   : Prefix products reset at zero
- * Approach  : Brute force: Store list, multiply last k
- * Complexity: Time O(1) per add, O(k) per getProduct, Space O(n)
+ * Approach  : Optimal: Prefix products reset on zero
+ * Complexity: Time O(1) per call (amortised for append), O(q) for q calls, Space O(n)
  *
- * Append each num to a list. For getProduct(k), multiply the last k
- * elements. It is trivially correct because it computes exactly the
- * definition. You can stop early when you hit a 0.
+ * Maintain prefix, starting as [1], where prefix[i] is the product of the
+ * first i numbers since the most recent zero. On add(0), reset prefix to
+ * [1]. Otherwise append prefix[last] * num. For getProduct(k): if k >=
+ * prefix.length, the window reaches the zero (or the very start before any
+ * zero, which k never exceeds), so return 0. Otherwise return prefix[last] /
+ * prefix[last - k]. The division is exact and never divides by 0, because
+ * all stored factors are non-zero. Each prefix is a contiguous product, so
+ * it fits in 32 bits.
  *
  * Notes made with AlgoSphere by Rishit Aggarwal (https://github.com/rishitaggarwal1)
  */
@@ -17,26 +22,25 @@ using namespace std;
 
 class ProductOfNumbers {
 public:
+    vector<int> prefix; // prefix[i] = product of the first i numbers since the most recent zero
+
     ProductOfNumbers() {
-        // nums starts empty; nothing else to set up
+        prefix = {1}; // empty product; gives a safe denominator for every division
     }
     
     void add(int num) {
-        nums.push_back(num); // store every number so any suffix can be re-multiplied later
+        if (num == 0) {
+            prefix = {1}; // any window crossing this zero is 0, so discard older prefixes
+        } else {
+            prefix.push_back(prefix.back() * num); // contiguous product, guaranteed to fit in 32 bits
+        }
     }
     
     int getProduct(int k) {
-        int p = 1;                       // multiplicative identity
-        int n = (int)nums.size();
-        for (int i = n - 1; i >= n - k; --i) { // walk the last k numbers, newest first
-            if (nums[i] == 0) return 0;  // a zero anywhere makes the product 0, so stop early
-            p *= nums[i];                // fits in 32 bits per the problem guarantee
-        }
-        return p;
+        int m = prefix.size(); // m - 1 numbers have arrived since the last zero
+        if (k >= m) return 0; // window reaches back to the last zero
+        return prefix[m - 1] / prefix[m - 1 - k]; // exact: all factors are non-zero
     }
-
-private:
-    vector<int> nums; // the full stream in arrival order
 };
 
 /**
@@ -51,19 +55,20 @@ int main() {
     vector<int> args = {0,3,0,2,5,4,2,3,4,8,2};
     vector<string> expected = {"null","null","null","null","null","null","20","40","0","null","32"};
     ProductOfNumbers* obj = nullptr;
-    vector<string> out;
-    for (size_t i = 0; i < ops.size(); ++i) {
-        if (ops[i] == "ProductOfNumbers") { obj = new ProductOfNumbers(); out.push_back("null"); }
-        else if (ops[i] == "add") { obj->add(args[i]); out.push_back("null"); }
-        else { out.push_back(to_string(obj->getProduct(args[i]))); }
+    vector<string> got;
+    for (size_t i = 0; i < ops.size(); i++) {
+        if (ops[i] == "ProductOfNumbers") { obj = new ProductOfNumbers(); got.push_back("null"); }
+        else if (ops[i] == "add") { obj->add(args[i]); got.push_back("null"); }
+        else { got.push_back(to_string(obj->getProduct(args[i]))); }
     }
     auto show = [](const vector<string>& v) {
         string s = "[";
-        for (size_t i = 0; i < v.size(); ++i) { if (i) s += ","; s += v[i]; }
+        for (size_t i = 0; i < v.size(); i++) { if (i) s += ","; s += v[i]; }
         return s + "]";
     };
-    cout << "Output:   " << show(out) << "\n";
+    cout << "Output:   " << show(got) << "\n";
     cout << "Expected: " << show(expected) << "\n";
+    cout << (got == expected ? "PASS" : "FAIL") << "\n";
     delete obj;
     return 0;
 }

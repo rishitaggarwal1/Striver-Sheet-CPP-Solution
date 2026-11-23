@@ -4,7 +4,7 @@
   "slug": "product-of-the-last-k-numbers",
   "title": "Product of the Last K Numbers",
   "url": "https://leetcode.com/problems/product-of-the-last-k-numbers/",
-  "updatedAt": "2026-11-23T08:36:10.149Z",
+  "updatedAt": "2026-11-23T08:59:13.462Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Design an algorithm that accepts a stream of integers and retrieves the product of the last k integers of the stream.\n\nImplement the ProductOfNumbers class:\n\n- ProductOfNumbers() Initializes the object with an empty stream.\n\n- void add(int num) Appends the integer num to the stream.\n\n- int getProduct(int k) Returns the product of the last k numbers in the current list. You can assume that always the current list has at least k numbers.\n\nThe test cases are generated so that, at any time, the product of any contiguous sequence of numbers will fit into a single 32-bit integer without overflowing.\n\nExample:\n\nInput\n[\"ProductOfNumbers\",\"add\",\"add\",\"add\",\"add\",\"add\",\"getProduct\",\"getProduct\",\"getProduct\",\"add\",\"getProduct\"]\n[[],[3],[0],[2],[5],[4],[2],[3],[4],[8],[2]]\n\nOutput\n[null,null,null,null,null,null,20,40,0,null,32]\n\nExplanation\nProductOfNumbers productOfNumbers = new ProductOfNumbers();\nproductOfNumbers.add(3);        // [3]\nproductOfNumbers.add(0);        // [3,0]\nproductOfNumbers.add(2);        // [3,0,2]\nproductOfNumbers.add(5);        // [3,0,2,5]\nproductOfNumbers.add(4);        // [3,0,2,5,4]\nproductOfNumbers.getProduct(2); // return 20. The product of the last 2 numbers is 5 * 4 = 20\nproductOfNumbers.getProduct(3); // return 40. The product of the last 3 numbers is 2 * 5 * 4 = 40\nproductOfNumbers.getProduct(4); // return 0. The product of the last 4 numbers is 0 * 2 * 5 * 4 = 0\nproductOfNumbers.add(8);        // [3,0,2,5,4,8]\nproductOfNumbers.getProduct(2); // return 32. The product of the last 2 numbers is 4 * 8 = 32\n\nConstraints:\n\n- 0 <= num <= 100\n\n- 1 <= k <= 4 * 10^4\n\n- At most 4 * 10^4 calls will be made to add and getProduct.\n\n- The product of the stream at any point in time will fit in a 32-bit integer.\n\nFollow-up: Can you implement both GetProduct and Add to work in O(1) time complexity instead of O(k) time complexity?"
@@ -1236,5 +1236,48 @@
       "A sentinel at the front (`prefix = [1]`) removes the special case for windows that start at the very beginning.",
       "Read overflow guarantees precisely. \"Any contiguous product fits\" tells you which stored values are safe, and that should shape your design."
     ]
-  }
+  },
+  "review": {
+    "verdict": "wrong_answer",
+    "summary": "The prefix-product idea is right and already O(1) per call, but the division is off by one, and a zero in the stream makes every later prefix 0, which leads to division by zero.",
+    "yourIdea": "You keep a running prefix product, where `v[i]` is the product of the first i+1 numbers. You answer a query by dividing the latest prefix by an earlier one, the same way a prefix-sum range query subtracts.",
+    "gaps": [
+      {
+        "title": "Zero breaks the division trick",
+        "explanation": "Prefix products only support division when every stored value is non-zero. After you add a 0 at line 13, every later prefix is 0. So any query whose divisor comes from after that zero computes 0/0, and C++ crashes on integer division by zero. The key fact is this: the 0 makes the answer 0 for any window that reaches back to it, and the numbers before the 0 can never matter again. So when you see a 0, throw the history away and start a fresh prefix list. In getProduct, if k reaches back further than the length of that fresh list, the window must contain the 0, so return 0.",
+        "lines": "11-13, 18"
+      },
+      {
+        "title": "No base element for the empty prefix",
+        "explanation": "To get the product of the last k numbers you divide by the prefix just before the window. When the window starts at the beginning of the list, that prefix is the empty product, 1, and you never stored it. This is the same reason prefix-sum arrays start with a 0. If you seed the list with a 1 (in the constructor and on every reset after a zero), both the k==n case and the zero case become a simple length check.",
+        "lines": "4-6, 10-11"
+      }
+    ],
+    "bugs": [
+      {
+        "lines": "18",
+        "issue": "Dividing by `v[n-k]` removes one element too many. You get the product of the last k-1 numbers. The product of indices n-k..n-1 is `v[n-1]/v[n-k-1]`.",
+        "fix": "Divide by the prefix that ends just before the window, using `v[n-1-k]` with a leading 1 sentinel, so that index is valid even when k equals the count of numbers."
+      }
+    ],
+    "counterexample": {
+      "input": "[\"ProductOfNumbers\",\"add\",\"add\",\"getProduct\"] [[],[2],[3],[1]]",
+      "expected": "[null,null,null,3]",
+      "yours": "[null,null,null,1]",
+      "why": "v=[2,6], n=2, so line 18 computes v[1]/v[1]=1, which is the product of zero elements instead of the last one. (On the official example, getProduct(2) computes v[4]/v[3]=0/0 and crashes.)"
+    },
+    "complexity": {
+      "time": "O(1) for add and for getProduct",
+      "space": "O(n) for the prefix list",
+      "verdict": "At most 4*10^4 constant-time operations, so it is well within limits once the logic is fixed."
+    },
+    "nudge": "When a 0 arrives, can any number before it ever change a future answer? If not, what should happen to your list at that moment, and how can the list's length then tell you whether the last k numbers include that 0?",
+    "correctIdea": "Store prefix products starting with a sentinel 1, so the product of the last k is `last / list[size-1-k]`. When num is 0, reset the list to just [1], because everything earlier is now irrelevant. In getProduct, if k is at least the current list size (k > numbers since the last zero), the window contains a zero, so return 0. Otherwise do the division. Both operations stay O(1).",
+    "strengths": [
+      "You chose prefix products, the right pattern for the O(1) follow-up",
+      "You used long long to stay safe from intermediate overflow",
+      "add is already O(1)"
+    ]
+  },
+  "reviewFor": "class ProductOfNumbers {\npublic:\n    vector<long long> v;\n    ProductOfNumbers() {\n        \n    }\n    \n    void add(int num) {\n        int n = v.size();\n        if(n==0)\n            v.push_back(num);\n        else\n            v.push_back(v[n-1]*num);\n    }\n    \n    int getProduct(int k) {\n        int n = v.size();\n        return v[n-1]/v[n-k];\n    }\n};\n\n/**\n * Your ProductOfNumbers object will be instantiated and called as such:\n * ProductOfNumbers* obj = new ProductOfNumbers();\n * obj->add(num);\n * int param_2 = obj->getProduct(k);\n */"
 }

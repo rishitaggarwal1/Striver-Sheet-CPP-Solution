@@ -2,6 +2,8 @@
 
 **LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/product-of-the-last-k-numbers/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -120,6 +122,29 @@ Otherwise, return `list[n-1] / list[n-1-k]`.
 The trickiest part is the boundary check: use `k >= n`, not `k > n`, because the sentinel occupies one slot. Also handle a zero as the very first number, and several zeros in a row; resetting handles both. The guarantee that products fit in 32 bits keeps the stored prefixes safe from overflow. Each `add` and `getProduct` runs in `O(1)` time (amortized for list appends), and space is `O(n)` for the stored prefixes.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| operations = ["ProductOfNumbers","add","add","add","getProduct","getProduct","getProduct"]<br>values = [[],[2],[3],[4],[1],[2],[3]] | [null,null,null,null,4,12,24] | Simple prefix products with no zeros. |
+| operations = ["ProductOfNumbers","add","add","add","add","getProduct","getProduct","getProduct"]<br>values = [[],[5],[0],[3],[7],[2],[3],[4]] | [null,null,null,null,null,21,0,0] | Queries crossing a zero return 0. |
+| operations = ["ProductOfNumbers","add","add","getProduct","add","getProduct","getProduct"]<br>values = [[],[1],[6],[2],[10],[1],[3]] | [null,null,null,6,null,10,60] | Interleaved adds and queries with ones. |
+| operations = ["ProductOfNumbers","add","add","add","add","add","getProduct","getProduct"]<br>values = [[],[0],[2],[0],[3],[3],[2],[3]] | [null,null,null,null,null,null,9,0] | Multiple zeros, only last segment matters. |
+| operations = ["ProductOfNumbers","add","add","add","getProduct","add","getProduct"]<br>values = [[],[4],[5],[2],[2],[3],[4]] | [null,null,null,null,10,null,120] | Query whole stream after extra add. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single element | operations = ["ProductOfNumbers","add","getProduct"]<br>values = [[],[7],[1]] | [null,null,7] | One add and k=1. |
+| Single zero | operations = ["ProductOfNumbers","add","getProduct"]<br>values = [[],[0],[1]] | [null,null,0] | Product of only element is 0. |
+| Zero last | operations = ["ProductOfNumbers","add","add","add","getProduct","getProduct"]<br>values = [[],[3],[4],[0],[1],[3]] | [null,null,null,null,0,0] | Every query includes it. |
+| Max values | operations = ["ProductOfNumbers","add","add","add","getProduct"]<br>values = [[],[100],[100],[100],[3]] | [null,null,null,null,1000000] | Num=100 repeated. |
+| All ones | operations = ["ProductOfNumbers","add","add","add","getProduct","getProduct"]<br>values = [[],[1],[1],[1],[1],[3]] | [null,null,null,null,1,1] | Product stays 1. |
+| All zeros | operations = ["ProductOfNumbers","add","add","add","getProduct","getProduct"]<br>values = [[],[0],[0],[0],[1],[3]] | [null,null,null,null,0,0] | Every product is 0; large case would be 4*10^4 such calls. |
 
 ---
 

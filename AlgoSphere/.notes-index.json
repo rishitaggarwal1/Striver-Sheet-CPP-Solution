@@ -286,12 +286,12 @@
     "site": "leetcode",
     "slug": "product-of-the-last-k-numbers",
     "difficulty": "Medium",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Prefix products reset at zero",
+    "time": "O(1) per add and getProduct (amortised for append)",
+    "space": "O(n)",
     "dir": "leetcode/product-of-the-last-k-numbers",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-23T07:06:40.033Z"
+    "updatedAt": "2026-11-23T08:31:09.027Z"
   }
 }

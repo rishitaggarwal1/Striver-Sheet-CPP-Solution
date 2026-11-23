@@ -1,8 +1,10 @@
 # Product of the Last K Numbers
 
-**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/product-of-the-last-k-numbers/)
+**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/product-of-the-last-k-numbers/) · Pattern: **Prefix products reset at zero**
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+> Support appending non-negative integers to a list and answering, at any time, the product of the last `k` appended integers.
+
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -123,6 +125,133 @@ The trickiest part is the boundary check: use `k >= n`, not `k > n`, because the
 
 </details>
 
+## Intuition
+
+### Clues in the problem
+
+| Clue | What it suggests |
+| --- | --- |
+| "product of the last k numbers" means a contiguous suffix | this is a range query, so precompute prefix products and divide, the same way prefix sums answer range sums. |
+| `0 <= num <= 100`, so zeros can appear | division by a prefix that contains 0 breaks. Any window that covers a 0 has product 0, so only the stretch after the most recent zero matters. |
+| Follow-up asks for O(1) `add` and `getProduct` | each query must be answered from stored state, not by rescanning `k` elements. |
+| "product of any contiguous sequence ... fits in a 32-bit integer" | a prefix product that starts right after the last zero is itself a contiguous product, so it never overflows. That only holds if the prefix restarts at zeros. |
+
+### What the constraints tell you
+
+Up to 4·10^4 calls with `k` up to 4·10^4. Rescanning `k` numbers per query is about 4·10^4 × 4·10^4 = 1.6·10^9 multiplications in the worst case, which is too slow. O(1) per call means about 4·10^4 total operations, so the target is O(1) amortised per operation.
+
+### Think it through
+
+Answer each question yourself before opening it.
+
+**Q1. What is the most direct way to answer `getProduct(k)`?**
+
+<details>
+<summary>Answer</summary>
+
+Keep every number in a list and multiply the last `k` of them. That is correct but costs O(k) per query, up to 1.6·10^9 work overall.
+
+</details>
+
+**Q2. Suffix product queries look like suffix sum queries. What is the standard trick there?**
+
+<details>
+<summary>Answer</summary>
+
+Store prefix sums and subtract. For products, store `prefix[i]` = product of the first `i` numbers, then answer with `prefix[n] / prefix[n-k]`.
+
+</details>
+
+**Q3. Why does plain prefix-product division fail on the example `[3,0,2,5,4]`?**
+
+<details>
+<summary>Answer</summary>
+
+After the 0, every prefix is 0. `getProduct(2)` would compute `0 / 0` instead of 20. Dividing out a zero is impossible.
+
+</details>
+
+**Q4. What does a zero really tell us about future queries?**
+
+<details>
+<summary>Answer</summary>
+
+Any window that reaches back to or past that zero has product 0. Windows that stay strictly after it never involve anything before it. So everything before the latest zero can be forgotten.
+
+</details>
+
+**Q5. So how should the prefix array behave when `num == 0` arrives?**
+
+<details>
+<summary>Answer</summary>
+
+Reset it to `[1]`, so prefixes start fresh after the zero. Its length minus one is now the count of numbers since the last zero. If `k` is at least the prefix length, the window includes that zero and the answer is 0. Otherwise the answer is `prefix[last] / prefix[last-k]`.
+
+</details>
+
+## Approaches
+
+| # | Approach | Time | Space |
+| --- | --- | --- | --- |
+| 1 | [Brute force: Store list, multiply last k](#1-brute-force-store-list-multiply-last-k) | `O(1) add, O(k) getProduct` | `O(n)` |
+| 2 | [Better: List plus last-zero index](#2-better-list-plus-last-zero-index) | `O(1) add, O(k) getProduct worst case` | `O(n)` |
+| 3 | [Optimal: Prefix products reset on zero](#3-optimal-prefix-products-reset-on-zero) | `O(1) per add and getProduct (amortised for append)` | `O(n)` |
+
+### 1. Brute force: Store list, multiply last k
+
+> **Where you start:** The problem literally says "product of the last k numbers", so the first instinct is to keep the stream and loop over its tail.
+
+**Idea.** Append each `num` to a list. For `getProduct(k)`, multiply the last `k` elements. It is trivially correct because it computes exactly the definition. You can stop early when you hit a 0.
+
+**Steps**
+
+1. Keep a dynamic list `nums`.
+2. `add(num)`: append `num`.
+3. `getProduct(k)`: set `p = 1`.
+4. Loop over the last `k` entries, multiplying into `p`. Return 0 immediately if an entry is 0.
+5. Return `p`.
+
+**Complexity:** time `O(1) add, O(k) getProduct`, space `O(n)`. The loop over `k` elements in each query dominates. With 4·10^4 queries of `k` = 4·10^4 that is about 1.6·10^9 steps. The list holds every added number.
+
+**Why move on:** Each query redoes multiplications that earlier queries already did. Worst case 1.6·10^9 operations is too slow and fails the O(1) follow-up.
+
+### 2. Better: List plus last-zero index
+
+> **How you get here:** The brute force walks all the way to a zero just to return 0. If we remember where the most recent zero is, we can answer those queries instantly.
+
+**Idea.** Alongside the list, store `lastZero`, the index of the most recent 0 (or -1 if none). If `k > n - 1 - lastZero`, the window includes that zero, so return 0 at once. Otherwise multiply the last `k` numbers, which are all non-zero. This is correct because any window containing a 0 has product 0. It is still O(k) when the window contains no zero.
+
+**Steps**
+
+1. Keep list `nums` and integer `lastZero = -1`.
+2. `add(num)`: append it. If `num == 0`, set `lastZero` to its index.
+3. `getProduct(k)`: let `n` be the list size.
+4. If `n - k <= lastZero`, return 0.
+5. Otherwise multiply `nums[n-k .. n-1]` and return the product.
+
+**Complexity:** time `O(1) add, O(k) getProduct worst case`, space `O(n)`. Queries whose window covers a zero become O(1). Zero-free windows still cost O(k), so the worst case is unchanged. The list stores the whole stream.
+
+**Why move on:** A long stretch of 1s with no zeros still forces O(k) multiplication per query, about 1.6·10^9 in the worst case. We still recompute overlapping suffix products every time.
+
+### 3. Optimal: Prefix products reset on zero
+
+> **How you get here:** The Better approach already showed that nothing before the last zero matters. The products after it overlap from query to query, so precompute them as prefix products and divide.
+
+**Idea.** Maintain `prefix`, starting as `[1]`, where `prefix[i]` is the product of the first `i` numbers since the most recent zero. On `add(0)`, reset `prefix` to `[1]`. Otherwise append `prefix[last] * num`. For `getProduct(k)`: if `k >= prefix.length`, the window reaches the zero (or the very start before any zero, which k never exceeds), so return 0. Otherwise return `prefix[last] / prefix[last - k]`. The division is exact and never divides by 0, because all stored factors are non-zero. Each prefix is a contiguous product, so it fits in 32 bits.
+
+**Steps**
+
+1. Initialise `prefix = [1]`.
+2. `add(num)`: if `num == 0`, reset `prefix = [1]`.
+3. Otherwise append `prefix[last] * num`.
+4. `getProduct(k)`: let `m = prefix.length`.
+5. If `k >= m`, return 0, because the window includes the last zero.
+6. Otherwise return `prefix[m-1] / prefix[m-1-k]`.
+
+**Complexity:** time `O(1) per add and getProduct (amortised for append)`, space `O(n)`. Each operation does one append or one array lookup plus one division, so the work is constant. The `prefix` array holds at most one entry per number added since the last zero.
+
+**Why this is the best:** Every query needs at least constant time, so this cannot be beaten asymptotically. The cost is O(n) memory, which the Better approach also needed. The method also relies on exact integer division, which only works because the zeros were removed.
+
 ## Test cases
 
 **Normal cases**
@@ -145,6 +274,37 @@ The trickiest part is the boundary check: use `k >= n`, not `k > n`, because the
 | Max values | operations = ["ProductOfNumbers","add","add","add","getProduct"]<br>values = [[],[100],[100],[100],[3]] | [null,null,null,null,1000000] | Num=100 repeated. |
 | All ones | operations = ["ProductOfNumbers","add","add","add","getProduct","getProduct"]<br>values = [[],[1],[1],[1],[1],[3]] | [null,null,null,null,1,1] | Product stays 1. |
 | All zeros | operations = ["ProductOfNumbers","add","add","add","getProduct","getProduct"]<br>values = [[],[0],[0],[0],[1],[3]] | [null,null,null,null,0,0] | Every product is 0; large case would be 4*10^4 such calls. |
+
+## Mistakes and edge cases
+
+**Common mistakes**
+
+- Not handling zeros and dividing `prefix[n]/prefix[n-k]` when the prefix includes a 0. This gives division by zero or a wrong 0 for windows that lie after the zero, such as `getProduct(2) = 20` in the example.
+- Off-by-one in the zero check. With `prefix = [1, a, b]`, `k = 2` is valid (`b*a/1`), while `k = 3` reaches the zero and must return 0. The condition is `k >= prefix.length`, not `k > prefix.length`.
+- Keeping one global prefix product across zeros by skipping zeros instead of resetting. Windows that span a zero then return a non-zero value, for example `getProduct(4)` in the example would not give 0.
+- Never resetting at zeros, so the running product of the whole stream grows past 32 bits. The overflow guarantee only covers contiguous products, which the reset prefix always is.
+
+**Edge cases to check**
+
+- `getProduct(k)` where `k` equals exactly the count of numbers since the last zero: the answer must be `prefix[last] / prefix[0]`, not 0.
+- `getProduct(k)` immediately after `add(0)`: `prefix = [1]`, so any `k >= 1` must return 0.
+- A stream with no zeros at all: `k` never exceeds the stream length, so the `[1]` sentinel at the front makes `k = n` return the full product.
+- Many consecutive zeros, such as `add(0)` repeated: each one resets the array, and queries return 0 until enough non-zero numbers arrive.
+- Long runs of 1s: prefix values stay constant and the division still works. This is the case that makes the O(k) approaches slow.
+
+## Practice next
+
+- [Range Sum Query - Immutable](https://leetcode.com/problems/range-sum-query-immutable/) · Same prefix-array idea with subtraction instead of division to answer range queries in O(1).
+- [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) · Uses prefix and suffix products, and has to deal with the fact that zeros make division unusable.
+- [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray/) · Zeros split the array into independent segments for products, just as the reset does here.
+- [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) · Turns contiguous-range questions into prefix differences, the core trick reused here with products.
+
+## Takeaways
+
+- Range queries over a combine operation that has an inverse (+ with -, × with ÷) can be answered in O(1) using prefix aggregates.
+- When the inverse fails on a special value (0 for multiplication), ask what that value implies. Here it makes everything before it irrelevant, so you reset rather than patch around it.
+- A sentinel at the front (`prefix = [1]`) removes the special case for windows that start at the very beginning.
+- Read overflow guarantees precisely. "Any contiguous product fits" tells you which stored values are safe, and that should shape your design.
 
 ---
 

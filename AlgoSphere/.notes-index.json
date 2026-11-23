@@ -248,9 +248,9 @@
     "time": "O(n)",
     "space": "O(1) besides the output",
     "dir": "leetcode/zigzag-conversion",
-    "solution": "",
+    "solution": "leetcode/zigzag-conversion/zigzag-conversion.cpp",
     "mine": null,
-    "updatedAt": "2026-11-23T04:40:20.360Z"
+    "updatedAt": "2026-11-23T04:41:16.565Z"
   },
   "leetcode/find-subtree-sizes-after-changes": {
     "title": "Find Subtree Sizes After Changes",

@@ -28,7 +28,7 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 18 | [Triangle](leetcode/triangle/) | LeetCode | Medium | 2D grid DP on a triangle, filled bottom-up | `O(n^2)` time, `O(n)` space | [C++](leetcode/triangle/triangle.cpp) |   |
 | 19 | [Unique Paths](leetcode/unique-paths/) | LeetCode | Medium | Grid DP for counting paths, which collapses to a binomial coefficient | `O(min(m, n))` time, `O(1)` space | [C++](leetcode/unique-paths/unique-paths.cpp) |   |
 | 20 | [Unique Paths II](leetcode/unique-paths-ii/) | LeetCode | Medium | 2D grid DP (counting paths) | `O(m·n)` time, `O(n)` space | [C++](leetcode/unique-paths-ii/unique-paths-ii.cpp) |   |
-| 21 | [Zigzag Conversion](leetcode/zigzag-conversion/) | LeetCode | Medium | Simulation, then periodic index arithmetic | `O(n)` time, `O(1) besides the output` space |   |   |
+| 21 | [Zigzag Conversion](leetcode/zigzag-conversion/) | LeetCode | Medium | Simulation, then periodic index arithmetic | `O(n)` time, `O(1) besides the output` space | [C++](leetcode/zigzag-conversion/zigzag-conversion.cpp) |   |
 
 ---
 

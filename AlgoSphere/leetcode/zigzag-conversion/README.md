@@ -215,7 +215,159 @@ When numRows=1, `cycle` = 0, so stepping by `cycle` loops forever. Return `s` di
 4. Walk through s: move down while row < numRows-1, otherwise move up-right (row-1, col+1), and flip at the boundaries.
 5. Scan the grid row by row and append every non-blank cell to the result.
 
-**Complexity:** time `O(numRows · n)`, space `O(numRows · n)`. The final scan of the grid dominates. It has about numRows · n/2 cells, and most of them are blank. The grid itself is the extra memory.
+**Pseudocode**
+
+```text
+ 1 │ function convert(s, numRows)
+ 2 │   n ← length(s)
+ 3 │   if numRows = 1
+ 4 │     return s  // a single row is the string itself (and cycle would be 0)
+ 5 │   cycle ← 2 * numRows - 2  // characters in one down-then-diagonal pass
+ 6 │   cols ← ceil(n / cycle) * (numRows - 1)  // each cycle uses numRows-1 columns
+ 7 │   grid ← numRows × cols table, every cell ← BLANK
+ 8 │   row ← 0
+ 9 │   col ← 0
+10 │   for i from 0 to n - 1
+11 │     grid[row][col] ← s[i]
+12 │     if (i mod cycle) < numRows - 1  // first numRows-1 chars of a cycle go straight down
+13 │       row ← row + 1
+14 │     else
+15 │       row ← row - 1  // diagonal: up one row ...
+16 │       col ← col + 1  // ... and right one column
+17 │   result ← ""
+18 │   for r from 0 to numRows - 1
+19 │     for c from 0 to cols - 1
+20 │       if grid[r][c] ≠ BLANK  // skip the gaps of the zigzag
+21 │         result ← result + grid[r][c]
+22 │   return result
+```
+
+**Time complexity: `O(numRows · n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Grid allocation (line 7) | numRows × cols cells × O(1) | Every cell must be initialised to BLANK, and cols ≈ n/2, so this is about numRows·n/2 work. |
+| Placement loop (lines 10-16) | n iterations × O(1) | Each character is written once and the cursor moves by a constant step. |
+| Row-by-row scan (lines 18-21) | numRows × cols iterations × O(1) | Every cell is visited once, including the blank ones, which are the majority. |
+
+- **Adding it up:** numRows·cols + n + numRows·cols, with cols = ceil(n/(2·numRows−2))·(numRows−1) ≈ n/2, gives about numRows·n + n = O(numRows · n); the grid allocation and scan dominate the O(n) placement
+- **Best vs worst case:** Best case is numRows = 1, which returns immediately in O(1) (O(n) if the string is copied). Every other input pays the full numRows·cols grid cost, and the worst case is large numRows with a large n.
+- **At the maximum input:** n = 1000, numRows = 1000 → cycle = 1998, cols = 999, so about 10^6 cells to fill and scan, which runs in a few milliseconds
+
+**Space complexity: `O(numRows · n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| grid (line 7) | numRows × cols ≈ numRows · n / 2 cells | The whole zigzag drawing is stored, blanks included. |
+| Scalars n, cycle, cols, row, col, i, r, c (lines 2-19) | O(1) | A fixed number of integers, independent of the input size. |
+
+- **Adding it up:** O(numRows · n) + O(1) = O(numRows · n)
+- **Not counted:** The output string result (length n) and the input s are not counted. There is no recursion.
+
+**Dry run** on `s = "PAYPAL", numRows = 3 (a smaller input than Example 1; · marks a BLANK cell)`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 7 | n = 6 and cycle = 2·3−2 = 4. cols = ceil(6/4)·2 = 4, so a 3×4 grid is created with every cell blank. | `numRows = 3`<br>`n = 6`<br>`cycle = 4`<br>`cols = 4`<br>`s = [P, A, Y, P, A, L]`<br>`grid = 3×4 table: [·, ·, ·, ·] [·, ·, ·, ·] [·, ·, ·, ·]` |
+| 2 | 13 | i = 0: 'P' is written at (0,0). Since 0 mod 4 = 0 < 2, we keep going down, so row becomes 1. | `i = 0`<br>`row = 1`<br>`col = 0`<br>`s = [P, A, Y, P, A, L]` (i→0)<br>`grid = 3×4 table: [P, ·, ·, ·] [·, ·, ·, ·] [·, ·, ·, ·]` (cursor→[1,0]) |
+| 3 | 13 | i = 1: 'A' is written at (1,0). Since 1 mod 4 = 1 < 2, we still move down, so row becomes 2. | `i = 1`<br>`row = 2`<br>`s = [P, A, Y, P, A, L]` (i→1)<br>`grid = 3×4 table: [P, ·, ·, ·] [A, ·, ·, ·] [·, ·, ·, ·]` (cursor→[2,0]) |
+| 4 | 16 | i = 2: 'Y' is written at the bottom cell (2,0). Since 2 mod 4 = 2 is not < 2, the diagonal starts and the cursor moves up-right to (1,1). | `i = 2`<br>`row = 1`<br>`col = 1`<br>`s = [P, A, Y, P, A, L]` (i→2)<br>`grid = 3×4 table: [P, ·, ·, ·] [A, ·, ·, ·] [Y, ·, ·, ·]` (cursor→[1,1]) |
+| 5 | 16 | i = 3: 'P' is written on the diagonal at (1,1). Since 3 mod 4 = 3 is not < 2, we move up-right again, to (0,2). | `i = 3`<br>`row = 0`<br>`col = 2`<br>`s = [P, A, Y, P, A, L]` (i→3)<br>`grid = 3×4 table: [P, ·, ·, ·] [A, P, ·, ·] [Y, ·, ·, ·]` (cursor→[1,1]) |
+| 6 | 13 | i = 4: a new cycle begins and 'A' is written at the top cell (0,2). Since 4 mod 4 = 0 < 2, we go down, so row becomes 1. | `i = 4`<br>`row = 1`<br>`s = [P, A, Y, P, A, L]` (i→4)<br>`grid = 3×4 table: [P, ·, A, ·] [A, P, ·, ·] [Y, ·, ·, ·]` (cursor→[1,2]) |
+| 7 | 13 | i = 5: 'L' is written at (1,2). Since 5 mod 4 = 1 < 2, row moves down to 2. The loop then ends because all 6 characters are placed. | `i = 5`<br>`row = 2`<br>`s = [P, A, Y, P, A, L]` (i→5)<br>`grid = 3×4 table: [P, ·, A, ·] [A, P, L, ·] [Y, ·, ·, ·]` (cursor→[2,2]) |
+| 8 | 17 | The grid now matches the drawn zigzag. The result string starts empty, ready for the row-by-row read. | `result = ""`<br>`s = [P, A, Y, P, A, L]`<br>`grid = 3×4 table: [P, ·, A, ·] [A, P, L, ·] [Y, ·, ·, ·]` |
+| 9 | 21 | r = 0: the non-blank cells (0,0)='P' and (0,2)='A' are appended. Shown at c = 2, the last append in this row; c = 3 is blank. | `r = 0`<br>`c = 2`<br>`result = "PA"`<br>`grid = 3×4 table: [P, ·, A, ·] [A, P, L, ·] [Y, ·, ·, ·]` (scan→[0,2]) |
+| 10 | 21 | r = 1: the cells (1,0)='A', (1,1)='P' and (1,2)='L' are appended, so result becomes "PAAPL". | `r = 1`<br>`result = "PAAPL"`<br>`grid = 3×4 table: [P, ·, A, ·] [A, P, L, ·] [Y, ·, ·, ·]` (scan→[1,2]) |
+| 11 | 21 | r = 2: only (2,0)='Y' is non-blank, so result becomes "PAAPLY". The remaining cells in this row are blanks and are skipped. | `r = 2`<br>`c = 0`<br>`result = "PAAPLY"`<br>`grid = 3×4 table: [P, ·, A, ·] [A, P, L, ·] [Y, ·, ·, ·]` (scan→[2,0]) |
+| 12 | 22 | The scan is finished and "PAAPLY" is returned. | `grid = 3×4 table: [P, ·, A, ·] [A, P, L, ·] [Y, ·, ·, ·]` |
+
+**Result:** "PAAPLY" — the grid is an exact copy of the zigzag (P A on the top row, A P L in the middle, Y at the bottom), so reading it row by row gives the required order.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        int n = s.size();
+        if (numRows == 1) return s;                 // no zigzag; also avoids cycle == 0
+        int cycle = 2 * numRows - 2;                // chars in one down + diagonal pass
+        int cols = ((n + cycle - 1) / cycle) * (numRows - 1); // ceil(n/cycle) cycles, numRows-1 columns each
+        vector<string> grid(numRows, string(cols, '\0')); // '\0' is BLANK; '.' can't be used since s may contain it
+        int row = 0, col = 0;                       // current cell of the cursor
+        for (int i = 0; i < n; ++i) {
+            grid[row][col] = s[i];                  // place the character
+            if (i % cycle < numRows - 1) {
+                ++row;                              // still on the vertical stroke: go down
+            } else {
+                --row;                              // on the diagonal: go up ...
+                ++col;                              // ... and one column right
+            }
+        }
+        string result;
+        result.reserve(n);                          // the output has exactly n characters
+        for (int r = 0; r < numRows; ++r)           // read line by line
+            for (int c = 0; c < cols; ++c)
+                if (grid[r][c] != '\0')             // skip the empty cells
+                    result += grid[r][c];
+        return result;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    string convert(string s, int numRows) {
+        int n = s.size();
+        if (numRows == 1) return s;                 // no zigzag; also avoids cycle == 0
+        int cycle = 2 * numRows - 2;                // chars in one down + diagonal pass
+        int cols = ((n + cycle - 1) / cycle) * (numRows - 1); // ceil(n/cycle) cycles, numRows-1 columns each
+        vector<string> grid(numRows, string(cols, '\0')); // '\0' is BLANK; '.' can't be used since s may contain it
+        int row = 0, col = 0;                       // current cell of the cursor
+        for (int i = 0; i < n; ++i) {
+            grid[row][col] = s[i];                  // place the character
+            if (i % cycle < numRows - 1) {
+                ++row;                              // still on the vertical stroke: go down
+            } else {
+                --row;                              // on the diagonal: go up ...
+                ++col;                              // ... and one column right
+            }
+        }
+        string result;
+        result.reserve(n);                          // the output has exactly n characters
+        for (int r = 0; r < numRows; ++r)           // read line by line
+            for (int c = 0; c < cols; ++c)
+                if (grid[r][c] != '\0')             // skip the empty cells
+                    result += grid[r][c];
+        return result;
+    }
+};
+
+int main() {
+    Solution sol;
+    vector<tuple<string, int, string>> tests = {
+        {"PAYPALISHIRING", 3, "PAHNAPLSIIGYIR"},
+        {"PAYPALISHIRING", 4, "PINALSIGYAHRPI"},
+        {"A", 1, "A"}
+    };
+    for (auto& [s, rows, expected] : tests) {
+        string got = sol.convert(s, rows);
+        cout << "convert(\"" << s << "\", " << rows << ") = \"" << got
+             << "\"  expected \"" << expected << "\""
+             << (got == expected ? "  [OK]" : "  [FAIL]") << "\n";
+    }
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** It still passes at these limits (about 5·10^5 cells), but it allocates and scans a mostly empty matrix. It also forces you to get the column-count arithmetic right, all to compute columns the output never uses.
 

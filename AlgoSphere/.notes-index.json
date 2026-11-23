@@ -280,5 +280,18 @@
       "path": "leetcode/check-if-all-as-appears-before-all-bs/my-solution.cpp"
     },
     "updatedAt": "2026-11-22T07:22:39.569Z"
+  },
+  "leetcode/product-of-the-last-k-numbers": {
+    "title": "Product of the Last K Numbers",
+    "site": "leetcode",
+    "slug": "product-of-the-last-k-numbers",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/product-of-the-last-k-numbers",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-23T07:06:28.488Z"
   }
 }

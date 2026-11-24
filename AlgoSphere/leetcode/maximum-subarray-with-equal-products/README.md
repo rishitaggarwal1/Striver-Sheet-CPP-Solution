@@ -370,7 +370,148 @@ int main() {
 4. If prod > 25200, break out of the inner loop.
 5. Return the best length.
 
-**Complexity:** time `O(n^2 log 10)`, space `O(1)`. There are O(n^2) (l, r) pairs, each needing one gcd/lcm step on tiny numbers. In practice the early break triggers after a handful of elements greater than 1. Only running scalars are kept.
+**Pseudocode**
+
+```text
+ 1 │ function maxLength(nums):
+ 2 │   n ← length(nums)
+ 3 │   best ← 0
+ 4 │   for l ← 0 to n − 1:
+ 5 │     prod ← 1
+ 6 │     g ← 0  // gcd(0, x) = x, so the first element sets g
+ 7 │     L ← 1
+ 8 │     for r ← l to n − 1:
+ 9 │       prod ← prod × nums[r]
+10 │       g ← gcd(g, nums[r])
+11 │       L ← L / gcd(L, nums[r]) × nums[r]  // lcm(L, nums[r]) without overflow
+12 │       if prod = L × g:
+13 │         best ← max(best, r − l + 1)
+14 │       if prod > 25200:  // L×g ≤ lcm(1..10)×10 = 2520×10, and prod only grows
+15 │         break
+16 │   return best
+```
+
+**Time complexity: `O(n^2 log 10)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Outer loop over l (lines 4-7) | n iterations × O(1) reset | Each start index needs fresh prod, g and L values. |
+| Inner loop over r (lines 8-15) | at most n − l iterations × O(log 10) | Each step does one multiplication and two Euclidean gcds on numbers no larger than 25200·10, and each gcd takes only a few steps. |
+
+- **Adding it up:** n + (n−1) + … + 1 = n(n+1)/2 inner steps, each O(log 10), so O(n^2 log 10). The O(n) resets are dominated.
+- **Best vs worst case:** Best case: all elements are large (for example all 10s). Then prod passes 25200 after 5 elements, so every inner loop stops early and the total is O(n). Worst case: mostly 1s. Then prod never grows, the break never fires, and the full n(n+1)/2 iterations run.
+- **At the maximum input:** n = 100 → at most 5050 inner iterations, which takes microseconds.
+
+**Space complexity: `O(1)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Scalars n, best, l, r, prod, g, L (lines 2-11) | O(1) | Only a fixed number of counters and accumulators are kept, whatever the input size. |
+
+- **Adding it up:** A constant number of variables → O(1).
+- **Not counted:** The input array is not counted. The recursive gcd has depth O(log 10), which is constant.
+
+**Dry run** on `nums = [1,2,1,2,1,1,1]`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 3 | The array has n = 7 elements, and no subarray has been found yet, so best = 0. | `n = 7`<br>`best = 0`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` |
+| 2 | 13 | l = 0, r = 0: prod = 1, g = gcd(0,1) = 1, L = 1. Since 1 = 1×1, the subarray [1] qualifies and best = 1. | `best = 1`<br>`l = 0`<br>`r = 0`<br>`prod = 1`<br>`g = 1`<br>`L = 1`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→0) |
+| 3 | 13 | r = 1 adds 2: prod = 2, g = 1, L = 2. Since 2 = 2×1, the subarray [1,2] qualifies and best = 2. | `best = 2`<br>`r = 1`<br>`prod = 2`<br>`L = 2`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→1) |
+| 4 | 13 | r = 2 adds 1: prod = 2, g = 1, L = 2. The equation still holds, so best = 3. | `best = 3`<br>`r = 2`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→2) |
+| 5 | 12 | r = 3 adds the second 2: prod = 4 but L×g = 2×1 = 2, so there is no update. For r = 4..6, prod stays 4 and L×g stays 2, so nothing changes (skipped). | `r = 3`<br>`prod = 4`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→3) |
+| 6 | 12 | l = 1, r = 1: prod = 2, g = 2, L = 2. Since 2 ≠ 2×2 = 4, [2] alone does not qualify. | `l = 1`<br>`r = 1`<br>`prod = 2`<br>`g = 2`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→1, r→1) |
+| 7 | 13 | r = 2: prod = 2, g = 1, L = 2, so [2,1] qualifies, but its length 2 does not beat 3. From r = 3 on, prod = 4 ≠ 2 (skipped). | `r = 2`<br>`g = 1`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→1, r→2) |
+| 8 | 7 | The outer loop moves to l = 2, so the accumulators reset: prod = 1, g = 0, L = 1. | `l = 2`<br>`prod = 1`<br>`g = 0`<br>`L = 1`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→2) |
+| 9 | 13 | r = 2: prod = 1, g = 1, L = 1, so [1] qualifies. Its length 1 is less than best = 3. | `r = 2`<br>`g = 1`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→2, r→2) |
+| 10 | 13 | r = 3 adds 2: prod = 2, g = 1, L = 2, so [1,2] qualifies with length 2. best stays 3. | `r = 3`<br>`prod = 2`<br>`L = 2`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→2, r→3) |
+| 11 | 13 | r = 4 adds 1: prod = 2 = 2×1, so the subarray qualifies with length 3. best stays 3. | `r = 4`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→2, r→4) |
+| 12 | 13 | r = 5 adds 1: the equation still holds, and length 4 beats 3, so best = 4. | `best = 4`<br>`r = 5`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→2, r→5) |
+| 13 | 13 | r = 6 adds 1: [1,2,1,1,1] has prod = 2 = 2×1, so best = 5. | `best = 5`<br>`r = 6`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→2, r→6) |
+| 14 | 16 | For l = 3..6 the subarrays have length at most 4, so best is unchanged (skipped). The function returns 5. | `nums = [1, 2, 1, 2, 1, 1, 1]` |
+
+**Result:** 5 — every subarray was checked (the early break only skips extensions that can never satisfy the equation), and the longest one that satisfies prod = lcm×gcd is [1,2,1,1,1] at indices 2..6.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    // Euclid's gcd; gcd(0, x) = x, which lets g start at 0
+    int gcd(long long a, long long b)
+    {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+    int maxLength(vector<int>& nums) {
+        int n = nums.size();
+        int best = 0;                          // longest valid length seen so far
+        for (int l = 0; l < n; l++) {          // fix the left end
+            long long prod = 1;                // product of nums[l..r]
+            long long g = 0;                   // gcd of nums[l..r] (0 is the gcd identity)
+            long long L = 1;                   // lcm of nums[l..r] (1 is the lcm identity)
+            for (int r = l; r < n; r++) {      // extend the right end
+                prod *= nums[r];
+                g = gcd(g, nums[r]);
+                L = L / gcd(L, nums[r]) * nums[r]; // lcm update; divide first to stay small
+                if (prod == L * g)             // subarray is product equivalent
+                    best = max(best, r - l + 1);
+                if (prod > 25200)              // L*g <= 2520*10 and prod never shrinks
+                    break;                     // no longer subarray from l can match
+            }
+        }
+        return best;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    // Euclid's gcd; gcd(0, x) = x, which lets g start at 0
+    int gcd(long long a, long long b)
+    {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+    int maxLength(vector<int>& nums) {
+        int n = nums.size();
+        int best = 0;                          // longest valid length seen so far
+        for (int l = 0; l < n; l++) {          // fix the left end
+            long long prod = 1;                // product of nums[l..r]
+            long long g = 0;                   // gcd of nums[l..r] (0 is the gcd identity)
+            long long L = 1;                   // lcm of nums[l..r] (1 is the lcm identity)
+            for (int r = l; r < n; r++) {      // extend the right end
+                prod *= nums[r];
+                g = gcd(g, nums[r]);
+                L = L / gcd(L, nums[r]) * nums[r]; // lcm update; divide first to stay small
+                if (prod == L * g)             // subarray is product equivalent
+                    best = max(best, r - l + 1);
+                if (prod > 25200)              // L*g <= 2520*10 and prod never shrinks
+                    break;                     // no longer subarray from l can match
+            }
+        }
+        return best;
+    }
+};
+
+int main() {
+    vector<vector<int>> tests = {{1,2,1,2,1,1,1}, {2,3,4,5,6}, {1,2,3,1,4,5,1}};
+    vector<int> expected = {5, 3, 5};
+    for (size_t i = 0; i < tests.size(); i++) {
+        Solution s;
+        int out = s.maxLength(tests[i]);
+        cout << "Example " << i + 1 << ": output = " << out << ", expected = " << expected[i] << endl;
+    }
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** It is still quadratic in the worst case, for example an array of many 1s, because it never exploits the structure of the condition. It works here, but it ignores the fact that validity means pairwise coprime.
 

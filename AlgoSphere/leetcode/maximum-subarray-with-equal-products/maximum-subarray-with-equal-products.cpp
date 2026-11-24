@@ -2,13 +2,13 @@
  * Problem   : Maximum Subarray With Equal Products (LeetCode, Easy)
  * Link      : https://leetcode.com/problems/maximum-subarray-with-equal-products/
  * Pattern   : Prime-exponent reasoning + sliding window
- * Approach  : Brute force: Recompute every subarray
- * Complexity: Time O(n^3), Space O(1)
+ * Approach  : Better: Incremental extension with early break
+ * Complexity: Time O(n^2 log 10), Space O(1)
  *
- * For every pair (l, r), compute the product, gcd and lcm of nums[l..r] from
- * scratch, using big integers or a capped product. Record the length
- * whenever product == lcm*gcd. This is correct because it checks the
- * definition directly on every candidate.
+ * Fix l and extend r, updating prod *= nums[r], g = gcd(g, nums[r]) and L =
+ * lcm(L, nums[r]). Since lcm*gcd <= 2520*10 and the product never decreases,
+ * stop extending once prod exceeds that bound. This keeps numbers small and
+ * stays correct, because no further extension can satisfy the equation.
  *
  * Notes made with AlgoSphere by Rishit Aggarwal (https://github.com/rishitaggarwal1)
  */
@@ -18,22 +18,26 @@ using namespace std;
 
 class Solution {
 public:
+    // Euclid's gcd; gcd(0, x) = x, which lets g start at 0
+    int gcd(long long a, long long b)
+    {
+        return b == 0 ? a : gcd(b, a % b);
+    }
     int maxLength(vector<int>& nums) {
         int n = nums.size();
-        int best = 0;                       // longest product-equivalent length found so far
-        const long long CAP = 1000000;      // > max lcm*gcd (2520*10), so a capped product never matches
-        for (int l = 0; l < n; ++l) {       // every start index
-            for (int r = l; r < n; ++r) {   // every end index
-                long long p = 1;            // product of nums[l..r], capped
-                long long g = 0;            // gcd(0, x) = x, neutral start
-                long long lc = 1;           // lcm(1, x) = x, neutral start
-                for (int k = l; k <= r; ++k) {          // recompute from scratch
-                    p = min(p * nums[k], CAP);         // cap keeps p small and avoids overflow
-                    g = std::gcd(g, (long long)nums[k]);
-                    lc = std::lcm(lc, (long long)nums[k]); // at most 2520 for values <= 10
-                }
-                if (p == lc * g)                       // definition of product equivalent
+        int best = 0;                          // longest valid length seen so far
+        for (int l = 0; l < n; l++) {          // fix the left end
+            long long prod = 1;                // product of nums[l..r]
+            long long g = 0;                   // gcd of nums[l..r] (0 is the gcd identity)
+            long long L = 1;                   // lcm of nums[l..r] (1 is the lcm identity)
+            for (int r = l; r < n; r++) {      // extend the right end
+                prod *= nums[r];
+                g = gcd(g, nums[r]);
+                L = L / gcd(L, nums[r]) * nums[r]; // lcm update; divide first to stay small
+                if (prod == L * g)             // subarray is product equivalent
                     best = max(best, r - l + 1);
+                if (prod > 25200)              // L*g <= 2520*10 and prod never shrinks
+                    break;                     // no longer subarray from l can match
             }
         }
         return best;
@@ -43,10 +47,10 @@ public:
 int main() {
     vector<vector<int>> tests = {{1,2,1,2,1,1,1}, {2,3,4,5,6}, {1,2,3,1,4,5,1}};
     vector<int> expected = {5, 3, 5};
-    for (size_t i = 0; i < tests.size(); ++i) {
+    for (size_t i = 0; i < tests.size(); i++) {
         Solution s;
         int out = s.maxLength(tests[i]);
-        cout << "Example " << i + 1 << ": output = " << out << ", expected = " << expected[i] << "\n";
+        cout << "Example " << i + 1 << ": output = " << out << ", expected = " << expected[i] << endl;
     }
     return 0;
 }

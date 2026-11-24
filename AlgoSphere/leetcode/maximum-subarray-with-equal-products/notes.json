@@ -4,7 +4,7 @@
   "slug": "maximum-subarray-with-equal-products",
   "title": "Maximum Subarray With Equal Products",
   "url": "https://leetcode.com/problems/maximum-subarray-with-equal-products/",
-  "updatedAt": "2026-11-24T07:06:57.004Z",
+  "updatedAt": "2026-11-24T07:09:51.319Z",
   "problem": {
     "difficulty": "Easy",
     "description": "You are given an array of positive integers nums.\n\nAn array arr is called product equivalent if prod(arr) == lcm(arr) * gcd(arr), where:\n\n- prod(arr) is the product of all elements of arr.\n\n- gcd(arr) is the GCD of all elements of arr.\n\n- lcm(arr) is the LCM of all elements of arr.\n\nReturn the length of the longest product equivalent subarray of nums.\n\nExample 1:\n\nInput: nums = [1,2,1,2,1,1,1]\n\nOutput: 5\n\nExplanation:\n\nThe longest product equivalent subarray is [1, 2, 1, 1, 1], where prod([1, 2, 1, 1, 1]) = 2, gcd([1, 2, 1, 1, 1]) = 1, and lcm([1, 2, 1, 1, 1]) = 2.\n\nExample 2:\n\nInput: nums = [2,3,4,5,6]\n\nOutput: 3\n\nExplanation:\n\nThe longest product equivalent subarray is [3, 4, 5].\n\nExample 3:\n\nInput: nums = [1,2,3,1,4,5,1]\n\nOutput: 5\n\nConstraints:\n\n- 2 <= nums.length <= 100\n\n- 1 <= nums[i] <= 10"
@@ -766,7 +766,586 @@
         "time": "O(n^2 log 10)",
         "space": "O(1)",
         "complexity": "There are O(n^2) (l, r) pairs, each needing one gcd/lcm step on tiny numbers. In practice the early break triggers after a handful of elements greater than 1. Only running scalars are kept.",
-        "tradeoff": "It is still quadratic in the worst case, for example an array of many 1s, because it never exploits the structure of the condition. It works here, but it ignores the fact that validity means pairwise coprime."
+        "tradeoff": "It is still quadratic in the worst case, for example an array of many 1s, because it never exploits the structure of the condition. It works here, but it ignores the fact that validity means pairwise coprime.",
+        "deep": {
+          "pseudocode": [
+            "function maxLength(nums):",
+            "  n ← length(nums)",
+            "  best ← 0",
+            "  for l ← 0 to n − 1:",
+            "    prod ← 1",
+            "    g ← 0  // gcd(0, x) = x, so the first element sets g",
+            "    L ← 1",
+            "    for r ← l to n − 1:",
+            "      prod ← prod × nums[r]",
+            "      g ← gcd(g, nums[r])",
+            "      L ← L / gcd(L, nums[r]) × nums[r]  // lcm(L, nums[r]) without overflow",
+            "      if prod = L × g:",
+            "        best ← max(best, r − l + 1)",
+            "      if prod > 25200:  // L×g ≤ lcm(1..10)×10 = 2520×10, and prod only grows",
+            "        break",
+            "  return best"
+          ],
+          "time": {
+            "total": "O(n^2 log 10)",
+            "parts": [
+              {
+                "part": "Outer loop over l (lines 4-7)",
+                "cost": "n iterations × O(1) reset",
+                "why": "Each start index needs fresh prod, g and L values."
+              },
+              {
+                "part": "Inner loop over r (lines 8-15)",
+                "cost": "at most n − l iterations × O(log 10)",
+                "why": "Each step does one multiplication and two Euclidean gcds on numbers no larger than 25200·10, and each gcd takes only a few steps."
+              }
+            ],
+            "sum": "n + (n−1) + … + 1 = n(n+1)/2 inner steps, each O(log 10), so O(n^2 log 10). The O(n) resets are dominated.",
+            "cases": "Best case: all elements are large (for example all 10s). Then prod passes 25200 after 5 elements, so every inner loop stops early and the total is O(n). Worst case: mostly 1s. Then prod never grows, the break never fires, and the full n(n+1)/2 iterations run.",
+            "feel": "n = 100 → at most 5050 inner iterations, which takes microseconds.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(1)",
+            "parts": [
+              {
+                "part": "Scalars n, best, l, r, prod, g, L (lines 2-11)",
+                "cost": "O(1)",
+                "why": "Only a fixed number of counters and accumulators are kept, whatever the input size."
+              }
+            ],
+            "sum": "A constant number of variables → O(1).",
+            "cases": "",
+            "feel": "",
+            "note": "The input array is not counted. The recursive gcd has depth O(log 10), which is constant."
+          },
+          "dryRun": {
+            "input": "nums = [1,2,1,2,1,1,1]",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "The array has n = 7 elements, and no subarray has been found yet, so best = 0.",
+                "vars": {
+                  "n": "7",
+                  "best": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "l = 0, r = 0: prod = 1, g = gcd(0,1) = 1, L = 1. Since 1 = 1×1, the subarray [1] qualifies and best = 1.",
+                "vars": {
+                  "n": "7",
+                  "best": "1",
+                  "l": "0",
+                  "r": "0",
+                  "prod": "1",
+                  "g": "1",
+                  "L": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "r = 1 adds 2: prod = 2, g = 1, L = 2. Since 2 = 2×1, the subarray [1,2] qualifies and best = 2.",
+                "vars": {
+                  "n": "7",
+                  "best": "2",
+                  "l": "0",
+                  "r": "1",
+                  "prod": "2",
+                  "g": "1",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "r = 2 adds 1: prod = 2, g = 1, L = 2. The equation still holds, so best = 3.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "l": "0",
+                  "r": "2",
+                  "prod": "2",
+                  "g": "1",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 2
+                    },
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "r = 3 adds the second 2: prod = 4 but L×g = 2×1 = 2, so there is no update. For r = 4..6, prod stays 4 and L×g stays 2, so nothing changes (skipped).",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "l": "0",
+                  "r": "3",
+                  "prod": "4",
+                  "g": "1",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 3
+                    },
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "l = 1, r = 1: prod = 2, g = 2, L = 2. Since 2 ≠ 2×2 = 4, [2] alone does not qualify.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "l": "1",
+                  "r": "1",
+                  "prod": "2",
+                  "g": "2",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 1,
+                      "r": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "r = 2: prod = 2, g = 1, L = 2, so [2,1] qualifies, but its length 2 does not beat 3. From r = 3 on, prod = 4 ≠ 2 (skipped).",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "l": "1",
+                  "r": "2",
+                  "prod": "2",
+                  "g": "1",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 1,
+                      "r": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "The outer loop moves to l = 2, so the accumulators reset: prod = 1, g = 0, L = 1.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "l": "2",
+                  "prod": "1",
+                  "g": "0",
+                  "L": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 2
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "r = 2: prod = 1, g = 1, L = 1, so [1] qualifies. Its length 1 is less than best = 3.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "l": "2",
+                  "r": "2",
+                  "prod": "1",
+                  "g": "1",
+                  "L": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 2,
+                      "r": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "r = 3 adds 2: prod = 2, g = 1, L = 2, so [1,2] qualifies with length 2. best stays 3.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "l": "2",
+                  "r": "3",
+                  "prod": "2",
+                  "g": "1",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 2,
+                      "r": 3
+                    },
+                    "highlight": [
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "r = 4 adds 1: prod = 2 = 2×1, so the subarray qualifies with length 3. best stays 3.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "l": "2",
+                  "r": "4",
+                  "prod": "2",
+                  "g": "1",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 2,
+                      "r": 4
+                    },
+                    "highlight": [
+                      2,
+                      3,
+                      4
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "r = 5 adds 1: the equation still holds, and length 4 beats 3, so best = 4.",
+                "vars": {
+                  "n": "7",
+                  "best": "4",
+                  "l": "2",
+                  "r": "5",
+                  "prod": "2",
+                  "g": "1",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 2,
+                      "r": 5
+                    },
+                    "highlight": [
+                      2,
+                      3,
+                      4,
+                      5
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "r = 6 adds 1: [1,2,1,1,1] has prod = 2 = 2×1, so best = 5.",
+                "vars": {
+                  "n": "7",
+                  "best": "5",
+                  "l": "2",
+                  "r": "6",
+                  "prod": "2",
+                  "g": "1",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 2,
+                      "r": 6
+                    },
+                    "highlight": [
+                      2,
+                      3,
+                      4,
+                      5,
+                      6
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 16,
+                "explain": "For l = 3..6 the subarrays have length at most 4, so best is unchanged (skipped). The function returns 5.",
+                "vars": {
+                  "n": "7",
+                  "best": "5"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2,
+                      3,
+                      4,
+                      5,
+                      6
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "5 — every subarray was checked (the early break only skips extensions that can never satisfy the equation), and the longest one that satisfies prod = lcm×gcd is [1,2,1,1,1] at indices 2..6."
+          },
+          "solution": "class Solution {\npublic:\n    // Euclid's gcd; gcd(0, x) = x, which lets g start at 0\n    int gcd(long long a, long long b)\n    {\n        return b == 0 ? a : gcd(b, a % b);\n    }\n    int maxLength(vector<int>& nums) {\n        int n = nums.size();\n        int best = 0;                          // longest valid length seen so far\n        for (int l = 0; l < n; l++) {          // fix the left end\n            long long prod = 1;                // product of nums[l..r]\n            long long g = 0;                   // gcd of nums[l..r] (0 is the gcd identity)\n            long long L = 1;                   // lcm of nums[l..r] (1 is the lcm identity)\n            for (int r = l; r < n; r++) {      // extend the right end\n                prod *= nums[r];\n                g = gcd(g, nums[r]);\n                L = L / gcd(L, nums[r]) * nums[r]; // lcm update; divide first to stay small\n                if (prod == L * g)             // subarray is product equivalent\n                    best = max(best, r - l + 1);\n                if (prod > 25200)              // L*g <= 2520*10 and prod never shrinks\n                    break;                     // no longer subarray from l can match\n            }\n        }\n        return best;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    vector<vector<int>> tests = {{1,2,1,2,1,1,1}, {2,3,4,5,6}, {1,2,3,1,4,5,1}};\n    vector<int> expected = {5, 3, 5};\n    for (size_t i = 0; i < tests.size(); i++) {\n        Solution s;\n        int out = s.maxLength(tests[i]);\n        cout << \"Example \" << i + 1 << \": output = \" << out << \", expected = \" << expected[i] << endl;\n    }\n    return 0;\n}"
+        }
       },
       {
         "level": "Optimal",

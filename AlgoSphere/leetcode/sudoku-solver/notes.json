@@ -4,7 +4,7 @@
   "slug": "sudoku-solver",
   "title": "Sudoku Solver",
   "url": "https://leetcode.com/problems/sudoku-solver/",
-  "updatedAt": "2026-11-24T10:02:17.390Z",
+  "updatedAt": "2026-11-24T10:02:45.111Z",
   "problem": {
     "difficulty": "Hard",
     "description": "Write a program to solve a Sudoku puzzle by filling the empty cells.\n\nA sudoku solution must satisfy all of the following rules:\n\n- Each of the digits 1-9 must occur exactly once in each row.\n\n- Each of the digits 1-9 must occur exactly once in each column.\n\n- Each of the digits 1-9 must occur exactly once in each of the 9 3x3 sub-boxes of the grid.\n\nThe '.' character indicates empty cells.\n\nExample 1:\n\nInput: board = [[\"5\",\"3\",\".\",\".\",\"7\",\".\",\".\",\".\",\".\"],[\"6\",\".\",\".\",\"1\",\"9\",\"5\",\".\",\".\",\".\"],[\".\",\"9\",\"8\",\".\",\".\",\".\",\".\",\"6\",\".\"],[\"8\",\".\",\".\",\".\",\"6\",\".\",\".\",\".\",\"3\"],[\"4\",\".\",\".\",\"8\",\".\",\"3\",\".\",\".\",\"1\"],[\"7\",\".\",\".\",\".\",\"2\",\".\",\".\",\".\",\"6\"],[\".\",\"6\",\".\",\".\",\".\",\".\",\"2\",\"8\",\".\"],[\".\",\".\",\".\",\"4\",\"1\",\"9\",\".\",\".\",\"5\"],[\".\",\".\",\".\",\".\",\"8\",\".\",\".\",\"7\",\"9\"]]\nOutput: [[\"5\",\"3\",\"4\",\"6\",\"7\",\"8\",\"9\",\"1\",\"2\"],[\"6\",\"7\",\"2\",\"1\",\"9\",\"5\",\"3\",\"4\",\"8\"],[\"1\",\"9\",\"8\",\"3\",\"4\",\"2\",\"5\",\"6\",\"7\"],[\"8\",\"5\",\"9\",\"7\",\"6\",\"1\",\"4\",\"2\",\"3\"],[\"4\",\"2\",\"6\",\"8\",\"5\",\"3\",\"7\",\"9\",\"1\"],[\"7\",\"1\",\"3\",\"9\",\"2\",\"4\",\"8\",\"5\",\"6\"],[\"9\",\"6\",\"1\",\"5\",\"3\",\"7\",\"2\",\"8\",\"4\"],[\"2\",\"8\",\"7\",\"4\",\"1\",\"9\",\"6\",\"3\",\"5\"],[\"3\",\"4\",\"5\",\"2\",\"8\",\"6\",\"1\",\"7\",\"9\"]]\nExplanation: The input board is shown above and the only valid solution is shown below:\n\nConstraints:\n\n- board.length == 9\n\n- board[i].length == 9\n\n- board[i][j] is a digit or '.'.\n\n- It is guaranteed that the input board has only one solution."
@@ -18,5 +18,63 @@
     "Keep three 9-entry lookup tables, each entry being a set of used digits: one per row, one per column, and one per box, where the box index is `(r / 3) * 3 + (c / 3)`. Also keep a list of the empty cell positions so the recursion can walk through them by index. Optionally, store each table entry as a 9-bit mask, so the free digits of a cell are the bits set in none of its row, column, or box masks.",
     "Scan the board once, recording the given digits in the row, column, and box tables and collecting the empty cells.\nDefine a recursive step that takes an index into the empty-cell list.\nIf the index equals the list length, every cell is filled, so report success.\nFor the current cell, try each digit 1-9 that is unused in its row, column, and box.\nPlace the digit on the board, mark it in all three tables, and recurse on the next index.\nIf the recursion succeeds, return success right away; otherwise unmark the digit and restore the cell to '.'.\nIf no digit works, return failure so the caller backtracks.",
     "The trickiest part is undoing correctly: on failure, remove the digit from all three tables and reset the cell. Also stop the search as soon as a full solution is found, or later backtracking will erase it. A board that starts completely filled should succeed immediately. A big speedup is to always branch next on the empty cell with the fewest legal digits (most constrained first). The worst-case time is exponential, roughly `O(9^k)` for `k` empty cells, but pruning makes it very fast on a 9x9 board. Extra space is `O(1)` for the fixed-size tables plus recursion depth up to 81."
-  ]
+  ],
+  "review": {
+    "verdict": "wont_compile",
+    "summary": "The code does not compile because of how the member vectors are initialized, and the backtracking logic underneath is also incomplete: it never undoes choices, never reports success, and ignores the 3x3 boxes.",
+    "yourIdea": "You are using backtracking with lookup tables `row[r][d]` and `col[c][d]` to record which digits are used. You scan for empty cells, try digits that do not clash with the row or column, and recurse into the next row.",
+    "gaps": [
+      {
+        "title": "Backtracking without 'unchoose' and without a success signal",
+        "explanation": "Backtracking has three steps: choose (place a digit and mark it used), explore (recurse), and unchoose (clear the cell back to '.' and unmark the digit) when the recursion fails. Your code never marks `row`/`col` when it places a digit, never resets the cell, and `solve` returns `void`. That means a caller cannot tell whether the recursion found a full solution. The board ends up holding whatever was written last, and correct placements get overwritten by later loop iterations. Have `solve` return `bool`, stop as soon as a recursive call returns true, and undo everything before trying the next digit.",
+        "lines": "4, 16-18, 22"
+      },
+      {
+        "title": "The 3x3 box rule is never checked",
+        "explanation": "A Sudoku has three constraints, and you only track rows and columns. A digit can be legal for its row and column and still clash inside its box, so the search will accept invalid boards. You need a third table, for example `box[9][10]`, indexed by `(r/3)*3 + c/3`, and you must check and update it alongside `row` and `col`.",
+        "lines": "3, 14, 30-31"
+      },
+      {
+        "title": "The recursion does not advance one cell at a time",
+        "explanation": "Each call loops over all 9 cells of row `r`. Every time it fills one empty cell, it jumps straight to `r+1`, while the rest of row `r` is still empty. After that recursive call returns, the loop keeps going in the same row, so states get mixed up. A cleaner model is one empty cell per call: find the next '.' cell, try digits 1 to 9 there, recurse for the following cell, and return false if no digit works. Reaching past cell (8,8) means the board is solved. The parameter `c` exists in your code but is never actually used.",
+        "lines": "8-21"
+      }
+    ],
+    "bugs": [
+      {
+        "lines": "3",
+        "issue": "Default member initializers inside a class cannot use parentheses, so `row(10, ...)` is parsed like a function declaration and causes a compile error.",
+        "fix": "Use brace or equals syntax, e.g. `vector<vector<bool>> row = vector<vector<bool>>(10, vector<bool>(10,false));`, or simply `bool row[9][10] = {};`."
+      },
+      {
+        "lines": "29-31",
+        "issue": "For empty cells, `'.' - '0'` equals -2, so `row[i][-2]` is an out-of-bounds write (undefined behavior).",
+        "fix": "Skip cells where `board[i][j]=='.'` before computing `x`."
+      },
+      {
+        "lines": "12",
+        "issue": "`j<9` only tries digits 1 to 8, so the digit 9 is never placed.",
+        "fix": "Loop with `j<=9`."
+      },
+      {
+        "lines": "16",
+        "issue": "`board[r][i]=j` stores the character with code 1 to 9, which is not the digit character '1' to '9'.",
+        "fix": "Store `'0'+j`."
+      }
+    ],
+    "counterexample": null,
+    "complexity": {
+      "time": "Exponential in the number of empty cells in the worst case (up to 9^k for k blanks), but row/column/box pruning makes real puzzles fast.",
+      "space": "O(81) for the recursion depth plus O(1) for the fixed-size lookup tables.",
+      "verdict": "A correct row/column/box backtracking solution easily fits the limits for a 9x9 board. The current code cannot be judged because it neither compiles nor backtracks properly."
+    },
+    "nudge": "Suppose your recursive call fills a cell and then gets stuck three levels deeper. How does the caller find out, and what has to be erased from the board and from your `row`/`col` tables before it tries the next digit? Also ask yourself what else, besides row and column, can forbid a digit in a cell.",
+    "correctIdea": "Keep three boolean tables (row, column and box, with box index `(r/3)*3 + c/3`) and fill them from the given digits. Write a recursive `bool` function that handles one cell: if past the last cell, return true. If the cell is filled, recurse on the next cell. Otherwise try each digit 1 to 9 that is free in all three tables: place it, mark it, recurse, return true if that succeeds, and otherwise unmark it and reset the cell to '.'. If no digit works, return false so the caller backtracks.",
+    "strengths": [
+      "You picked the right technique: backtracking with O(1) lookup tables instead of rescanning the row and column every time.",
+      "You pre-populate the tables from the given clues before searching.",
+      "You correctly check constraints before placing a digit, which prunes the search."
+    ]
+  },
+  "reviewFor": "class Solution {\npublic:\n    vector<vector<bool>> row(10,vector<bool>(10,false)), col(10,vector<bool>(10,false));\n    void solve(vector<vector<char>>& board, int r, int c)\n    {\n        if(r==9)\n            return;\n        for(int i=0;i<9;i++)\n        {\n            if(board[r][i]=='.')\n            {\n                for(int j=1;j<9;j++)\n                {\n                    if(col[i][j]==false && row[r][j]==false)\n                    {\n                        board[r][i]=j;\n                        solve(board,r+1,c);\n                    }\n                }\n            }\n        }\n        return;\n    }\n    void solveSudoku(vector<vector<char>>& board) {\n        for(int i=0;i<9;i++)\n        {\n            for(int j=0;j<9;j++)\n            {\n                int x = board[i][j]-'0';\n                row[i][x] = true;\n                col[j][x] = true;\n            }\n        }\n        solve(board,0,0);\n    }\n};"
 }

@@ -2,6 +2,8 @@
 
 **LeetCode** · **Easy** · [Open the problem](https://leetcode.com/problems/maximum-subarray-with-equal-products/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -120,6 +122,29 @@ Return best.
 The trickiest step is computing the LCM safely: use `l / gcd(l, x) * x`, and stop early when the product grows too large. A long run of 1s still works, because 1s never change prod or lcm. Remember that a single element `x` fails unless `x == 1`, which is why the answer starts at 2. Time is `O(n^2 log 10)`, effectively `O(n^2)`, and space is `O(1)`.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| nums = [2,4,8] | 2 | Powers of two share factors, so only pairs qualify. |
+| nums = [3,5,7,2] | 4 | Pairwise coprime values make the whole array valid. |
+| nums = [6,10,15] | 2 | gcd of all three is 1 but they are not pairwise coprime, so the triple fails. |
+| nums = [1,1,1,1] | 4 | All ones form a valid array. |
+| nums = [2,3,1,4,5,6] | 4 | The best window is [3,1,4,5] in the middle. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Minimum length | nums = [1,1] | 2 | Two ones. |
+| Maximum values | nums = [10,10] | 2 | Any length-2 subarray is always product equivalent. |
+| Duplicates | nums = [2,2,2] | 2 | The triple gives 8 versus 4, so only pairs qualify. |
+| All equal values greater than 1 | nums = [7,7,7,7,7] | 2 | Answer stays at 2. |
+| Whole array valid | nums = [1,2,3,5,7,1,1] | 7 | Ones mixed with distinct primes. |
+| Minimum length with non-coprime pair | nums = [2,4] | 2 | Still valid since a*b equals lcm*gcd. |
 
 ---
 

@@ -326,7 +326,10 @@
     "space": "O(m) recursion plus 27 integers",
     "dir": "leetcode/sudoku-solver",
     "solution": "leetcode/sudoku-solver/sudoku-solver.cpp",
-    "mine": null,
-    "updatedAt": "2026-11-24T10:47:40.567Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/sudoku-solver/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-24T10:50:05.324Z"
   }
 }

@@ -1,10 +1,10 @@
 # Sudoku Solver
 
-**LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/sudoku-solver/) · Pattern: **Backtracking with constraint bitmasks**
+**LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/sudoku-solver/) · Pattern: **Backtracking with constraint bitmasks** · ✅ Solved in C++
 
 > Fill every '.' in a 9x9 grid with a digit 1-9 so that no digit repeats in any row, column or 3x3 box. Modify `board` in place; exactly one solution exists.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -425,6 +425,69 @@ int main() {
 **Complexity:** time `Exponential worst case, but each node costs O(m) and in practice only a few hundred nodes are explored`, space `O(m) recursion plus 27 integers`. Each node pays an O(m) ≤ 81 scan to choose a cell, and that scan is what makes the branching factor close to 1 on most steps. The memory is 27 masks, the empty list and the recursion stack.
 
 **Why this is the best:** Sudoku is NP-complete in general, so no polynomial guarantee exists. MRV trades an O(81) scan per node for a far smaller tree. Adding constraint propagation (naked or hidden singles) or Dancing Links can prune more, at the cost of more code.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 0 of 8 | 2026-11-24 |
+
+For comparison, the optimal approach (Bitmask backtracking with fewest-candidates-first) runs in `Exponential worst case, but each node costs O(m) and in practice only a few hundred nodes are explored` time and `O(m) recursion plus 27 integers` space.
+
+```cpp
+class Solution {
+public:
+    vector<vector<bool>> row = vector<vector<bool>>(10, vector<bool>(10, false));
+    vector<vector<bool>> col = vector<vector<bool>>(10, vector<bool>(10, false));
+    vector<vector<bool>> box = vector<vector<bool>>(10, vector<bool>(10, false));
+    bool solve(vector<vector<char>>& board)
+    {
+       for(int i=0;i<9;i++)
+        {
+            for(int j=0;j<9;j++)
+            {
+                if(board[i][j]=='.')
+                {
+                    int z = (i/3)*3 + j/3;
+                    for(int k=1;k<=9;k++)
+                    {
+                        if(col[j][k]==false && row[i][k]==false && box[z][k]==false)
+                        {
+                            board[i][j]=k + '0';
+                            col[j][k] = true;
+                            row[i][k] = true; 
+                            box[z][k] = true;
+                            if(solve(board))
+                                return true;
+                            board[i][j]='.';
+                            col[j][k] = false;
+                            row[i][k] = false;
+                            box[z][k] = false;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    void solveSudoku(vector<vector<char>>& board) {
+        for(int i=0;i<9;i++)
+        {
+            for(int j=0;j<9;j++)
+            {
+                if(board[i][j]=='.')    continue;
+                int x = board[i][j]-'0';
+                row[i][x] = true;
+                col[j][x] = true;
+                int z = (i/3)*3+j/3;
+                box[z][x]=true;
+            }
+        }
+        solve(board);
+    }
+};
+```
 
 ## Mistakes and edge cases
 

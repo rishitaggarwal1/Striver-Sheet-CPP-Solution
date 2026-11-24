@@ -302,12 +302,12 @@
     "site": "leetcode",
     "slug": "maximum-subarray-with-equal-products",
     "difficulty": "Easy",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Prime-exponent reasoning + sliding window",
+    "time": "O(n)",
+    "space": "O(1)",
     "dir": "leetcode/maximum-subarray-with-equal-products",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-24T02:40:21.974Z"
+    "updatedAt": "2026-11-24T02:40:42.922Z"
   }
 }

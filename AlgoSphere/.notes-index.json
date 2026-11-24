@@ -296,5 +296,18 @@
       "path": "leetcode/product-of-the-last-k-numbers/my-solution.cpp"
     },
     "updatedAt": "2026-11-23T09:09:34.148Z"
+  },
+  "leetcode/maximum-subarray-with-equal-products": {
+    "title": "Maximum Subarray With Equal Products",
+    "site": "leetcode",
+    "slug": "maximum-subarray-with-equal-products",
+    "difficulty": "Easy",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/maximum-subarray-with-equal-products",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-24T02:40:08.876Z"
   }
 }

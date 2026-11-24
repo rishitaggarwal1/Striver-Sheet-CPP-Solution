@@ -306,8 +306,8 @@
     "time": "O(n)",
     "space": "O(1)",
     "dir": "leetcode/maximum-subarray-with-equal-products",
-    "solution": "",
+    "solution": "leetcode/maximum-subarray-with-equal-products/maximum-subarray-with-equal-products.cpp",
     "mine": null,
-    "updatedAt": "2026-11-24T02:40:42.922Z"
+    "updatedAt": "2026-11-24T02:41:29.868Z"
   }
 }

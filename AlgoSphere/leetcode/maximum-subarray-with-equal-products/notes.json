@@ -4,7 +4,7 @@
   "slug": "maximum-subarray-with-equal-products",
   "title": "Maximum Subarray With Equal Products",
   "url": "https://leetcode.com/problems/maximum-subarray-with-equal-products/",
-  "updatedAt": "2026-11-24T02:40:42.922Z",
+  "updatedAt": "2026-11-24T02:41:29.868Z",
   "problem": {
     "difficulty": "Easy",
     "description": "You are given an array of positive integers nums.\n\nAn array arr is called product equivalent if prod(arr) == lcm(arr) * gcd(arr), where:\n\n- prod(arr) is the product of all elements of arr.\n\n- gcd(arr) is the GCD of all elements of arr.\n\n- lcm(arr) is the LCM of all elements of arr.\n\nReturn the length of the longest product equivalent subarray of nums.\n\nExample 1:\n\nInput: nums = [1,2,1,2,1,1,1]\n\nOutput: 5\n\nExplanation:\n\nThe longest product equivalent subarray is [1, 2, 1, 1, 1], where prod([1, 2, 1, 1, 1]) = 2, gcd([1, 2, 1, 1, 1]) = 1, and lcm([1, 2, 1, 1, 1]) = 2.\n\nExample 2:\n\nInput: nums = [2,3,4,5,6]\n\nOutput: 3\n\nExplanation:\n\nThe longest product equivalent subarray is [3, 4, 5].\n\nExample 3:\n\nInput: nums = [1,2,3,1,4,5,1]\n\nOutput: 5\n\nConstraints:\n\n- 2 <= nums.length <= 100\n\n- 1 <= nums[i] <= 10"
@@ -189,7 +189,567 @@
         "time": "O(n^3)",
         "space": "O(1)",
         "complexity": "There are O(n^2) subarrays, and each is rescanned in O(n), which dominates. Only a few scalars are stored, apart from big-integer growth if you don't cap the product.",
-        "tradeoff": "It wastes O(n) per subarray recomputing values that differ from the previous subarray by a single element. It also needs care to avoid overflow, and it would not scale past a few hundred elements."
+        "tradeoff": "It wastes O(n) per subarray recomputing values that differ from the previous subarray by a single element. It also needs care to avoid overflow, and it would not scale past a few hundred elements.",
+        "deep": {
+          "pseudocode": [
+            "function maxLength(nums):",
+            "  n ← length(nums)",
+            "  best ← 0",
+            "  CAP ← 1000000  // larger than any possible lcm*gcd (2520*10 = 25200)",
+            "  for l ← 0 to n-1:",
+            "    for r ← l to n-1:",
+            "      prod ← 1",
+            "      g ← 0  // gcd(0, x) = x, so 0 is the neutral start",
+            "      lc ← 1  // lcm(1, x) = x",
+            "      for k ← l to r:  // recompute everything from scratch",
+            "        prod ← min(prod * nums[k], CAP)  // cap so the product never overflows; a capped value can never match",
+            "        g ← gcd(g, nums[k])",
+            "        lc ← lcm(lc, nums[k])",
+            "      if prod = lc * g:",
+            "        best ← max(best, r - l + 1)",
+            "  return best"
+          ],
+          "time": {
+            "total": "O(n^3)",
+            "parts": [
+              {
+                "part": "Pair loops over (l, r) (lines 5-6)",
+                "cost": "n(n+1)/2 pairs",
+                "why": "Every contiguous subarray is one (l, r) pair with l ≤ r."
+              },
+              {
+                "part": "Inner walk over nums[l..r] (lines 10-13)",
+                "cost": "(r-l+1) iterations × O(log 10) per gcd/lcm",
+                "why": "Product, gcd and lcm are rebuilt element by element for each subarray. With values at most 10, a gcd costs only a few steps."
+              },
+              {
+                "part": "Check and update (lines 14-15)",
+                "cost": "n(n+1)/2 × O(1)",
+                "why": "This is one comparison per subarray."
+              }
+            ],
+            "sum": "Σ over all subarrays of their length = n(n+1)(n+2)/6 ≈ n^3/6 = O(n^3). The O(n^2) checks are dominated by this.",
+            "cases": "",
+            "feel": "n = 100 → 100·101·102/6 = 171,700 inner steps, which finishes instantly.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(1)",
+            "parts": [
+              {
+                "part": "Scalars n, best, CAP, l, r, k, prod, g, lc (lines 2-13)",
+                "cost": "O(1)",
+                "why": "Only a fixed number of counters and accumulators are kept, no matter how large n is."
+              }
+            ],
+            "sum": "This is a constant number of variables, so O(1).",
+            "cases": "",
+            "feel": "",
+            "note": "The input array is not counted."
+          },
+          "dryRun": {
+            "input": "nums = [1,2,1,2,1,1,1]",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "n is 7 and best starts at 0.",
+                "vars": {
+                  "n": "7",
+                  "best": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 4,
+                "explain": "The cap is set to 10^6. Any product that hits it is far above the largest possible lcm*gcd, so it can never pass the check.",
+                "vars": {
+                  "n": "7",
+                  "best": "0",
+                  "CAP": "1000000"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "l=0, r=0: the walk covers only nums[0]=1, giving prod=1, g=1, lc=1.",
+                "vars": {
+                  "n": "7",
+                  "best": "0",
+                  "CAP": "1000000",
+                  "l": "0",
+                  "r": "0",
+                  "k": "0",
+                  "prod": "1",
+                  "g": "1",
+                  "lc": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 0,
+                      "k": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "1 = 1*1, so [1] is product equivalent and best becomes 1.",
+                "vars": {
+                  "n": "7",
+                  "best": "1",
+                  "CAP": "1000000",
+                  "l": "0",
+                  "r": "0",
+                  "k": "0",
+                  "prod": "1",
+                  "g": "1",
+                  "lc": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "l=0, r=1: the walk over [1,2] gives prod=2, g=1, lc=2. Since 2 = 2*1, best becomes 2.",
+                "vars": {
+                  "n": "7",
+                  "best": "2",
+                  "CAP": "1000000",
+                  "l": "0",
+                  "r": "1",
+                  "k": "1",
+                  "prod": "2",
+                  "g": "1",
+                  "lc": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "l=0, r=2: [1,2,1] gives prod=2, g=1, lc=2. It matches, so best becomes 3.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "CAP": "1000000",
+                  "l": "0",
+                  "r": "2",
+                  "k": "2",
+                  "prod": "2",
+                  "g": "1",
+                  "lc": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 2
+                    },
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "l=0, r=3: after k=3 the walk over [1,2,1,2] holds prod=4, g=1, lc=2.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "CAP": "1000000",
+                  "l": "0",
+                  "r": "3",
+                  "k": "3",
+                  "prod": "4",
+                  "g": "1",
+                  "lc": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 3,
+                      "k": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "4 ≠ 2*1, so this subarray is skipped. The remaining r=4..6 for l=0 also contain both 2s and fail the same way.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "CAP": "1000000",
+                  "l": "0",
+                  "r": "3",
+                  "k": "3",
+                  "prod": "4",
+                  "g": "1",
+                  "lc": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 0,
+                      "r": 3
+                    },
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "l=1, r=1: the single element [2] gives prod=2, g=2, lc=2.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "CAP": "1000000",
+                  "l": "1",
+                  "r": "1",
+                  "k": "1",
+                  "prod": "2",
+                  "g": "2",
+                  "lc": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 1,
+                      "r": 1,
+                      "k": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "2 ≠ 2*2 = 4, so [2] alone is not product equivalent. The other subarrays for l=1 are never longer than 3 when they pass, so best stays 3.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "CAP": "1000000",
+                  "l": "1",
+                  "r": "1",
+                  "k": "1",
+                  "prod": "2",
+                  "g": "2",
+                  "lc": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 1,
+                      "r": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "Skipping ahead to l=2, r=6: the walk over [1,2,1,1,1] ends with prod=2, g=1, lc=2.",
+                "vars": {
+                  "n": "7",
+                  "best": "3",
+                  "CAP": "1000000",
+                  "l": "2",
+                  "r": "6",
+                  "k": "6",
+                  "prod": "2",
+                  "g": "1",
+                  "lc": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 2,
+                      "r": 6,
+                      "k": 6
+                    },
+                    "highlight": [
+                      6
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "2 = 2*1, so the check passes and best becomes max(3, 6-2+1) = 5.",
+                "vars": {
+                  "n": "7",
+                  "best": "5",
+                  "CAP": "1000000",
+                  "l": "2",
+                  "r": "6",
+                  "k": "6",
+                  "prod": "2",
+                  "g": "1",
+                  "lc": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {
+                      "l": 2,
+                      "r": 6
+                    },
+                    "highlight": [
+                      2,
+                      3,
+                      4,
+                      5,
+                      6
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 16,
+                "explain": "The remaining starts l=3..6 can only make subarrays of length 4 or less, so best stays 5 and is returned.",
+                "vars": {
+                  "n": "7",
+                  "best": "5",
+                  "CAP": "1000000"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "1",
+                      "2",
+                      "1",
+                      "2",
+                      "1",
+                      "1",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2,
+                      3,
+                      4,
+                      5,
+                      6
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "5. Every subarray was tested directly against the definition, and the longest one that passes is [1,2,1,1,1] (prod 2 = lcm 2 × gcd 1)."
+          },
+          "solution": "class Solution {\npublic:\n    int maxLength(vector<int>& nums) {\n        int n = nums.size();\n        int best = 0;                       // longest product-equivalent length found so far\n        const long long CAP = 1000000;      // > max lcm*gcd (2520*10), so a capped product never matches\n        for (int l = 0; l < n; ++l) {       // every start index\n            for (int r = l; r < n; ++r) {   // every end index\n                long long p = 1;            // product of nums[l..r], capped\n                long long g = 0;            // gcd(0, x) = x, neutral start\n                long long lc = 1;           // lcm(1, x) = x, neutral start\n                for (int k = l; k <= r; ++k) {          // recompute from scratch\n                    p = min(p * nums[k], CAP);         // cap keeps p small and avoids overflow\n                    g = std::gcd(g, (long long)nums[k]);\n                    lc = std::lcm(lc, (long long)nums[k]); // at most 2520 for values <= 10\n                }\n                if (p == lc * g)                       // definition of product equivalent\n                    best = max(best, r - l + 1);\n            }\n        }\n        return best;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    vector<vector<int>> tests = {{1,2,1,2,1,1,1}, {2,3,4,5,6}, {1,2,3,1,4,5,1}};\n    vector<int> expected = {5, 3, 5};\n    for (size_t i = 0; i < tests.size(); ++i) {\n        Solution s;\n        int out = s.maxLength(tests[i]);\n        cout << \"Example \" << i + 1 << \": output = \" << out << \", expected = \" << expected[i] << \"\\n\";\n    }\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

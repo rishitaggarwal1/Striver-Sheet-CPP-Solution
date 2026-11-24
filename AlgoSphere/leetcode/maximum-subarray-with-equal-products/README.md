@@ -220,7 +220,139 @@ Each prime 2, 3, 5, 7 may appear in at most one element of the window. Slide `r`
 4. If product == lcm*gcd, update the best length with r-l+1.
 5. Return the best length.
 
-**Complexity:** time `O(n^3)`, space `O(1)`. There are O(n^2) subarrays, and each is rescanned in O(n), which dominates. Only a few scalars are stored, apart from big-integer growth if you don't cap the product.
+**Pseudocode**
+
+```text
+ 1 │ function maxLength(nums):
+ 2 │   n ← length(nums)
+ 3 │   best ← 0
+ 4 │   CAP ← 1000000  // larger than any possible lcm*gcd (2520*10 = 25200)
+ 5 │   for l ← 0 to n-1:
+ 6 │     for r ← l to n-1:
+ 7 │       prod ← 1
+ 8 │       g ← 0  // gcd(0, x) = x, so 0 is the neutral start
+ 9 │       lc ← 1  // lcm(1, x) = x
+10 │       for k ← l to r:  // recompute everything from scratch
+11 │         prod ← min(prod * nums[k], CAP)  // cap so the product never overflows; a capped value can never match
+12 │         g ← gcd(g, nums[k])
+13 │         lc ← lcm(lc, nums[k])
+14 │       if prod = lc * g:
+15 │         best ← max(best, r - l + 1)
+16 │   return best
+```
+
+**Time complexity: `O(n^3)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Pair loops over (l, r) (lines 5-6) | n(n+1)/2 pairs | Every contiguous subarray is one (l, r) pair with l ≤ r. |
+| Inner walk over nums[l..r] (lines 10-13) | (r-l+1) iterations × O(log 10) per gcd/lcm | Product, gcd and lcm are rebuilt element by element for each subarray. With values at most 10, a gcd costs only a few steps. |
+| Check and update (lines 14-15) | n(n+1)/2 × O(1) | This is one comparison per subarray. |
+
+- **Adding it up:** Σ over all subarrays of their length = n(n+1)(n+2)/6 ≈ n^3/6 = O(n^3). The O(n^2) checks are dominated by this.
+- **At the maximum input:** n = 100 → 100·101·102/6 = 171,700 inner steps, which finishes instantly.
+
+**Space complexity: `O(1)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Scalars n, best, CAP, l, r, k, prod, g, lc (lines 2-13) | O(1) | Only a fixed number of counters and accumulators are kept, no matter how large n is. |
+
+- **Adding it up:** This is a constant number of variables, so O(1).
+- **Not counted:** The input array is not counted.
+
+**Dry run** on `nums = [1,2,1,2,1,1,1]`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 3 | n is 7 and best starts at 0. | `n = 7`<br>`best = 0`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` |
+| 2 | 4 | The cap is set to 10^6. Any product that hits it is far above the largest possible lcm*gcd, so it can never pass the check. | `CAP = 1000000` |
+| 3 | 13 | l=0, r=0: the walk covers only nums[0]=1, giving prod=1, g=1, lc=1. | `l = 0`<br>`r = 0`<br>`k = 0`<br>`prod = 1`<br>`g = 1`<br>`lc = 1`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→0, k→0) |
+| 4 | 15 | 1 = 1*1, so [1] is product equivalent and best becomes 1. | `best = 1`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→0) |
+| 5 | 15 | l=0, r=1: the walk over [1,2] gives prod=2, g=1, lc=2. Since 2 = 2*1, best becomes 2. | `best = 2`<br>`r = 1`<br>`k = 1`<br>`prod = 2`<br>`lc = 2`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→1) |
+| 6 | 15 | l=0, r=2: [1,2,1] gives prod=2, g=1, lc=2. It matches, so best becomes 3. | `best = 3`<br>`r = 2`<br>`k = 2`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→2) |
+| 7 | 13 | l=0, r=3: after k=3 the walk over [1,2,1,2] holds prod=4, g=1, lc=2. | `r = 3`<br>`k = 3`<br>`prod = 4`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→3, k→3) |
+| 8 | 14 | 4 ≠ 2*1, so this subarray is skipped. The remaining r=4..6 for l=0 also contain both 2s and fail the same way. | `nums = [1, 2, 1, 2, 1, 1, 1]` (l→0, r→3) |
+| 9 | 13 | l=1, r=1: the single element [2] gives prod=2, g=2, lc=2. | `l = 1`<br>`r = 1`<br>`k = 1`<br>`prod = 2`<br>`g = 2`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→1, r→1, k→1) |
+| 10 | 14 | 2 ≠ 2*2 = 4, so [2] alone is not product equivalent. The other subarrays for l=1 are never longer than 3 when they pass, so best stays 3. | `nums = [1, 2, 1, 2, 1, 1, 1]` (l→1, r→1) |
+| 11 | 13 | Skipping ahead to l=2, r=6: the walk over [1,2,1,1,1] ends with prod=2, g=1, lc=2. | `l = 2`<br>`r = 6`<br>`k = 6`<br>`g = 1`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→2, r→6, k→6) |
+| 12 | 15 | 2 = 2*1, so the check passes and best becomes max(3, 6-2+1) = 5. | `best = 5`<br>`nums = [1, 2, 1, 2, 1, 1, 1]` (l→2, r→6) |
+| 13 | 16 | The remaining starts l=3..6 can only make subarrays of length 4 or less, so best stays 5 and is returned. | `nums = [1, 2, 1, 2, 1, 1, 1]` |
+
+**Result:** 5. Every subarray was tested directly against the definition, and the longest one that passes is [1,2,1,1,1] (prod 2 = lcm 2 × gcd 1).
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    int maxLength(vector<int>& nums) {
+        int n = nums.size();
+        int best = 0;                       // longest product-equivalent length found so far
+        const long long CAP = 1000000;      // > max lcm*gcd (2520*10), so a capped product never matches
+        for (int l = 0; l < n; ++l) {       // every start index
+            for (int r = l; r < n; ++r) {   // every end index
+                long long p = 1;            // product of nums[l..r], capped
+                long long g = 0;            // gcd(0, x) = x, neutral start
+                long long lc = 1;           // lcm(1, x) = x, neutral start
+                for (int k = l; k <= r; ++k) {          // recompute from scratch
+                    p = min(p * nums[k], CAP);         // cap keeps p small and avoids overflow
+                    g = std::gcd(g, (long long)nums[k]);
+                    lc = std::lcm(lc, (long long)nums[k]); // at most 2520 for values <= 10
+                }
+                if (p == lc * g)                       // definition of product equivalent
+                    best = max(best, r - l + 1);
+            }
+        }
+        return best;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int maxLength(vector<int>& nums) {
+        int n = nums.size();
+        int best = 0;                       // longest product-equivalent length found so far
+        const long long CAP = 1000000;      // > max lcm*gcd (2520*10), so a capped product never matches
+        for (int l = 0; l < n; ++l) {       // every start index
+            for (int r = l; r < n; ++r) {   // every end index
+                long long p = 1;            // product of nums[l..r], capped
+                long long g = 0;            // gcd(0, x) = x, neutral start
+                long long lc = 1;           // lcm(1, x) = x, neutral start
+                for (int k = l; k <= r; ++k) {          // recompute from scratch
+                    p = min(p * nums[k], CAP);         // cap keeps p small and avoids overflow
+                    g = std::gcd(g, (long long)nums[k]);
+                    lc = std::lcm(lc, (long long)nums[k]); // at most 2520 for values <= 10
+                }
+                if (p == lc * g)                       // definition of product equivalent
+                    best = max(best, r - l + 1);
+            }
+        }
+        return best;
+    }
+};
+
+int main() {
+    vector<vector<int>> tests = {{1,2,1,2,1,1,1}, {2,3,4,5,6}, {1,2,3,1,4,5,1}};
+    vector<int> expected = {5, 3, 5};
+    for (size_t i = 0; i < tests.size(); ++i) {
+        Solution s;
+        int out = s.maxLength(tests[i]);
+        cout << "Example " << i + 1 << ": output = " << out << ", expected = " << expected[i] << "\n";
+    }
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** It wastes O(n) per subarray recomputing values that differ from the previous subarray by a single element. It also needs care to avoid overflow, and it would not scale past a few hundred elements.
 

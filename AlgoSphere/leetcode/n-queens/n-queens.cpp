@@ -2,15 +2,17 @@
  * Problem   : N-Queens (LeetCode, Hard)
  * Link      : https://leetcode.com/problems/n-queens/
  * Pattern   : Backtracking with constant-time conflict sets
- * Approach  : Brute force: Enumerate column permutations
- * Complexity: Time O(n! · n^2), Space O(n)
+ * Approach  : Optimal: Backtracking with column/diagonal sets
+ * Complexity: Time O(n!), Space O(n)
  *
- * Represent a board by cols[r], the column of the queen in row r. Rows and
- * columns are automatically distinct when cols is a permutation, so generate
- * all n! permutations. For each one, check every pair of rows i < j for a
- * diagonal clash: |cols[i] - cols[j]| == j - i. Permutations with no clash
- * are exactly the valid boards, so collecting them gives every distinct
- * solution.
+ * Keep three boolean arrays: colUsed[c], diag[r - c + n - 1] and anti[r +
+ * c]. All cells on one diagonal share the same r - c and all cells on one
+ * anti-diagonal share the same r + c, so a cell is attacked exactly when one
+ * of its three entries is true. Place a queen by setting the three entries,
+ * recurse, then clear them on return so the state again describes only rows
+ * 0..r-1. This invariant keeps every check O(1), and the search tree is the
+ * same as before, so correctness carries over. Bitmasks can replace the
+ * arrays for even tighter constant factors.
  *
  * Notes made with AlgoSphere by Rishit Aggarwal (https://github.com/rishitaggarwal1)
  */
@@ -20,12 +22,12 @@ using namespace std;
 
 string boardsToString(const vector<vector<string>>& b) {
     string out = "[";
-    for (size_t k = 0; k < b.size(); k++) {
-        if (k) out += ",";
+    for (size_t i = 0; i < b.size(); i++) {
+        if (i) out += ",";
         out += "[";
-        for (size_t r = 0; r < b[k].size(); r++) {
-            if (r) out += ",";
-            out += "\"" + b[k][r] + "\"";
+        for (size_t j = 0; j < b[i].size(); j++) {
+            if (j) out += ",";
+            out += "\"" + b[i][j] + "\"";
         }
         out += "]";
     }
@@ -34,33 +36,43 @@ string boardsToString(const vector<vector<string>>& b) {
 
 class Solution {
 public:
-    vector<vector<string>> ans;
-    // Returns true if no two queens on this board share a diagonal.
-    // Rows and columns are already distinct because the board comes from a permutation.
-    bool check(vector<string> board, int n)
+    vector<vector<string>> ans;          // collected solutions
+    vector<bool> colUsed, diag, anti;    // attack flags for columns, diagonals, anti-diagonals
+
+    // O(1) check: is cell (r, c) attacked by a queen in rows 0..r-1?
+    bool valid(vector<string>& s, int r, int c)
     {
-        vector<int> cols(n);
-        for (int r = 0; r < n; r++)
-            cols[r] = (int)board[r].find('Q');          // recover the queen's column in row r
-        for (int i = 0; i < n - 1; i++)
-            for (int j = i + 1; j < n; j++)               // every pair of rows i < j
-                if (abs(cols[i] - cols[j]) == j - i)      // equal row and column gaps mean same diagonal
-                    return false;
-        return true;
+        int n = s.size();
+        return !colUsed[c] && !diag[r - c + n - 1] && !anti[r + c]; // r-c+n-1 shifts the diagonal id into [0, 2n-2]
     }
+
+    // place a queen in row r, given that rows 0..r-1 are already filled safely
+    void nqueen(vector<string>& s, int r, int n)
+    {
+        if (r == n)                      // all rows filled: s is a full solution
+        {
+            ans.push_back(s);            // store a copy of the board
+            return;
+        }
+        for (int c = 0; c < n; c++)
+        {
+            if (!valid(s, r, c)) continue;          // attacked: skip this column
+            colUsed[c] = diag[r - c + n - 1] = anti[r + c] = true; // claim column and both diagonals
+            s[r][c] = 'Q';
+            nqueen(s, r + 1, n);                    // fill the remaining rows
+            colUsed[c] = diag[r - c + n - 1] = anti[r + c] = false; // undo so state covers rows 0..r-1 only
+            s[r][c] = '.';
+        }
+    }
+
     vector<vector<string>> solveNQueens(int n) {
-        string st(n,'.');
-        vector<string> s(n,st);
-        vector<int> cols(n);
-        iota(cols.begin(), cols.end(), 0);                // smallest permutation 0,1,...,n-1
-        do {
-            for (int r = 0; r < n; r++) {
-                s[r] = st;                                // clear row r
-                s[r][cols[r]] = 'Q';                      // place row r's queen at cols[r]
-            }
-            if (check(s, n))                              // keep only boards with no diagonal clash
-                ans.push_back(s);
-        } while (next_permutation(cols.begin(), cols.end())); // visit all n! permutations
+        ans.clear();                                 // allow reuse of the same object
+        colUsed.assign(n, false);                    // one flag per column
+        diag.assign(2 * n - 1, false);               // 2n-1 diagonals (r-c constant)
+        anti.assign(2 * n - 1, false);               // 2n-1 anti-diagonals (r+c constant)
+        string s(n, '.');
+        vector<string> v(n, s);                      // empty n x n board
+        nqueen(v, 0, n);                             // start from row 0
         return ans;
     }
 };

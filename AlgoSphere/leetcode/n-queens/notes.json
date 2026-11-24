@@ -4,7 +4,7 @@
   "slug": "n-queens",
   "title": "N-Queens",
   "url": "https://leetcode.com/problems/n-queens/",
-  "updatedAt": "2026-11-24T08:41:43.508Z",
+  "updatedAt": "2026-11-24T08:43:56.371Z",
   "problem": {
     "difficulty": "Hard",
     "description": "The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.\n\nGiven an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.\n\nEach solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.\n\nExample 1:\n\nInput: n = 4\nOutput: [[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]\nExplanation: There exist two distinct solutions to the 4-queens puzzle as shown above\n\nExample 2:\n\nInput: n = 1\nOutput: [[\"Q\"]]\n\nConstraints:\n\n- 1 <= n <= 9"
@@ -831,7 +831,1690 @@
         "time": "O(n!) roughly",
         "space": "O(n) besides output",
         "complexity": "Running time is dominated by the number of nodes in the pruned search tree, which is bounded by n!, with O(1) work per candidate column plus O(n^2) to copy each found board. The extra memory is the three flag arrays of size O(n), the board, and the recursion depth `n`.",
-        "tradeoff": "No polynomial algorithm is known for listing all solutions, and the output itself can be large, so exponential search is unavoidable. This approach removes all redundant checking. The cost is careful bookkeeping: every flag set on the way down must be undone on the way back."
+        "tradeoff": "No polynomial algorithm is known for listing all solutions, and the output itself can be large, so exponential search is unavoidable. This approach removes all redundant checking. The cost is careful bookkeeping: every flag set on the way down must be undone on the way back.",
+        "deep": {
+          "pseudocode": [
+            "function solveNQueens(n):",
+            "  colUsed ← array of n values, all false",
+            "  diag ← array of 2n−1 values, all false   // index r−c+n−1 names one diagonal",
+            "  anti ← array of 2n−1 values, all false   // index r+c names one anti-diagonal",
+            "  board ← n strings, each of n '.' characters",
+            "  result ← empty list",
+            "  place(0)   // fill rows starting from row 0",
+            "  return result",
+            "function place(r):",
+            "  if r = n:",
+            "    append a copy of board to result   // every row holds a safe queen",
+            "    return",
+            "  for c ← 0 to n−1:",
+            "    if colUsed[c] or diag[r−c+n−1] or anti[r+c]:   // O(1) attack test",
+            "      continue   // a queen in an earlier row attacks (r, c)",
+            "    colUsed[c] ← true; diag[r−c+n−1] ← true; anti[r+c] ← true",
+            "    board[r][c] ← 'Q'",
+            "    place(r+1)   // try to complete rows r+1..n−1",
+            "    colUsed[c] ← false; diag[r−c+n−1] ← false; anti[r+c] ← false   // undo: state again covers rows 0..r−1 only",
+            "    board[r][c] ← '.'"
+          ],
+          "time": {
+            "total": "O(n!)",
+            "parts": [
+              {
+                "part": "Recursive calls of place (lines 9-20)",
+                "cost": "at most about n·(n−1)·(n−2)·… ≈ n! partial placements",
+                "why": "Row r can use at most n−r columns that no earlier queen occupies, and diagonal pruning cuts far more branches."
+              },
+              {
+                "part": "Column loop inside each call (lines 13-20)",
+                "cost": "n iterations × O(1)",
+                "why": "Each candidate cell is tested with three array lookups instead of scanning the board."
+              },
+              {
+                "part": "Copying a solution (line 11)",
+                "cost": "S solutions × O(n^2)",
+                "why": "Each finished board has n strings of length n to copy."
+              },
+              {
+                "part": "Setup (lines 2-6)",
+                "cost": "O(n^2)",
+                "why": "Allocates the flag arrays and the n×n board once."
+              }
+            ],
+            "sum": "(number of calls ≈ n!) × n checks + S·n^2 copies + n^2 setup; the search term dominates, so it is roughly O(n!) (more precisely bounded by O(n·n!), and in practice much smaller because of diagonal pruning)",
+            "cases": "Every input explores the full search tree since all solutions are required, so there is no separate best case; cost depends only on n.",
+            "feel": "n = 9 → about 350 solutions and only tens of thousands of explored partial boards, which finishes in well under a millisecond",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Flag arrays colUsed, diag, anti (lines 2-4)",
+                "cost": "n + (2n−1) + (2n−1) = 5n−2 booleans",
+                "why": "One flag per column, per diagonal and per anti-diagonal."
+              },
+              {
+                "part": "Recursion stack (line 18)",
+                "cost": "depth n+1 × O(1) frame",
+                "why": "One call per row being filled, plus the final r = n call."
+              }
+            ],
+            "sum": "O(n) flags + O(n) stack = O(n)",
+            "cases": "",
+            "feel": "",
+            "note": "The result list (S boards of n^2 chars) is output and not counted. The single n×n scratch board has the same shape as one output entry and is counted with the output; if you count it as auxiliary, space is O(n^2)."
+          },
+          "dryRun": {
+            "input": "n = 4",
+            "steps": [
+              {
+                "line": 5,
+                "explain": "All flags start false: colUsed has 4 entries, diag and anti have 2·4−1 = 7 entries each. The board is empty, and then place(0) is called.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "anti": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "Row 0, column 0 is free, so we mark colUsed[0], diag[0−0+3]=diag[3] and anti[0+0]=anti[0], and put a queen at (0,0).",
+                "vars": {
+                  "n": "4",
+                  "r": "0",
+                  "c": "0"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {
+                      "c": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {
+                      "q": [
+                        0,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "In row 1, c=0 is blocked by colUsed[0]. Now c=1 has diag[1−1+3]=diag[3] true, so (1,1) is on the queen's diagonal and is skipped.",
+                "vars": {
+                  "n": "4",
+                  "r": "1",
+                  "c": "1"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {
+                      "c": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        1,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "c=2 in row 1: colUsed[2], diag[2] and anti[3] are all false, so the cell is safe. We set them and place a queen at (1,2).",
+                "vars": {
+                  "n": "4",
+                  "r": "1",
+                  "c": "2"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "F",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {
+                      "c": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        "Q",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {
+                      "q": [
+                        1,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "In row 2, c=0 and c=2 hit used columns and c=1 hits anti[3]. The last option, c=3, hits diag[2−3+3]=diag[2], so row 2 has no safe cell and place(2) returns.",
+                "vars": {
+                  "n": "4",
+                  "r": "2",
+                  "c": "3"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "F",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {
+                      "c": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      5
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        "Q",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        2,
+                        3
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 20,
+                "explain": "Back in row 1, we undo the queen at (1,2) by clearing colUsed[2], diag[2] and anti[3]. The state again describes only row 0.",
+                "vars": {
+                  "n": "4",
+                  "r": "1",
+                  "c": "2"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {
+                      "c": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        1,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "Row 1, c=3 is safe because colUsed[3], diag[1] and anti[4] are false. A queen goes on (1,3).",
+                "vars": {
+                  "n": "4",
+                  "r": "1",
+                  "c": "3"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "T"
+                    ],
+                    "pointers": {
+                      "c": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "F",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "Q"
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {
+                      "q": [
+                        1,
+                        3
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        3
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "Row 2: c=0 is a used column, and c=1 is safe (colUsed[1], diag[4] and anti[3] are false). A queen goes on (2,1).",
+                "vars": {
+                  "n": "4",
+                  "r": "2",
+                  "c": "1"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "T",
+                      "F",
+                      "T"
+                    ],
+                    "pointers": {
+                      "c": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "Q"
+                      ],
+                      [
+                        ".",
+                        "Q",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {
+                      "q": [
+                        2,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "In row 3, columns 0, 1 and 3 are used. c=2 hits diag[3−2+3]=diag[4], set by the queen at (2,1), so this branch is another dead end.",
+                "vars": {
+                  "n": "4",
+                  "r": "3",
+                  "c": "2"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "T",
+                      "F",
+                      "T"
+                    ],
+                    "pointers": {
+                      "c": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "T",
+                      "F",
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      5
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "Q"
+                      ],
+                      [
+                        ".",
+                        "Q",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        3,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 20,
+                "explain": "Several undos happen here (skipped): (2,1) is cleared, (2,2) and (2,3) fail, (1,3) is cleared and row 1 runs out of columns. Finally (0,0) is cleared, so a queen at (0,0) leads to no solution and every flag is false again.",
+                "vars": {
+                  "n": "4",
+                  "r": "0",
+                  "c": "0"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {
+                      "c": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "Row 0, c=1 is tried next. We mark colUsed[1], diag[0−1+3]=diag[2] and anti[1], and place a queen at (0,1).",
+                "vars": {
+                  "n": "4",
+                  "r": "0",
+                  "c": "1"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {
+                      "c": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        ".",
+                        "Q",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {
+                      "q": [
+                        0,
+                        1
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "Row 1: c=0 hits anti[1], c=1 is a used column and c=2 hits diag[2]. c=3 is safe (diag[1] and anti[4] are free), so a queen goes on (1,3).",
+                "vars": {
+                  "n": "4",
+                  "r": "1",
+                  "c": "3"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "T"
+                    ],
+                    "pointers": {
+                      "c": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "F",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        ".",
+                        "Q",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "Q"
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {
+                      "q": [
+                        1,
+                        3
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        1,
+                        3
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "Row 2, c=0 is safe because colUsed[0], diag[5] and anti[2] are false. A queen goes on (2,0).",
+                "vars": {
+                  "n": "4",
+                  "r": "2",
+                  "c": "0"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "T",
+                      "F",
+                      "T"
+                    ],
+                    "pointers": {
+                      "c": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "F",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      5
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        ".",
+                        "Q",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "Q"
+                      ],
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {
+                      "q": [
+                        2,
+                        0
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        2,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "Row 3: columns 0 and 1 are used, and c=2 has colUsed[2], diag[4] and anti[5] all false. A queen goes on (3,2).",
+                "vars": {
+                  "n": "4",
+                  "r": "3",
+                  "c": "2"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {
+                      "c": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "T",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      4
+                    ]
+                  },
+                  "anti": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "T",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      5
+                    ]
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        ".",
+                        "Q",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "Q"
+                      ],
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        "Q",
+                        "."
+                      ]
+                    ],
+                    "pointers": {
+                      "q": [
+                        3,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        3,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "place(4) is called with r = n, so all 4 rows hold mutually safe queens. The board is copied into result.",
+                "vars": {
+                  "n": "4",
+                  "r": "4"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "T",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "T",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "anti": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F",
+                      "T",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        ".",
+                        "Q",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "Q"
+                      ],
+                      [
+                        "Q",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        "Q",
+                        "."
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      [
+                        0,
+                        1
+                      ],
+                      [
+                        1,
+                        3
+                      ],
+                      [
+                        2,
+                        0
+                      ],
+                      [
+                        3,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": [
+                      "[.Q.., ...Q, Q..., ..Q.]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 8,
+                "explain": "The rest of the search runs the same way (skipped). Starting from (0,2) it finds the mirror solution, and (0,3) finds nothing. Every flag is cleared on the way back, and result holds 2 boards.",
+                "vars": {
+                  "n": "4"
+                },
+                "arrays": {
+                  "colUsed": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "diag": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "anti": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "board": {
+                    "values": [
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ],
+                      [
+                        ".",
+                        ".",
+                        ".",
+                        "."
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": [
+                      "[.Q.., ...Q, Q..., ..Q.]",
+                      "[..Q., Q..., ...Q, .Q..]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "[[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]. Every column choice in every row was tried, and a branch was cut only when a flag proved an attack, so all valid boards and only valid boards were recorded."
+          },
+          "solution": "class Solution {\npublic:\n    vector<vector<string>> ans;          // collected solutions\n    vector<bool> colUsed, diag, anti;    // attack flags for columns, diagonals, anti-diagonals\n\n    // O(1) check: is cell (r, c) attacked by a queen in rows 0..r-1?\n    bool valid(vector<string>& s, int r, int c)\n    {\n        int n = s.size();\n        return !colUsed[c] && !diag[r - c + n - 1] && !anti[r + c]; // r-c+n-1 shifts the diagonal id into [0, 2n-2]\n    }\n\n    // place a queen in row r, given that rows 0..r-1 are already filled safely\n    void nqueen(vector<string>& s, int r, int n)\n    {\n        if (r == n)                      // all rows filled: s is a full solution\n        {\n            ans.push_back(s);            // store a copy of the board\n            return;\n        }\n        for (int c = 0; c < n; c++)\n        {\n            if (!valid(s, r, c)) continue;          // attacked: skip this column\n            colUsed[c] = diag[r - c + n - 1] = anti[r + c] = true; // claim column and both diagonals\n            s[r][c] = 'Q';\n            nqueen(s, r + 1, n);                    // fill the remaining rows\n            colUsed[c] = diag[r - c + n - 1] = anti[r + c] = false; // undo so state covers rows 0..r-1 only\n            s[r][c] = '.';\n        }\n    }\n\n    vector<vector<string>> solveNQueens(int n) {\n        ans.clear();                                 // allow reuse of the same object\n        colUsed.assign(n, false);                    // one flag per column\n        diag.assign(2 * n - 1, false);               // 2n-1 diagonals (r-c constant)\n        anti.assign(2 * n - 1, false);               // 2n-1 anti-diagonals (r+c constant)\n        string s(n, '.');\n        vector<string> v(n, s);                      // empty n x n board\n        nqueen(v, 0, n);                             // start from row 0\n        return ans;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;\n\nstring boardsToString(const vector<vector<string>>& b) {\n    string out = \"[\";\n    for (size_t i = 0; i < b.size(); i++) {\n        if (i) out += \",\";\n        out += \"[\";\n        for (size_t j = 0; j < b[i].size(); j++) {\n            if (j) out += \",\";\n            out += \"\\\"\" + b[i][j] + \"\\\"\";\n        }\n        out += \"]\";\n    }\n    return out + \"]\";\n}",
+          "main": "int main() {\n    {\n        Solution sol;\n        auto res = sol.solveNQueens(4);\n        cout << \"n = 4\\nOutput:   \" << boardsToString(res) << \"\\n\";\n        cout << \"Expected: [[\\\".Q..\\\",\\\"...Q\\\",\\\"Q...\\\",\\\"..Q.\\\"],[\\\"..Q.\\\",\\\"Q...\\\",\\\"...Q\\\",\\\".Q..\\\"]]\\n\\n\";\n    }\n    {\n        Solution sol;\n        auto res = sol.solveNQueens(1);\n        cout << \"n = 1\\nOutput:   \" << boardsToString(res) << \"\\n\";\n        cout << \"Expected: [[\\\"Q\\\"]]\\n\";\n    }\n    return 0;\n}"
+        }
       }
     ],
     "mistakes": [

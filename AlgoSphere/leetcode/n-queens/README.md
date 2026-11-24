@@ -407,7 +407,206 @@ int main() {
 5. Recurse on row r+1.
 6. Clear the three flags and reset (r, c) to '.' before trying the next column.
 
-**Complexity:** time `O(n!) roughly`, space `O(n) besides output`. Running time is dominated by the number of nodes in the pruned search tree, which is bounded by n!, with O(1) work per candidate column plus O(n^2) to copy each found board. The extra memory is the three flag arrays of size O(n), the board, and the recursion depth `n`.
+**Pseudocode**
+
+```text
+ 1 │ function solveNQueens(n):
+ 2 │   colUsed ← array of n values, all false
+ 3 │   diag ← array of 2n−1 values, all false   // index r−c+n−1 names one diagonal
+ 4 │   anti ← array of 2n−1 values, all false   // index r+c names one anti-diagonal
+ 5 │   board ← n strings, each of n '.' characters
+ 6 │   result ← empty list
+ 7 │   place(0)   // fill rows starting from row 0
+ 8 │   return result
+ 9 │ function place(r):
+10 │   if r = n:
+11 │     append a copy of board to result   // every row holds a safe queen
+12 │     return
+13 │   for c ← 0 to n−1:
+14 │     if colUsed[c] or diag[r−c+n−1] or anti[r+c]:   // O(1) attack test
+15 │       continue   // a queen in an earlier row attacks (r, c)
+16 │     colUsed[c] ← true; diag[r−c+n−1] ← true; anti[r+c] ← true
+17 │     board[r][c] ← 'Q'
+18 │     place(r+1)   // try to complete rows r+1..n−1
+19 │     colUsed[c] ← false; diag[r−c+n−1] ← false; anti[r+c] ← false   // undo: state again covers rows 0..r−1 only
+20 │     board[r][c] ← '.'
+```
+
+**Time complexity: `O(n!)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Recursive calls of place (lines 9-20) | at most about n·(n−1)·(n−2)·… ≈ n! partial placements | Row r can use at most n−r columns that no earlier queen occupies, and diagonal pruning cuts far more branches. |
+| Column loop inside each call (lines 13-20) | n iterations × O(1) | Each candidate cell is tested with three array lookups instead of scanning the board. |
+| Copying a solution (line 11) | S solutions × O(n^2) | Each finished board has n strings of length n to copy. |
+| Setup (lines 2-6) | O(n^2) | Allocates the flag arrays and the n×n board once. |
+
+- **Adding it up:** (number of calls ≈ n!) × n checks + S·n^2 copies + n^2 setup; the search term dominates, so it is roughly O(n!) (more precisely bounded by O(n·n!), and in practice much smaller because of diagonal pruning)
+- **Best vs worst case:** Every input explores the full search tree since all solutions are required, so there is no separate best case; cost depends only on n.
+- **At the maximum input:** n = 9 → about 350 solutions and only tens of thousands of explored partial boards, which finishes in well under a millisecond
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Flag arrays colUsed, diag, anti (lines 2-4) | n + (2n−1) + (2n−1) = 5n−2 booleans | One flag per column, per diagonal and per anti-diagonal. |
+| Recursion stack (line 18) | depth n+1 × O(1) frame | One call per row being filled, plus the final r = n call. |
+
+- **Adding it up:** O(n) flags + O(n) stack = O(n)
+- **Not counted:** The result list (S boards of n^2 chars) is output and not counted. The single n×n scratch board has the same shape as one output entry and is counted with the output; if you count it as auxiliary, space is O(n^2).
+
+**Dry run** on `n = 4`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 5 | All flags start false: colUsed has 4 entries, diag and anti have 2·4−1 = 7 entries each. The board is empty, and then place(0) is called. | `n = 4`<br>`colUsed = [F, F, F, F]`<br>`diag = [F, F, F, F, F, F, F]`<br>`anti = [F, F, F, F, F, F, F]`<br>`board = 4×4 table: [., ., ., .] [., ., ., .] [., ., ., .] [., ., ., .]`<br>`result = []` |
+| 2 | 17 | Row 0, column 0 is free, so we mark colUsed[0], diag[0−0+3]=diag[3] and anti[0+0]=anti[0], and put a queen at (0,0). | `r = 0`<br>`c = 0`<br>`colUsed = [T, F, F, F]` (c→0)<br>`diag = [F, F, F, T, F, F, F]`<br>`anti = [T, F, F, F, F, F, F]`<br>`board = 4×4 table: [Q, ., ., .] [., ., ., .] [., ., ., .] [., ., ., .]` (q→[0,0]) |
+| 3 | 14 | In row 1, c=0 is blocked by colUsed[0]. Now c=1 has diag[1−1+3]=diag[3] true, so (1,1) is on the queen's diagonal and is skipped. | `r = 1`<br>`c = 1`<br>`colUsed = [T, F, F, F]` (c→1)<br>`board = 4×4 table: [Q, ., ., .] [., ., ., .] [., ., ., .] [., ., ., .]` |
+| 4 | 17 | c=2 in row 1: colUsed[2], diag[2] and anti[3] are all false, so the cell is safe. We set them and place a queen at (1,2). | `c = 2`<br>`colUsed = [T, F, T, F]` (c→2)<br>`diag = [F, F, T, T, F, F, F]`<br>`anti = [T, F, F, T, F, F, F]`<br>`board = 4×4 table: [Q, ., ., .] [., ., Q, .] [., ., ., .] [., ., ., .]` (q→[1,2]) |
+| 5 | 14 | In row 2, c=0 and c=2 hit used columns and c=1 hits anti[3]. The last option, c=3, hits diag[2−3+3]=diag[2], so row 2 has no safe cell and place(2) returns. | `r = 2`<br>`c = 3`<br>`colUsed = [T, F, T, F]` (c→3)<br>`board = 4×4 table: [Q, ., ., .] [., ., Q, .] [., ., ., .] [., ., ., .]` |
+| 6 | 20 | Back in row 1, we undo the queen at (1,2) by clearing colUsed[2], diag[2] and anti[3]. The state again describes only row 0. | `r = 1`<br>`c = 2`<br>`colUsed = [T, F, F, F]` (c→2)<br>`diag = [F, F, F, T, F, F, F]`<br>`anti = [T, F, F, F, F, F, F]`<br>`board = 4×4 table: [Q, ., ., .] [., ., ., .] [., ., ., .] [., ., ., .]` |
+| 7 | 17 | Row 1, c=3 is safe because colUsed[3], diag[1] and anti[4] are false. A queen goes on (1,3). | `c = 3`<br>`colUsed = [T, F, F, T]` (c→3)<br>`diag = [F, T, F, T, F, F, F]`<br>`anti = [T, F, F, F, T, F, F]`<br>`board = 4×4 table: [Q, ., ., .] [., ., ., Q] [., ., ., .] [., ., ., .]` (q→[1,3]) |
+| 8 | 17 | Row 2: c=0 is a used column, and c=1 is safe (colUsed[1], diag[4] and anti[3] are false). A queen goes on (2,1). | `r = 2`<br>`c = 1`<br>`colUsed = [T, T, F, T]` (c→1)<br>`diag = [F, T, F, T, T, F, F]`<br>`anti = [T, F, F, T, T, F, F]`<br>`board = 4×4 table: [Q, ., ., .] [., ., ., Q] [., Q, ., .] [., ., ., .]` (q→[2,1]) |
+| 9 | 14 | In row 3, columns 0, 1 and 3 are used. c=2 hits diag[3−2+3]=diag[4], set by the queen at (2,1), so this branch is another dead end. | `r = 3`<br>`c = 2`<br>`colUsed = [T, T, F, T]` (c→2)<br>`board = 4×4 table: [Q, ., ., .] [., ., ., Q] [., Q, ., .] [., ., ., .]` |
+| 10 | 20 | Several undos happen here (skipped): (2,1) is cleared, (2,2) and (2,3) fail, (1,3) is cleared and row 1 runs out of columns. Finally (0,0) is cleared, so a queen at (0,0) leads to no solution and every flag is false again. | `r = 0`<br>`c = 0`<br>`colUsed = [F, F, F, F]` (c→0)<br>`diag = [F, F, F, F, F, F, F]`<br>`anti = [F, F, F, F, F, F, F]`<br>`board = 4×4 table: [., ., ., .] [., ., ., .] [., ., ., .] [., ., ., .]` |
+| 11 | 17 | Row 0, c=1 is tried next. We mark colUsed[1], diag[0−1+3]=diag[2] and anti[1], and place a queen at (0,1). | `c = 1`<br>`colUsed = [F, T, F, F]` (c→1)<br>`diag = [F, F, T, F, F, F, F]`<br>`anti = [F, T, F, F, F, F, F]`<br>`board = 4×4 table: [., Q, ., .] [., ., ., .] [., ., ., .] [., ., ., .]` (q→[0,1]) |
+| 12 | 17 | Row 1: c=0 hits anti[1], c=1 is a used column and c=2 hits diag[2]. c=3 is safe (diag[1] and anti[4] are free), so a queen goes on (1,3). | `r = 1`<br>`c = 3`<br>`colUsed = [F, T, F, T]` (c→3)<br>`diag = [F, T, T, F, F, F, F]`<br>`anti = [F, T, F, F, T, F, F]`<br>`board = 4×4 table: [., Q, ., .] [., ., ., Q] [., ., ., .] [., ., ., .]` (q→[1,3]) |
+| 13 | 17 | Row 2, c=0 is safe because colUsed[0], diag[5] and anti[2] are false. A queen goes on (2,0). | `r = 2`<br>`c = 0`<br>`colUsed = [T, T, F, T]` (c→0)<br>`diag = [F, T, T, F, F, T, F]`<br>`anti = [F, T, T, F, T, F, F]`<br>`board = 4×4 table: [., Q, ., .] [., ., ., Q] [Q, ., ., .] [., ., ., .]` (q→[2,0]) |
+| 14 | 17 | Row 3: columns 0 and 1 are used, and c=2 has colUsed[2], diag[4] and anti[5] all false. A queen goes on (3,2). | `r = 3`<br>`c = 2`<br>`colUsed = [T, T, T, T]` (c→2)<br>`diag = [F, T, T, F, T, T, F]`<br>`anti = [F, T, T, F, T, T, F]`<br>`board = 4×4 table: [., Q, ., .] [., ., ., Q] [Q, ., ., .] [., ., Q, .]` (q→[3,2]) |
+| 15 | 11 | place(4) is called with r = n, so all 4 rows hold mutually safe queens. The board is copied into result. | `r = 4`<br>`colUsed = [T, T, T, T]`<br>`board = 4×4 table: [., Q, ., .] [., ., ., Q] [Q, ., ., .] [., ., Q, .]`<br>`result = [[.Q.., ...Q, Q..., ..Q.]]` |
+| 16 | 8 | The rest of the search runs the same way (skipped). Starting from (0,2) it finds the mirror solution, and (0,3) finds nothing. Every flag is cleared on the way back, and result holds 2 boards. | `colUsed = [F, F, F, F]`<br>`diag = [F, F, F, F, F, F, F]`<br>`anti = [F, F, F, F, F, F, F]`<br>`board = 4×4 table: [., ., ., .] [., ., ., .] [., ., ., .] [., ., ., .]`<br>`result = [[.Q.., ...Q, Q..., ..Q.], [..Q., Q..., ...Q, .Q..]]` |
+
+**Result:** [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]. Every column choice in every row was tried, and a branch was cut only when a flag proved an attack, so all valid boards and only valid boards were recorded.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    vector<vector<string>> ans;          // collected solutions
+    vector<bool> colUsed, diag, anti;    // attack flags for columns, diagonals, anti-diagonals
+
+    // O(1) check: is cell (r, c) attacked by a queen in rows 0..r-1?
+    bool valid(vector<string>& s, int r, int c)
+    {
+        int n = s.size();
+        return !colUsed[c] && !diag[r - c + n - 1] && !anti[r + c]; // r-c+n-1 shifts the diagonal id into [0, 2n-2]
+    }
+
+    // place a queen in row r, given that rows 0..r-1 are already filled safely
+    void nqueen(vector<string>& s, int r, int n)
+    {
+        if (r == n)                      // all rows filled: s is a full solution
+        {
+            ans.push_back(s);            // store a copy of the board
+            return;
+        }
+        for (int c = 0; c < n; c++)
+        {
+            if (!valid(s, r, c)) continue;          // attacked: skip this column
+            colUsed[c] = diag[r - c + n - 1] = anti[r + c] = true; // claim column and both diagonals
+            s[r][c] = 'Q';
+            nqueen(s, r + 1, n);                    // fill the remaining rows
+            colUsed[c] = diag[r - c + n - 1] = anti[r + c] = false; // undo so state covers rows 0..r-1 only
+            s[r][c] = '.';
+        }
+    }
+
+    vector<vector<string>> solveNQueens(int n) {
+        ans.clear();                                 // allow reuse of the same object
+        colUsed.assign(n, false);                    // one flag per column
+        diag.assign(2 * n - 1, false);               // 2n-1 diagonals (r-c constant)
+        anti.assign(2 * n - 1, false);               // 2n-1 anti-diagonals (r+c constant)
+        string s(n, '.');
+        vector<string> v(n, s);                      // empty n x n board
+        nqueen(v, 0, n);                             // start from row 0
+        return ans;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string boardsToString(const vector<vector<string>>& b) {
+    string out = "[";
+    for (size_t i = 0; i < b.size(); i++) {
+        if (i) out += ",";
+        out += "[";
+        for (size_t j = 0; j < b[i].size(); j++) {
+            if (j) out += ",";
+            out += "\"" + b[i][j] + "\"";
+        }
+        out += "]";
+    }
+    return out + "]";
+}
+
+class Solution {
+public:
+    vector<vector<string>> ans;          // collected solutions
+    vector<bool> colUsed, diag, anti;    // attack flags for columns, diagonals, anti-diagonals
+
+    // O(1) check: is cell (r, c) attacked by a queen in rows 0..r-1?
+    bool valid(vector<string>& s, int r, int c)
+    {
+        int n = s.size();
+        return !colUsed[c] && !diag[r - c + n - 1] && !anti[r + c]; // r-c+n-1 shifts the diagonal id into [0, 2n-2]
+    }
+
+    // place a queen in row r, given that rows 0..r-1 are already filled safely
+    void nqueen(vector<string>& s, int r, int n)
+    {
+        if (r == n)                      // all rows filled: s is a full solution
+        {
+            ans.push_back(s);            // store a copy of the board
+            return;
+        }
+        for (int c = 0; c < n; c++)
+        {
+            if (!valid(s, r, c)) continue;          // attacked: skip this column
+            colUsed[c] = diag[r - c + n - 1] = anti[r + c] = true; // claim column and both diagonals
+            s[r][c] = 'Q';
+            nqueen(s, r + 1, n);                    // fill the remaining rows
+            colUsed[c] = diag[r - c + n - 1] = anti[r + c] = false; // undo so state covers rows 0..r-1 only
+            s[r][c] = '.';
+        }
+    }
+
+    vector<vector<string>> solveNQueens(int n) {
+        ans.clear();                                 // allow reuse of the same object
+        colUsed.assign(n, false);                    // one flag per column
+        diag.assign(2 * n - 1, false);               // 2n-1 diagonals (r-c constant)
+        anti.assign(2 * n - 1, false);               // 2n-1 anti-diagonals (r+c constant)
+        string s(n, '.');
+        vector<string> v(n, s);                      // empty n x n board
+        nqueen(v, 0, n);                             // start from row 0
+        return ans;
+    }
+};
+
+int main() {
+    {
+        Solution sol;
+        auto res = sol.solveNQueens(4);
+        cout << "n = 4\nOutput:   " << boardsToString(res) << "\n";
+        cout << "Expected: [[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]\n\n";
+    }
+    {
+        Solution sol;
+        auto res = sol.solveNQueens(1);
+        cout << "n = 1\nOutput:   " << boardsToString(res) << "\n";
+        cout << "Expected: [[\"Q\"]]\n";
+    }
+    return 0;
+}
+```
+
+</details>
 
 **Why this is the best:** No polynomial algorithm is known for listing all solutions, and the output itself can be large, so exponential search is unavoidable. This approach removes all redundant checking. The cost is careful bookkeeping: every flag set on the way down must be undone on the way back.
 

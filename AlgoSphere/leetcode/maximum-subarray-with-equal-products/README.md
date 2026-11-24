@@ -1,10 +1,10 @@
 # Maximum Subarray With Equal Products
 
-**LeetCode** · **Easy** · [Open the problem](https://leetcode.com/problems/maximum-subarray-with-equal-products/) · Pattern: **Prime-exponent reasoning + sliding window**
+**LeetCode** · **Easy** · [Open the problem](https://leetcode.com/problems/maximum-subarray-with-equal-products/) · Pattern: **Prime-exponent reasoning + sliding window** · ✅ Solved in C++
 
 > Find the longest contiguous subarray of `nums` whose product equals its LCM times its GCD.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -391,6 +391,46 @@ int main() {
 **Complexity:** time `O(n)`, space `O(1)`. Each index enters and leaves the window at most once, and each step checks only 4 primes, so the total is linear. Memory is a fixed array of 4 counters.
 
 **Why this is the best:** Every element must be read once, so O(n) cannot be beaten. The cost is the extra mathematical step (pairwise-coprime equivalence plus the special case for length 2) that you must justify yourself.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 1 of 8 | 2026-11-24 |
+
+For comparison, the optimal approach (Sliding window over primes 2,3,5,7) runs in `O(n)` time and `O(1)` space.
+
+```cpp
+class Solution {
+public:
+    int gcd(long long a, long long b)
+    {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+    int maxLength(vector<int>& nums) {
+        int n = nums.size();
+        long long prod = nums[0];
+        int l = 0, r= 1;
+        int ans = 2;
+        while(r<n)
+        {
+            if(gcd(prod,nums[r])==1)
+            {
+                prod = prod*nums[r];
+                r++;
+                if(ans<r-l)
+                    ans= r-l;
+            }
+            else
+            {
+                prod=prod/nums[l];
+                l++;
+            }
+        }
+        return ans;
+    }
+};
+```
 
 ## Test cases
 

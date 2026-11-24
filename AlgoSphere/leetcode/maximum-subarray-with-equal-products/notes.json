@@ -4,7 +4,7 @@
   "slug": "maximum-subarray-with-equal-products",
   "title": "Maximum Subarray With Equal Products",
   "url": "https://leetcode.com/problems/maximum-subarray-with-equal-products/",
-  "updatedAt": "2026-11-24T07:00:47.854Z",
+  "updatedAt": "2026-11-24T07:06:57.004Z",
   "problem": {
     "difficulty": "Easy",
     "description": "You are given an array of positive integers nums.\n\nAn array arr is called product equivalent if prod(arr) == lcm(arr) * gcd(arr), where:\n\n- prod(arr) is the product of all elements of arr.\n\n- gcd(arr) is the GCD of all elements of arr.\n\n- lcm(arr) is the LCM of all elements of arr.\n\nReturn the length of the longest product equivalent subarray of nums.\n\nExample 1:\n\nInput: nums = [1,2,1,2,1,1,1]\n\nOutput: 5\n\nExplanation:\n\nThe longest product equivalent subarray is [1, 2, 1, 1, 1], where prod([1, 2, 1, 1, 1]) = 2, gcd([1, 2, 1, 1, 1]) = 1, and lcm([1, 2, 1, 1, 1]) = 2.\n\nExample 2:\n\nInput: nums = [2,3,4,5,6]\n\nOutput: 3\n\nExplanation:\n\nThe longest product equivalent subarray is [3, 4, 5].\n\nExample 3:\n\nInput: nums = [1,2,3,1,4,5,1]\n\nOutput: 5\n\nConstraints:\n\n- 2 <= nums.length <= 100\n\n- 1 <= nums[i] <= 10"
@@ -858,5 +858,20 @@
       "You saw that the property is monotone (a sub-window of a valid window is valid), which is what makes the two-pointer approach valid."
     ]
   },
-  "reviewFor": "class Solution {\npublic:\n    int gcd(long long a, long long b)\n    {\n        return b == 0 ? a : gcd(b, a % b);\n    }\n    int maxLength(vector<int>& nums) {\n        int n = nums.size();\n        long long prod = nums[0];\n        int l = 0, r= 1;\n        int ans = 2;\n        while(r<n)\n        {\n            if(gcd(prod,nums[r])==1)\n            {\n                prod = prod*nums[r];\n                r++;\n                if(ans<r-l+1)\n                    ans= r-l;\n            }\n            else\n            {\n                prod=prod/nums[l];\n                l++;\n                if(l==r)\n                    r++;\n            }\n        }\n        return ans;\n    }\n};"
+  "reviewFor": "class Solution {\npublic:\n    int gcd(long long a, long long b)\n    {\n        return b == 0 ? a : gcd(b, a % b);\n    }\n    int maxLength(vector<int>& nums) {\n        int n = nums.size();\n        long long prod = nums[0];\n        int l = 0, r= 1;\n        int ans = 2;\n        while(r<n)\n        {\n            if(gcd(prod,nums[r])==1)\n            {\n                prod = prod*nums[r];\n                r++;\n                if(ans<r-l+1)\n                    ans= r-l;\n            }\n            else\n            {\n                prod=prod/nums[l];\n                l++;\n                if(l==r)\n                    r++;\n            }\n        }\n        return ans;\n    }\n};",
+  "mySolutions": [
+    {
+      "code": "class Solution {\npublic:\n    int gcd(long long a, long long b)\n    {\n        return b == 0 ? a : gcd(b, a % b);\n    }\n    int maxLength(vector<int>& nums) {\n        int n = nums.size();\n        long long prod = nums[0];\n        int l = 0, r= 1;\n        int ans = 2;\n        while(r<n)\n        {\n            if(gcd(prod,nums[r])==1)\n            {\n                prod = prod*nums[r];\n                r++;\n                if(ans<r-l)\n                    ans= r-l;\n            }\n            else\n            {\n                prod=prod/nums[l];\n                l++;\n            }\n        }\n        return ans;\n    }\n};",
+      "lang": "C++",
+      "runtime": "",
+      "memory": "",
+      "runtimePercentile": null,
+      "memoryPercentile": null,
+      "passed": "",
+      "attempts": 1,
+      "hintsUsed": 1,
+      "acceptedAt": "2026-11-24T07:06:54.417Z",
+      "platform": "LeetCode"
+    }
+  ]
 }

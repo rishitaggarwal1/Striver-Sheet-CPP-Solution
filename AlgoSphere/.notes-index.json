@@ -307,7 +307,10 @@
     "space": "O(1)",
     "dir": "leetcode/maximum-subarray-with-equal-products",
     "solution": "leetcode/maximum-subarray-with-equal-products/maximum-subarray-with-equal-products.cpp",
-    "mine": null,
-    "updatedAt": "2026-11-24T07:00:47.854Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/maximum-subarray-with-equal-products/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-24T07:06:57.004Z"
   }
 }

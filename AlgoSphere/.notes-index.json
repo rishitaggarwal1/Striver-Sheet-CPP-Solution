@@ -315,5 +315,18 @@
       "path": "leetcode/maximum-subarray-with-equal-products/my-solution.cpp"
     },
     "updatedAt": "2026-11-24T07:09:51.319Z"
+  },
+  "leetcode/sudoku-solver": {
+    "title": "Sudoku Solver",
+    "site": "leetcode",
+    "slug": "sudoku-solver",
+    "difficulty": "Hard",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/sudoku-solver",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-24T10:02:17.390Z"
   }
 }

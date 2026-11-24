@@ -2,7 +2,7 @@
 
 Problem-by-problem notes. Each folder walks through one problem: progressive hints, the intuition behind it, every approach from brute force to optimal with a complexity breakdown and a step-by-step dry run, a commented C++ solution, and test cases.
 
-**23 problems** · 6 solved · Easy 4 · Medium 13 · Hard 6 · 18 patterns
+**24 problems** · 6 solved · Easy 4 · Medium 13 · Hard 7 · 18 patterns
 
 **How to use these notes:** try the problem first, then open the hints one at a time. Read the intuition and the approaches only after you've made an attempt.
 
@@ -27,10 +27,11 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 17 | [Network Delay Time](leetcode/network-delay-time/) | LeetCode | Medium | Single-source shortest paths (Dijkstra) | `O(E log E), i.e. O(E log n)` time, `O(n + E)` space | [C++](leetcode/network-delay-time/network-delay-time.cpp) | ✅ [C++](leetcode/network-delay-time/my-solution.cpp) |
 | 18 | [Product of the Last K Numbers](leetcode/product-of-the-last-k-numbers/) | LeetCode | Medium | Prefix products reset at zero | `O(1) per add and getProduct (amortised for append)` time, `O(n)` space | [C++](leetcode/product-of-the-last-k-numbers/product-of-the-last-k-numbers.cpp) | ✅ [C++](leetcode/product-of-the-last-k-numbers/my-solution.cpp) |
 | 19 | [Rotate Array](leetcode/rotate-array/) | LeetCode | Medium | Array reversal (three reverses) | `O(n)` time, `O(1)` space |   | ✅ [C++](leetcode/rotate-array/my-solution.cpp) |
-| 20 | [Triangle](leetcode/triangle/) | LeetCode | Medium | 2D grid DP on a triangle, filled bottom-up | `O(n^2)` time, `O(n)` space | [C++](leetcode/triangle/triangle.cpp) |   |
-| 21 | [Unique Paths](leetcode/unique-paths/) | LeetCode | Medium | Grid DP for counting paths, which collapses to a binomial coefficient | `O(min(m, n))` time, `O(1)` space | [C++](leetcode/unique-paths/unique-paths.cpp) |   |
-| 22 | [Unique Paths II](leetcode/unique-paths-ii/) | LeetCode | Medium | 2D grid DP (counting paths) | `O(m·n)` time, `O(n)` space | [C++](leetcode/unique-paths-ii/unique-paths-ii.cpp) |   |
-| 23 | [Zigzag Conversion](leetcode/zigzag-conversion/) | LeetCode | Medium | Simulation, then periodic index arithmetic | `O(n)` time, `O(1) besides the output` space | [C++](leetcode/zigzag-conversion/zigzag-conversion.cpp) |   |
+| 20 | [Sudoku Solver](leetcode/sudoku-solver/) | LeetCode | Hard |   |   |   |   |
+| 21 | [Triangle](leetcode/triangle/) | LeetCode | Medium | 2D grid DP on a triangle, filled bottom-up | `O(n^2)` time, `O(n)` space | [C++](leetcode/triangle/triangle.cpp) |   |
+| 22 | [Unique Paths](leetcode/unique-paths/) | LeetCode | Medium | Grid DP for counting paths, which collapses to a binomial coefficient | `O(min(m, n))` time, `O(1)` space | [C++](leetcode/unique-paths/unique-paths.cpp) |   |
+| 23 | [Unique Paths II](leetcode/unique-paths-ii/) | LeetCode | Medium | 2D grid DP (counting paths) | `O(m·n)` time, `O(n)` space | [C++](leetcode/unique-paths-ii/unique-paths-ii.cpp) |   |
+| 24 | [Zigzag Conversion](leetcode/zigzag-conversion/) | LeetCode | Medium | Simulation, then periodic index arithmetic | `O(n)` time, `O(1) besides the output` space | [C++](leetcode/zigzag-conversion/zigzag-conversion.cpp) |   |
 
 ---
 

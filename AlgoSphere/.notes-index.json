@@ -325,8 +325,8 @@
     "time": "Exponential worst case, but each node costs O(m) and in practice only a few hundred nodes are explored",
     "space": "O(m) recursion plus 27 integers",
     "dir": "leetcode/sudoku-solver",
-    "solution": "",
+    "solution": "leetcode/sudoku-solver/sudoku-solver.cpp",
     "mine": null,
-    "updatedAt": "2026-11-24T10:11:08.134Z"
+    "updatedAt": "2026-11-24T10:12:31.469Z"
   }
 }

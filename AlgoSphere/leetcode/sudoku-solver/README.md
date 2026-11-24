@@ -196,7 +196,194 @@ With masks, the used digits at `(r,c)` are `rows[r] | cols[c] | boxes[b]`. The f
 5. Otherwise restore board[r][c] = '.' and try the next digit.
 6. If all 9 digits fail, return false.
 
-**Complexity:** time `O(9^m · 27) where m is the number of empty cells`, space `O(m) recursion depth`. The running time is dominated by the size of the search tree. Each node also pays a 27-cell scan per digit tried, plus a rescan to find the next empty cell. The only extra memory is the recursion stack, at most 81 frames deep.
+**Pseudocode**
+
+```text
+ 1 │ function solve(board):  // returns true once every cell is filled legally
+ 2 │   for r from 0 to 8:
+ 3 │     for c from 0 to 8:
+ 4 │       if board[r][c] = '.':  // first empty cell in row-major order
+ 5 │         for d from '1' to '9':
+ 6 │           if isValid(board, r, c, d):
+ 7 │             board[r][c] ← d  // tentatively place d
+ 8 │             if solve(board) = true:  // try to finish the rest of the board
+ 9 │               return true  // success: propagate upward
+10 │             board[r][c] ← '.'  // undo the choice, try the next digit
+11 │         return false  // no digit fits here, so an earlier choice was wrong
+12 │   return true  // no empty cell left: the board is solved
+13 │ function isValid(board, r, c, d):
+14 │   br ← 3 · (r div 3)  // top row of the 3x3 box
+15 │   bc ← 3 · (c div 3)  // left column of the 3x3 box
+16 │   for k from 0 to 8:
+17 │     if board[r][k] = d: return false  // d already in row r
+18 │     if board[k][c] = d: return false  // d already in column c
+19 │     if board[br + k div 3][bc + k mod 3] = d: return false  // d already in the box
+20 │   return true
+21 │ function solveSudoku(board):
+22 │   solve(board)  // fills board in place
+```
+
+**Time complexity: `O(9^m · 27)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| isValid (lines 13-20) | 9 iterations × 3 cell reads = 27 | Each candidate digit is checked by rescanning its whole row, column and box on the board. |
+| Digit loop with recursion (lines 5-10) | up to 9 branches per empty cell, depth m → at most 9^m search nodes | Each of the m empty cells can try 9 digits, and every legal digit opens a new recursive branch. |
+| Empty-cell scan (lines 2-4) | ≤ 81 cells per call × O(1) | Every call rescans from the top-left to find the next '.', which is a constant amount of work per search node. |
+
+- **Adding it up:** At most 9^m digit attempts × 27 checks each, plus ≤ 81 scan steps per call. That gives O(9^m · 27 + 9^m · 81) = O(9^m · 27) up to a constant factor; the exponential search tree dominates.
+- **Best vs worst case:** Best case: a board where the first legal digit is always correct, giving about m · (81 + 9·27) steps. Worst case: a puzzle built so that many early guesses pass the local checks but fail deep in the search, which approaches the 9^m bound.
+- **At the maximum input:** m can be about 64. The 9^64 bound is astronomically large, but the row, column and box checks prune most branches, so typical LeetCode puzzles finish within milliseconds to a few hundred milliseconds.
+
+**Space complexity: `O(m)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Recursion stack (line 8) | depth ≤ m frames × O(1) each | Each frame fills exactly one empty cell and holds only r, c and d. |
+| isValid locals (lines 14-16) | O(1) | Only br, bc and k are stored; the scan reads the board directly. |
+
+- **Adding it up:** O(m) stack + O(1) locals = O(m), with m ≤ 81, so it is effectively constant.
+- **Not counted:** The 9x9 board is the input and is modified in place, so it is not counted.
+
+**Dry run** on `Example 1's solved board with board[0][2] and board[0][3] blanked: row 0 = [5,3,.,.,7,8,9,1,2]; rows 1-8 are the expected output.`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 4 | The scan passes (0,0)='5' and (0,1)='3', then finds (0,2)='.'. This is the first empty cell. | `depth = 1`<br>`r = 0`<br>`c = 2`<br>`board = 9×9 table: [5, 3, ., ., 7, 8, 9, 1, 2] [6, 7, 2, 1, 9, 5, 3, 4, 8] [1, 9, 8, 3, 4, 2, 5, 6, 7] [8, 5, 9, 7, 6, 1, 4, 2, 3] [4, 2, 6, 8, 5, 3, 7, 9, 1] [7, 1, 3, 9, 2, 4, 8, 5, 6] [9, 6, 1, 5, 3, 7, 2, 8, 4] [2, 8, 7, 4, 1, 9, 6, 3, 5] [3, 4, 5, 2, 8, 6, 1, 7, 9]` (rc→[0,2]) |
+| 2 | 6 | d='1': isValid scans and finds '1' in column 2 at row 6, so it returns false. | `d = 1` |
+| 3 | 6 | d='2' is rejected because column 2 has '2' at (1,2). d='3' is rejected because row 0 has '3' at (0,1). | `d = 3` |
+| 4 | 6 | d='4' appears nowhere in row 0, column 2 or the top-left box, so isValid returns true. | `d = 4` |
+| 5 | 7 | Write '4' into board[0][2] tentatively. | `board = 9×9 table: [5, 3, 4, ., 7, 8, 9, 1, 2] [6, 7, 2, 1, 9, 5, 3, 4, 8] [1, 9, 8, 3, 4, 2, 5, 6, 7] [8, 5, 9, 7, 6, 1, 4, 2, 3] [4, 2, 6, 8, 5, 3, 7, 9, 1] [7, 1, 3, 9, 2, 4, 8, 5, 6] [9, 6, 1, 5, 3, 7, 2, 8, 4] [2, 8, 7, 4, 1, 9, 6, 3, 5] [3, 4, 5, 2, 8, 6, 1, 7, 9]` (rc→[0,2]) |
+| 6 | 4 | Line 8 recurses (depth 2). The new call rescans from (0,0) and finds the next empty cell at (0,3). | `depth = 2`<br>`c = 3`<br>`board = 9×9 table: [5, 3, 4, ., 7, 8, 9, 1, 2] [6, 7, 2, 1, 9, 5, 3, 4, 8] [1, 9, 8, 3, 4, 2, 5, 6, 7] [8, 5, 9, 7, 6, 1, 4, 2, 3] [4, 2, 6, 8, 5, 3, 7, 9, 1] [7, 1, 3, 9, 2, 4, 8, 5, 6] [9, 6, 1, 5, 3, 7, 2, 8, 4] [2, 8, 7, 4, 1, 9, 6, 3, 5] [3, 4, 5, 2, 8, 6, 1, 7, 9]` (rc→[0,3]) |
+| 7 | 6 | Digits '1' to '5' are all rejected: '1' is in column 3 at (1,3), '2' at (0,8), '3' at (0,1), '4' at (0,2) (the digit just placed) and '5' at (0,0). The trace stops on d='5'. | `d = 5` |
+| 8 | 6 | d='6' is absent from row 0, column 3 and the top-middle box, so it is legal. | `d = 6` |
+| 9 | 7 | Write '6' into board[0][3]. | `board = 9×9 table: [5, 3, 4, 6, 7, 8, 9, 1, 2] [6, 7, 2, 1, 9, 5, 3, 4, 8] [1, 9, 8, 3, 4, 2, 5, 6, 7] [8, 5, 9, 7, 6, 1, 4, 2, 3] [4, 2, 6, 8, 5, 3, 7, 9, 1] [7, 1, 3, 9, 2, 4, 8, 5, 6] [9, 6, 1, 5, 3, 7, 2, 8, 4] [2, 8, 7, 4, 1, 9, 6, 3, 5] [3, 4, 5, 2, 8, 6, 1, 7, 9]` (rc→[0,3]) |
+| 10 | 12 | Line 8 recurses (depth 3). This call scans all 81 cells, finds no '.', and returns true. | `depth = 3`<br>`board = 9×9 table: [5, 3, 4, 6, 7, 8, 9, 1, 2] [6, 7, 2, 1, 9, 5, 3, 4, 8] [1, 9, 8, 3, 4, 2, 5, 6, 7] [8, 5, 9, 7, 6, 1, 4, 2, 3] [4, 2, 6, 8, 5, 3, 7, 9, 1] [7, 1, 3, 9, 2, 4, 8, 5, 6] [9, 6, 1, 5, 3, 7, 2, 8, 4] [2, 8, 7, 4, 1, 9, 6, 3, 5] [3, 4, 5, 2, 8, 6, 1, 7, 9]` |
+| 11 | 9 | Back at depth 2, solve returned true, so this frame returns true without undoing the '6'. | `depth = 2`<br>`r = 0`<br>`c = 3`<br>`d = 6`<br>`board = 9×9 table: [5, 3, 4, 6, 7, 8, 9, 1, 2] [6, 7, 2, 1, 9, 5, 3, 4, 8] [1, 9, 8, 3, 4, 2, 5, 6, 7] [8, 5, 9, 7, 6, 1, 4, 2, 3] [4, 2, 6, 8, 5, 3, 7, 9, 1] [7, 1, 3, 9, 2, 4, 8, 5, 6] [9, 6, 1, 5, 3, 7, 2, 8, 4] [2, 8, 7, 4, 1, 9, 6, 3, 5] [3, 4, 5, 2, 8, 6, 1, 7, 9]` (rc→[0,3]) |
+| 12 | 9 | Depth 1 also receives true and returns true, keeping the '4'. | `depth = 1`<br>`c = 2`<br>`d = 4`<br>`board = 9×9 table: [5, 3, 4, 6, 7, 8, 9, 1, 2] [6, 7, 2, 1, 9, 5, 3, 4, 8] [1, 9, 8, 3, 4, 2, 5, 6, 7] [8, 5, 9, 7, 6, 1, 4, 2, 3] [4, 2, 6, 8, 5, 3, 7, 9, 1] [7, 1, 3, 9, 2, 4, 8, 5, 6] [9, 6, 1, 5, 3, 7, 2, 8, 4] [2, 8, 7, 4, 1, 9, 6, 3, 5] [3, 4, 5, 2, 8, 6, 1, 7, 9]` (rc→[0,2]) |
+| 13 | 22 | solveSudoku finishes. The board now holds the filled grid, modified in place. | `board = 9×9 table: [5, 3, 4, 6, 7, 8, 9, 1, 2] [6, 7, 2, 1, 9, 5, 3, 4, 8] [1, 9, 8, 3, 4, 2, 5, 6, 7] [8, 5, 9, 7, 6, 1, 4, 2, 3] [4, 2, 6, 8, 5, 3, 7, 9, 1] [7, 1, 3, 9, 2, 4, 8, 5, 6] [9, 6, 1, 5, 3, 7, 2, 8, 4] [2, 8, 7, 4, 1, 9, 6, 3, 5] [3, 4, 5, 2, 8, 6, 1, 7, 9]` |
+
+**Result:** Row 0 becomes [5,3,4,6,7,8,9,1,2], matching Example 1's output. Every digit was placed only after passing the row, column and box checks, and the search tried digits in order until a full legal board was reached.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    // Check by rescanning the board whether digit d can go at (r, c)
+    bool isValid(vector<vector<char>>& board, int r, int c, char d) {
+        int br = 3 * (r / 3);              // top row of the 3x3 box
+        int bc = 3 * (c / 3);              // left column of the 3x3 box
+        for (int k = 0; k < 9; k++) {
+            if (board[r][k] == d) return false;                       // same row
+            if (board[k][c] == d) return false;                       // same column
+            if (board[br + k / 3][bc + k % 3] == d) return false;     // same box
+        }
+        return true;
+    }
+
+    // Fill the first empty cell, recurse, and backtrack on failure
+    bool solve(vector<vector<char>>& board) {
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (board[r][c] != '.') continue;      // only empty cells need a choice
+                for (char d = '1'; d <= '9'; d++) {
+                    if (!isValid(board, r, c, d)) continue;  // skip digits that clash
+                    board[r][c] = d;                   // tentatively place d
+                    if (solve(board)) return true;     // rest solved: keep it
+                    board[r][c] = '.';                 // undo and try the next digit
+                }
+                return false;                          // no digit fits: backtrack
+            }
+        }
+        return true;                                   // no empty cell left: solved
+    }
+
+    void solveSudoku(vector<vector<char>>& board) {
+        solve(board);                                  // board is filled in place
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    // Check by rescanning the board whether digit d can go at (r, c)
+    bool isValid(vector<vector<char>>& board, int r, int c, char d) {
+        int br = 3 * (r / 3);              // top row of the 3x3 box
+        int bc = 3 * (c / 3);              // left column of the 3x3 box
+        for (int k = 0; k < 9; k++) {
+            if (board[r][k] == d) return false;                       // same row
+            if (board[k][c] == d) return false;                       // same column
+            if (board[br + k / 3][bc + k % 3] == d) return false;     // same box
+        }
+        return true;
+    }
+
+    // Fill the first empty cell, recurse, and backtrack on failure
+    bool solve(vector<vector<char>>& board) {
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (board[r][c] != '.') continue;      // only empty cells need a choice
+                for (char d = '1'; d <= '9'; d++) {
+                    if (!isValid(board, r, c, d)) continue;  // skip digits that clash
+                    board[r][c] = d;                   // tentatively place d
+                    if (solve(board)) return true;     // rest solved: keep it
+                    board[r][c] = '.';                 // undo and try the next digit
+                }
+                return false;                          // no digit fits: backtrack
+            }
+        }
+        return true;                                   // no empty cell left: solved
+    }
+
+    void solveSudoku(vector<vector<char>>& board) {
+        solve(board);                                  // board is filled in place
+    }
+};
+
+int main() {
+    vector<vector<char>> board = {
+        {'5','3','.','.','7','.','.','.','.'},
+        {'6','.','.','1','9','5','.','.','.'},
+        {'.','9','8','.','.','.','.','6','.'},
+        {'8','.','.','.','6','.','.','.','3'},
+        {'4','.','.','8','.','3','.','.','1'},
+        {'7','.','.','.','2','.','.','.','6'},
+        {'.','6','.','.','.','.','2','8','.'},
+        {'.','.','.','4','1','9','.','.','5'},
+        {'.','.','.','.','8','.','.','7','9'}};
+    vector<vector<char>> expected = {
+        {'5','3','4','6','7','8','9','1','2'},
+        {'6','7','2','1','9','5','3','4','8'},
+        {'1','9','8','3','4','2','5','6','7'},
+        {'8','5','9','7','6','1','4','2','3'},
+        {'4','2','6','8','5','3','7','9','1'},
+        {'7','1','3','9','2','4','8','5','6'},
+        {'9','6','1','5','3','7','2','8','4'},
+        {'2','8','7','4','1','9','6','3','5'},
+        {'3','4','5','2','8','6','1','7','9'}};
+    Solution sol;
+    sol.solveSudoku(board);
+    cout << "Output            | Expected" << endl;
+    for (int i = 0; i < 9; i++) {
+        for (char ch : board[i]) cout << ch << ' ';
+        cout << "| ";
+        for (char ch : expected[i]) cout << ch << ' ';
+        cout << endl;
+    }
+    cout << (board == expected ? "MATCH" : "MISMATCH") << endl;
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** It works on typical puzzles, but every legality check repeats work that a few counters could remember. Adversarial puzzles built against row-major order can make it explore millions of nodes.
 

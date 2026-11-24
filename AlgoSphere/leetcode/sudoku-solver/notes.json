@@ -4,7 +4,7 @@
   "slug": "sudoku-solver",
   "title": "Sudoku Solver",
   "url": "https://leetcode.com/problems/sudoku-solver/",
-  "updatedAt": "2026-11-24T10:11:08.134Z",
+  "updatedAt": "2026-11-24T10:12:31.469Z",
   "problem": {
     "difficulty": "Hard",
     "description": "Write a program to solve a Sudoku puzzle by filling the empty cells.\n\nA sudoku solution must satisfy all of the following rules:\n\n- Each of the digits 1-9 must occur exactly once in each row.\n\n- Each of the digits 1-9 must occur exactly once in each column.\n\n- Each of the digits 1-9 must occur exactly once in each of the 9 3x3 sub-boxes of the grid.\n\nThe '.' character indicates empty cells.\n\nExample 1:\n\nInput: board = [[\"5\",\"3\",\".\",\".\",\"7\",\".\",\".\",\".\",\".\"],[\"6\",\".\",\".\",\"1\",\"9\",\"5\",\".\",\".\",\".\"],[\".\",\"9\",\"8\",\".\",\".\",\".\",\".\",\"6\",\".\"],[\"8\",\".\",\".\",\".\",\"6\",\".\",\".\",\".\",\"3\"],[\"4\",\".\",\".\",\"8\",\".\",\"3\",\".\",\".\",\"1\"],[\"7\",\".\",\".\",\".\",\"2\",\".\",\".\",\".\",\"6\"],[\".\",\"6\",\".\",\".\",\".\",\".\",\"2\",\"8\",\".\"],[\".\",\".\",\".\",\"4\",\"1\",\"9\",\".\",\".\",\"5\"],[\".\",\".\",\".\",\".\",\"8\",\".\",\".\",\"7\",\"9\"]]\nOutput: [[\"5\",\"3\",\"4\",\"6\",\"7\",\"8\",\"9\",\"1\",\"2\"],[\"6\",\"7\",\"2\",\"1\",\"9\",\"5\",\"3\",\"4\",\"8\"],[\"1\",\"9\",\"8\",\"3\",\"4\",\"2\",\"5\",\"6\",\"7\"],[\"8\",\"5\",\"9\",\"7\",\"6\",\"1\",\"4\",\"2\",\"3\"],[\"4\",\"2\",\"6\",\"8\",\"5\",\"3\",\"7\",\"9\",\"1\"],[\"7\",\"1\",\"3\",\"9\",\"2\",\"4\",\"8\",\"5\",\"6\"],[\"9\",\"6\",\"1\",\"5\",\"3\",\"7\",\"2\",\"8\",\"4\"],[\"2\",\"8\",\"7\",\"4\",\"1\",\"9\",\"6\",\"3\",\"5\"],[\"3\",\"4\",\"5\",\"2\",\"8\",\"6\",\"1\",\"7\",\"9\"]]\nExplanation: The input board is shown above and the only valid solution is shown below:\n\nConstraints:\n\n- board.length == 9\n\n- board[i].length == 9\n\n- board[i][j] is a digit or '.'.\n\n- It is guaranteed that the input board has only one solution."
@@ -128,7 +128,1770 @@
         "time": "O(9^m · 27) where m is the number of empty cells",
         "space": "O(m) recursion depth",
         "complexity": "The running time is dominated by the size of the search tree. Each node also pays a 27-cell scan per digit tried, plus a rescan to find the next empty cell. The only extra memory is the recursion stack, at most 81 frames deep.",
-        "tradeoff": "It works on typical puzzles, but every legality check repeats work that a few counters could remember. Adversarial puzzles built against row-major order can make it explore millions of nodes."
+        "tradeoff": "It works on typical puzzles, but every legality check repeats work that a few counters could remember. Adversarial puzzles built against row-major order can make it explore millions of nodes.",
+        "deep": {
+          "pseudocode": [
+            "function solve(board):  // returns true once every cell is filled legally",
+            "  for r from 0 to 8:",
+            "    for c from 0 to 8:",
+            "      if board[r][c] = '.':  // first empty cell in row-major order",
+            "        for d from '1' to '9':",
+            "          if isValid(board, r, c, d):",
+            "            board[r][c] ← d  // tentatively place d",
+            "            if solve(board) = true:  // try to finish the rest of the board",
+            "              return true  // success: propagate upward",
+            "            board[r][c] ← '.'  // undo the choice, try the next digit",
+            "        return false  // no digit fits here, so an earlier choice was wrong",
+            "  return true  // no empty cell left: the board is solved",
+            "function isValid(board, r, c, d):",
+            "  br ← 3 · (r div 3)  // top row of the 3x3 box",
+            "  bc ← 3 · (c div 3)  // left column of the 3x3 box",
+            "  for k from 0 to 8:",
+            "    if board[r][k] = d: return false  // d already in row r",
+            "    if board[k][c] = d: return false  // d already in column c",
+            "    if board[br + k div 3][bc + k mod 3] = d: return false  // d already in the box",
+            "  return true",
+            "function solveSudoku(board):",
+            "  solve(board)  // fills board in place"
+          ],
+          "time": {
+            "total": "O(9^m · 27)",
+            "parts": [
+              {
+                "part": "isValid (lines 13-20)",
+                "cost": "9 iterations × 3 cell reads = 27",
+                "why": "Each candidate digit is checked by rescanning its whole row, column and box on the board."
+              },
+              {
+                "part": "Digit loop with recursion (lines 5-10)",
+                "cost": "up to 9 branches per empty cell, depth m → at most 9^m search nodes",
+                "why": "Each of the m empty cells can try 9 digits, and every legal digit opens a new recursive branch."
+              },
+              {
+                "part": "Empty-cell scan (lines 2-4)",
+                "cost": "≤ 81 cells per call × O(1)",
+                "why": "Every call rescans from the top-left to find the next '.', which is a constant amount of work per search node."
+              }
+            ],
+            "sum": "At most 9^m digit attempts × 27 checks each, plus ≤ 81 scan steps per call. That gives O(9^m · 27 + 9^m · 81) = O(9^m · 27) up to a constant factor; the exponential search tree dominates.",
+            "cases": "Best case: a board where the first legal digit is always correct, giving about m · (81 + 9·27) steps. Worst case: a puzzle built so that many early guesses pass the local checks but fail deep in the search, which approaches the 9^m bound.",
+            "feel": "m can be about 64. The 9^64 bound is astronomically large, but the row, column and box checks prune most branches, so typical LeetCode puzzles finish within milliseconds to a few hundred milliseconds.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(m)",
+            "parts": [
+              {
+                "part": "Recursion stack (line 8)",
+                "cost": "depth ≤ m frames × O(1) each",
+                "why": "Each frame fills exactly one empty cell and holds only r, c and d."
+              },
+              {
+                "part": "isValid locals (lines 14-16)",
+                "cost": "O(1)",
+                "why": "Only br, bc and k are stored; the scan reads the board directly."
+              }
+            ],
+            "sum": "O(m) stack + O(1) locals = O(m), with m ≤ 81, so it is effectively constant.",
+            "cases": "",
+            "feel": "",
+            "note": "The 9x9 board is the input and is modified in place, so it is not counted."
+          },
+          "dryRun": {
+            "input": "Example 1's solved board with board[0][2] and board[0][3] blanked: row 0 = [5,3,.,.,7,8,9,1,2]; rows 1-8 are the expected output.",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "The scan passes (0,0)='5' and (0,1)='3', then finds (0,2)='.'. This is the first empty cell.",
+                "vars": {
+                  "depth": "1",
+                  "r": "0",
+                  "c": "2"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        ".",
+                        ".",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 6,
+                "explain": "d='1': isValid scans and finds '1' in column 2 at row 6, so it returns false.",
+                "vars": {
+                  "depth": "1",
+                  "r": "0",
+                  "c": "2",
+                  "d": "1"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        ".",
+                        ".",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        6,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 6,
+                "explain": "d='2' is rejected because column 2 has '2' at (1,2). d='3' is rejected because row 0 has '3' at (0,1).",
+                "vars": {
+                  "depth": "1",
+                  "r": "0",
+                  "c": "2",
+                  "d": "3"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        ".",
+                        ".",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ],
+                      [
+                        0,
+                        1
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 6,
+                "explain": "d='4' appears nowhere in row 0, column 2 or the top-left box, so isValid returns true.",
+                "vars": {
+                  "depth": "1",
+                  "r": "0",
+                  "c": "2",
+                  "d": "4"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        ".",
+                        ".",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "Write '4' into board[0][2] tentatively.",
+                "vars": {
+                  "depth": "1",
+                  "r": "0",
+                  "c": "2",
+                  "d": "4"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        ".",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 4,
+                "explain": "Line 8 recurses (depth 2). The new call rescans from (0,0) and finds the next empty cell at (0,3).",
+                "vars": {
+                  "depth": "2",
+                  "r": "0",
+                  "c": "3"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        ".",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        3
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        3
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 6,
+                "explain": "Digits '1' to '5' are all rejected: '1' is in column 3 at (1,3), '2' at (0,8), '3' at (0,1), '4' at (0,2) (the digit just placed) and '5' at (0,0). The trace stops on d='5'.",
+                "vars": {
+                  "depth": "2",
+                  "r": "0",
+                  "c": "3",
+                  "d": "5"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        ".",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        3
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        3
+                      ],
+                      [
+                        0,
+                        0
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 6,
+                "explain": "d='6' is absent from row 0, column 3 and the top-middle box, so it is legal.",
+                "vars": {
+                  "depth": "2",
+                  "r": "0",
+                  "c": "3",
+                  "d": "6"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        ".",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        3
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        3
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "Write '6' into board[0][3].",
+                "vars": {
+                  "depth": "2",
+                  "r": "0",
+                  "c": "3",
+                  "d": "6"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        "6",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        3
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        3
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "Line 8 recurses (depth 3). This call scans all 81 cells, finds no '.', and returns true.",
+                "vars": {
+                  "depth": "3"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        "6",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "Back at depth 2, solve returned true, so this frame returns true without undoing the '6'.",
+                "vars": {
+                  "depth": "2",
+                  "r": "0",
+                  "c": "3",
+                  "d": "6"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        "6",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        3
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        3
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "Depth 1 also receives true and returns true, keeping the '4'.",
+                "vars": {
+                  "depth": "1",
+                  "r": "0",
+                  "c": "2",
+                  "d": "4"
+                },
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        "6",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {
+                      "rc": [
+                        0,
+                        2
+                      ]
+                    },
+                    "highlight": [
+                      [
+                        0,
+                        2
+                      ]
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 22,
+                "explain": "solveSudoku finishes. The board now holds the filled grid, modified in place.",
+                "vars": {},
+                "arrays": {
+                  "board": {
+                    "values": [
+                      [
+                        "5",
+                        "3",
+                        "4",
+                        "6",
+                        "7",
+                        "8",
+                        "9",
+                        "1",
+                        "2"
+                      ],
+                      [
+                        "6",
+                        "7",
+                        "2",
+                        "1",
+                        "9",
+                        "5",
+                        "3",
+                        "4",
+                        "8"
+                      ],
+                      [
+                        "1",
+                        "9",
+                        "8",
+                        "3",
+                        "4",
+                        "2",
+                        "5",
+                        "6",
+                        "7"
+                      ],
+                      [
+                        "8",
+                        "5",
+                        "9",
+                        "7",
+                        "6",
+                        "1",
+                        "4",
+                        "2",
+                        "3"
+                      ],
+                      [
+                        "4",
+                        "2",
+                        "6",
+                        "8",
+                        "5",
+                        "3",
+                        "7",
+                        "9",
+                        "1"
+                      ],
+                      [
+                        "7",
+                        "1",
+                        "3",
+                        "9",
+                        "2",
+                        "4",
+                        "8",
+                        "5",
+                        "6"
+                      ],
+                      [
+                        "9",
+                        "6",
+                        "1",
+                        "5",
+                        "3",
+                        "7",
+                        "2",
+                        "8",
+                        "4"
+                      ],
+                      [
+                        "2",
+                        "8",
+                        "7",
+                        "4",
+                        "1",
+                        "9",
+                        "6",
+                        "3",
+                        "5"
+                      ],
+                      [
+                        "3",
+                        "4",
+                        "5",
+                        "2",
+                        "8",
+                        "6",
+                        "1",
+                        "7",
+                        "9"
+                      ]
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "Row 0 becomes [5,3,4,6,7,8,9,1,2], matching Example 1's output. Every digit was placed only after passing the row, column and box checks, and the search tried digits in order until a full legal board was reached."
+          },
+          "solution": "class Solution {\npublic:\n    // Check by rescanning the board whether digit d can go at (r, c)\n    bool isValid(vector<vector<char>>& board, int r, int c, char d) {\n        int br = 3 * (r / 3);              // top row of the 3x3 box\n        int bc = 3 * (c / 3);              // left column of the 3x3 box\n        for (int k = 0; k < 9; k++) {\n            if (board[r][k] == d) return false;                       // same row\n            if (board[k][c] == d) return false;                       // same column\n            if (board[br + k / 3][bc + k % 3] == d) return false;     // same box\n        }\n        return true;\n    }\n\n    // Fill the first empty cell, recurse, and backtrack on failure\n    bool solve(vector<vector<char>>& board) {\n        for (int r = 0; r < 9; r++) {\n            for (int c = 0; c < 9; c++) {\n                if (board[r][c] != '.') continue;      // only empty cells need a choice\n                for (char d = '1'; d <= '9'; d++) {\n                    if (!isValid(board, r, c, d)) continue;  // skip digits that clash\n                    board[r][c] = d;                   // tentatively place d\n                    if (solve(board)) return true;     // rest solved: keep it\n                    board[r][c] = '.';                 // undo and try the next digit\n                }\n                return false;                          // no digit fits: backtrack\n            }\n        }\n        return true;                                   // no empty cell left: solved\n    }\n\n    void solveSudoku(vector<vector<char>>& board) {\n        solve(board);                                  // board is filled in place\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    vector<vector<char>> board = {\n        {'5','3','.','.','7','.','.','.','.'},\n        {'6','.','.','1','9','5','.','.','.'},\n        {'.','9','8','.','.','.','.','6','.'},\n        {'8','.','.','.','6','.','.','.','3'},\n        {'4','.','.','8','.','3','.','.','1'},\n        {'7','.','.','.','2','.','.','.','6'},\n        {'.','6','.','.','.','.','2','8','.'},\n        {'.','.','.','4','1','9','.','.','5'},\n        {'.','.','.','.','8','.','.','7','9'}};\n    vector<vector<char>> expected = {\n        {'5','3','4','6','7','8','9','1','2'},\n        {'6','7','2','1','9','5','3','4','8'},\n        {'1','9','8','3','4','2','5','6','7'},\n        {'8','5','9','7','6','1','4','2','3'},\n        {'4','2','6','8','5','3','7','9','1'},\n        {'7','1','3','9','2','4','8','5','6'},\n        {'9','6','1','5','3','7','2','8','4'},\n        {'2','8','7','4','1','9','6','3','5'},\n        {'3','4','5','2','8','6','1','7','9'}};\n    Solution sol;\n    sol.solveSudoku(board);\n    cout << \"Output            | Expected\" << endl;\n    for (int i = 0; i < 9; i++) {\n        for (char ch : board[i]) cout << ch << ' ';\n        cout << \"| \";\n        for (char ch : expected[i]) cout << ch << ' ';\n        cout << endl;\n    }\n    cout << (board == expected ? \"MATCH\" : \"MISMATCH\") << endl;\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

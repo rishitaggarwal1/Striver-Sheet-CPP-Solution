@@ -4,7 +4,7 @@
   "slug": "n-queens",
   "title": "N-Queens",
   "url": "https://leetcode.com/problems/n-queens/",
-  "updatedAt": "2026-11-21T05:31:32.864Z",
+  "updatedAt": "2026-11-24T08:40:59.577Z",
   "problem": {
     "difficulty": "Hard",
     "description": "The n-queens puzzle is the problem of placing n queens on an n x n chessboard such that no two queens attack each other.\n\nGiven an integer n, return all distinct solutions to the n-queens puzzle. You may return the answer in any order.\n\nEach solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space, respectively.\n\nExample 1:\n\nInput: n = 4\nOutput: [[\".Q..\",\"...Q\",\"Q...\",\"..Q.\"],[\"..Q.\",\"Q...\",\"...Q\",\".Q..\"]]\nExplanation: There exist two distinct solutions to the 4-queens puzzle as shown above\n\nExample 2:\n\nInput: n = 1\nOutput: [[\"Q\"]]\n\nConstraints:\n\n- 1 <= n <= 9"
@@ -874,5 +874,42 @@
       "Prune as early as possible: check each partial assignment as you build it, instead of validating complete candidates.",
       "In backtracking, every state change made before recursing must be undone after it, so the shared state always describes only the current prefix."
     ]
-  }
+  },
+  "review": {
+    "verdict": "wrong_answer",
+    "summary": "Your backtracking idea is right, but a typo in the inner loop increments the wrong variable, so it runs past the board and crashes on every n >= 2.",
+    "yourIdea": "You place one queen per column, left to right. For each row in the current column you tentatively put a queen, check it against every queen already placed in earlier columns (same row, either diagonal), recurse if it is safe, and undo the placement afterwards.",
+    "gaps": [],
+    "bugs": [
+      {
+        "lines": "10",
+        "issue": "The inner loop's update is `i++` instead of `j++`. `j` stays 0 forever, so `j<c` never becomes false, while `i` keeps growing. `s[i]` goes past `s.size()` on line 12, which is the heap-buffer-overflow you see.",
+        "fix": "Change the update of the inner loop to `j++`."
+      },
+      {
+        "lines": "7",
+        "issue": "`q` is declared but never used. This is harmless but is leftover noise.",
+        "fix": "Remove the `bool q=false;` line."
+      }
+    ],
+    "counterexample": {
+      "input": "n = 2",
+      "expected": "[]",
+      "yours": "Runtime error (heap-buffer-overflow)",
+      "why": "At column c=1, `valid` enters the inner loop with j=0. Each iteration does `i++` instead of `j++`, so `i` reaches 2 while j is still 0, and `s[2][0]` is read out of bounds. n=1 works only because at c=0 the inner loop never runs."
+    },
+    "complexity": {
+      "time": "O(n! * n^2) roughly: about n! partial placements explored, each with an O(n*c) validity scan.",
+      "space": "O(n^2) for the board plus O(n) recursion depth, excluding the output.",
+      "verdict": "For n <= 9, 9! is about 3.6e5 and pruning cuts this far further, so even with the O(n^2) check it is well within limits."
+    },
+    "nudge": "Look closely at the three parts of the `for` header on line 10. Which variable does the condition test, and which one does the update actually change?",
+    "correctIdea": "Backtrack column by column (or row by row), placing exactly one queen in each. Keep only placements that share no row, no anti-diagonal (`i+j` equal) and no main diagonal (`i-j` equal) with earlier queens. Your checks on line 14 express exactly these conditions. As an optional improvement, track used rows, `r+c` and `r-c+n-1` in boolean arrays so each check is O(1) instead of rescanning the board.",
+    "strengths": [
+      "Placing one queen per column means you never need a column check, and the scan correctly looks only at earlier columns (`j<c`).",
+      "The diagonal conditions `i+j == r+c` and `r-i == c-j` are correct.",
+      "Clean place, recurse, undo structure on lines 30-33."
+    ]
+  },
+  "reviewFor": "class Solution {\npublic:\n    vector<vector<string>> ans;\n    bool valid(vector<string>& s, int r, int c)\n    {\n        int n = s.size();\n        bool q=false;\n        for(int i=0;i<n;i++)\n        {\n            for(int j=0;j<c;i++)\n            {\n                if(s[i][j]=='Q')\n                {\n                    if(i==r || (i+j == r+c) || (r-i == c-j) )\n                        return false;\n                }\n            }\n        }\n        return true;\n    }\n    void nqueen(vector<string>& s, int c, int n)\n    {\n        if(c==n)\n        {\n            ans.push_back(s);\n            return;\n        }\n        for(int i=0;i<n;i++)\n        {\n            s[i][c]='Q';\n            if(valid(s,i,c))\n                nqueen(s,c+1,n);\n            s[i][c]='.';\n        }\n    }\n    vector<vector<string>> solveNQueens(int n) {\n        string s(n,'.');\n        vector<string> v(n,s);\n        nqueen(v,0,n);\n        return ans;\n    }\n};"
 }

@@ -182,7 +182,7 @@
     "dir": "leetcode/n-queens",
     "solution": "leetcode/n-queens/n-queens.cpp",
     "mine": null,
-    "updatedAt": "2026-11-21T05:31:32.864Z"
+    "updatedAt": "2026-11-24T08:40:59.577Z"
   },
   "leetcode/expression-add-operators": {
     "title": "Expression Add Operators",

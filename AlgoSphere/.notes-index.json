@@ -321,12 +321,12 @@
     "site": "leetcode",
     "slug": "sudoku-solver",
     "difficulty": "Hard",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Backtracking with constraint bitmasks",
+    "time": "Exponential worst case, but each node costs O(m) and in practice only a few hundred nodes are explored",
+    "space": "O(m) recursion plus 27 integers",
     "dir": "leetcode/sudoku-solver",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-24T10:02:45.111Z"
+    "updatedAt": "2026-11-24T10:11:08.134Z"
   }
 }

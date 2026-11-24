@@ -4,7 +4,7 @@
   "slug": "sudoku-solver",
   "title": "Sudoku Solver",
   "url": "https://leetcode.com/problems/sudoku-solver/",
-  "updatedAt": "2026-11-24T10:02:45.111Z",
+  "updatedAt": "2026-11-24T10:11:08.134Z",
   "problem": {
     "difficulty": "Hard",
     "description": "Write a program to solve a Sudoku puzzle by filling the empty cells.\n\nA sudoku solution must satisfy all of the following rules:\n\n- Each of the digits 1-9 must occur exactly once in each row.\n\n- Each of the digits 1-9 must occur exactly once in each column.\n\n- Each of the digits 1-9 must occur exactly once in each of the 9 3x3 sub-boxes of the grid.\n\nThe '.' character indicates empty cells.\n\nExample 1:\n\nInput: board = [[\"5\",\"3\",\".\",\".\",\"7\",\".\",\".\",\".\",\".\"],[\"6\",\".\",\".\",\"1\",\"9\",\"5\",\".\",\".\",\".\"],[\".\",\"9\",\"8\",\".\",\".\",\".\",\".\",\"6\",\".\"],[\"8\",\".\",\".\",\".\",\"6\",\".\",\".\",\".\",\"3\"],[\"4\",\".\",\".\",\"8\",\".\",\"3\",\".\",\".\",\"1\"],[\"7\",\".\",\".\",\".\",\"2\",\".\",\".\",\".\",\"6\"],[\".\",\"6\",\".\",\".\",\".\",\".\",\"2\",\"8\",\".\"],[\".\",\".\",\".\",\"4\",\"1\",\"9\",\".\",\".\",\"5\"],[\".\",\".\",\".\",\".\",\"8\",\".\",\".\",\"7\",\"9\"]]\nOutput: [[\"5\",\"3\",\"4\",\"6\",\"7\",\"8\",\"9\",\"1\",\"2\"],[\"6\",\"7\",\"2\",\"1\",\"9\",\"5\",\"3\",\"4\",\"8\"],[\"1\",\"9\",\"8\",\"3\",\"4\",\"2\",\"5\",\"6\",\"7\"],[\"8\",\"5\",\"9\",\"7\",\"6\",\"1\",\"4\",\"2\",\"3\"],[\"4\",\"2\",\"6\",\"8\",\"5\",\"3\",\"7\",\"9\",\"1\"],[\"7\",\"1\",\"3\",\"9\",\"2\",\"4\",\"8\",\"5\",\"6\"],[\"9\",\"6\",\"1\",\"5\",\"3\",\"7\",\"2\",\"8\",\"4\"],[\"2\",\"8\",\"7\",\"4\",\"1\",\"9\",\"6\",\"3\",\"5\"],[\"3\",\"4\",\"5\",\"2\",\"8\",\"6\",\"1\",\"7\",\"9\"]]\nExplanation: The input board is shown above and the only valid solution is shown below:\n\nConstraints:\n\n- board.length == 9\n\n- board[i].length == 9\n\n- board[i][j] is a digit or '.'.\n\n- It is guaranteed that the input board has only one solution."
@@ -76,5 +76,137 @@
       "You correctly check constraints before placing a digit, which prunes the search."
     ]
   },
-  "reviewFor": "class Solution {\npublic:\n    vector<vector<bool>> row(10,vector<bool>(10,false)), col(10,vector<bool>(10,false));\n    void solve(vector<vector<char>>& board, int r, int c)\n    {\n        if(r==9)\n            return;\n        for(int i=0;i<9;i++)\n        {\n            if(board[r][i]=='.')\n            {\n                for(int j=1;j<9;j++)\n                {\n                    if(col[i][j]==false && row[r][j]==false)\n                    {\n                        board[r][i]=j;\n                        solve(board,r+1,c);\n                    }\n                }\n            }\n        }\n        return;\n    }\n    void solveSudoku(vector<vector<char>>& board) {\n        for(int i=0;i<9;i++)\n        {\n            for(int j=0;j<9;j++)\n            {\n                int x = board[i][j]-'0';\n                row[i][x] = true;\n                col[j][x] = true;\n            }\n        }\n        solve(board,0,0);\n    }\n};"
+  "reviewFor": "class Solution {\npublic:\n    vector<vector<bool>> row(10,vector<bool>(10,false)), col(10,vector<bool>(10,false));\n    void solve(vector<vector<char>>& board, int r, int c)\n    {\n        if(r==9)\n            return;\n        for(int i=0;i<9;i++)\n        {\n            if(board[r][i]=='.')\n            {\n                for(int j=1;j<9;j++)\n                {\n                    if(col[i][j]==false && row[r][j]==false)\n                    {\n                        board[r][i]=j;\n                        solve(board,r+1,c);\n                    }\n                }\n            }\n        }\n        return;\n    }\n    void solveSudoku(vector<vector<char>>& board) {\n        for(int i=0;i<9;i++)\n        {\n            for(int j=0;j<9;j++)\n            {\n                int x = board[i][j]-'0';\n                row[i][x] = true;\n                col[j][x] = true;\n            }\n        }\n        solve(board,0,0);\n    }\n};",
+  "approach": {
+    "version": 3,
+    "oneLiner": "Fill every '.' in a 9x9 grid with a digit 1-9 so that no digit repeats in any row, column or 3x3 box. Modify `board` in place; exactly one solution exists.",
+    "pattern": "Backtracking with constraint bitmasks",
+    "signals": [
+      "\"Fill the empty cells\" so that every row, column and box stays valid → this is a constraint-satisfaction search: place a digit, check it, and undo it on failure (backtracking).",
+      "\"It is guaranteed that the input board has only one solution\" → the search can stop at the first complete fill, and you never need to report \"no solution\" for the whole board.",
+      "Each digit must appear \"exactly once in each row/column/box\" with digits 1-9 → the state of each row, column and box fits in 9 bits, so legality checks become O(1) bit operations.",
+      "`board.length == 9` is fixed → classical complexity in n is meaningless; what matters is how hard the search tree is pruned."
+    ],
+    "constraints": "The grid is fixed at 9x9 with up to 81 empty cells. Blind enumeration of 9^81 fillings is impossible, but backtracking that rejects a digit as soon as it conflicts explores only a tiny fraction of that space. So the target is a pruned search with O(1) legality checks, and ideally a smart choice of which cell to fill next.",
+    "thinking": [
+      {
+        "q": "What is the most naive way to solve this?",
+        "a": "Try every digit in every empty cell and check the whole board at the end. With up to 81 blanks that is 9^81 boards, so you must detect conflicts while placing digits, not after."
+      },
+      {
+        "q": "How can I prune early?",
+        "a": "Fill cells one at a time. Before placing digit `d` at `(r,c)`, check that `d` is not already in row `r`, column `c`, or box `(r/3)*3 + c/3`. If no digit fits, return false so the previous cell tries its next digit."
+      },
+      {
+        "q": "How do I make the check \"is d legal here\" cheap?",
+        "a": "Rescanning the row, column and box costs 27 reads per check. Instead keep `rows[9]`, `cols[9]` and `boxes[9]` (booleans or 9-bit masks), filled once from the given digits. Then the check is three lookups, and placing or undoing a digit is three updates."
+      },
+      {
+        "q": "Does the order in which I fill cells matter?",
+        "a": "Yes, a lot. Filling left-to-right may hit a cell with 7 options while another cell has only 1. Choosing the empty cell with the fewest legal digits (minimum remaining values) cuts the branching factor. A cell with 0 options fails immediately, and a cell with 1 option is forced."
+      },
+      {
+        "q": "How do I count a cell's candidates quickly?",
+        "a": "With masks, the used digits at `(r,c)` are `rows[r] | cols[c] | boxes[b]`. The free digits are the complement within 9 bits, and popcount gives how many there are. Scanning all empty cells for the minimum costs at most 81 cheap operations per search node."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Backtracking with full rescans",
+        "aha": "The natural recursive idea is \"find the next '.', try 1-9, recurse\". The simplest validity check is to scan the row, the column and the 3x3 box directly on `board`.",
+        "idea": "Walk the cells in row-major order. At an empty cell, try each digit 1-9 and check its row, column and box by scanning `board`. If the digit is legal, write it and recurse; if the recursion fails, reset the cell to '.' and try the next digit. Every complete filling reached this way is valid by construction, and the search tries every consistent partial assignment, so it must find the unique solution.",
+        "steps": [
+          "Find the first cell containing '.' in row-major order; if there is none, return true.",
+          "For each digit d from '1' to '9', scan row r, column c and the box for d.",
+          "If d is not found, set board[r][c] = d and recurse.",
+          "If the recursion returns true, propagate true upward.",
+          "Otherwise restore board[r][c] = '.' and try the next digit.",
+          "If all 9 digits fail, return false."
+        ],
+        "time": "O(9^m · 27) where m is the number of empty cells",
+        "space": "O(m) recursion depth",
+        "complexity": "The running time is dominated by the size of the search tree. Each node also pays a 27-cell scan per digit tried, plus a rescan to find the next empty cell. The only extra memory is the recursion stack, at most 81 frames deep.",
+        "tradeoff": "It works on typical puzzles, but every legality check repeats work that a few counters could remember. Adversarial puzzles built against row-major order can make it explore millions of nodes."
+      },
+      {
+        "level": "Better",
+        "name": "Backtracking with row/col/box lookup tables",
+        "aha": "The brute force rescans 27 cells to answer \"is d used in this row, column or box?\", yet that answer only changes when a digit is placed or removed. Store it instead.",
+        "idea": "Precompute `rows[r][d]`, `cols[c][d]` and `boxes[b][d]` from the given digits, and collect the list of empty cells once. Recurse over that list by index. At each cell try digits whose three flags are all false; set the flags and the board cell, recurse, then clear them on backtrack. The flags always mirror the current board exactly, so the check is correct and costs O(1).",
+        "steps": [
+          "Initialise three 9x9 boolean tables and an empty-cell list by scanning board once.",
+          "Define solve(i): if i equals the list length, return true.",
+          "Take cell (r,c) = empties[i] and compute b = (r/3)*3 + c/3.",
+          "For each d with rows[r][d], cols[c][d] and boxes[b][d] all false, mark the three flags and write d.",
+          "Recurse solve(i+1); return true if it succeeds.",
+          "Otherwise unmark the flags, reset the cell to '.' and continue; return false after the loop."
+        ],
+        "time": "O(9^m) worst case, with O(1) work per tried digit",
+        "space": "O(81) for tables plus O(m) recursion",
+        "complexity": "Each search node now costs at most 9 constant-time checks, so the running time is just the number of nodes. The extra memory is the three 81-entry tables and the empty-cell list.",
+        "tradeoff": "Each node is cheap, but the tree can still be huge because the fixed fill order ignores how constrained each cell is. One bad early guess in a loose cell can hide a contradiction for a long time."
+      },
+      {
+        "level": "Optimal",
+        "name": "Bitmask backtracking with fewest-candidates-first",
+        "aha": "The Better version branches 9 ways on whatever cell comes next, even when another empty cell has only one legal digit. Always branching on the most constrained cell shrinks the tree dramatically.",
+        "idea": "Store `rows[r]`, `cols[c]` and `boxes[b]` as 9-bit masks of used digits. At each step, scan the remaining empty cells and compute free = ~(rows[r]|cols[c]|boxes[b]) & 0x1FF. Pick the cell with the smallest popcount. If that count is 0, fail at once; if it is 1, the move is forced. Iterate over the set bits of free (lowbit trick), placing and undoing via XOR. This is still a complete search, so correctness holds, and it reaches dead ends as early as possible.",
+        "steps": [
+          "Build the three masks and the empty-cell list from board.",
+          "If no empty cells remain, return true.",
+          "For each remaining empty cell, compute its free mask and keep the cell with the fewest set bits.",
+          "If that cell has zero candidates, return false.",
+          "For each set bit in its free mask, toggle the bit in its row, column and box masks, write the digit, and mark the cell filled.",
+          "Recurse; on success return true; otherwise toggle the bits back and restore '.'.",
+          "Return false when the candidates are exhausted."
+        ],
+        "time": "Exponential worst case, but each node costs O(m) and in practice only a few hundred nodes are explored",
+        "space": "O(m) recursion plus 27 integers",
+        "complexity": "Each node pays an O(m) ≤ 81 scan to choose a cell, and that scan is what makes the branching factor close to 1 on most steps. The memory is 27 masks, the empty list and the recursion stack.",
+        "tradeoff": "Sudoku is NP-complete in general, so no polynomial guarantee exists. MRV trades an O(81) scan per node for a far smaller tree. Adding constraint propagation (naked or hidden singles) or Dancing Links can prune more, at the cost of more code."
+      }
+    ],
+    "mistakes": [
+      "Using the wrong box index, for example r/3 + c/3 instead of (r/3)*3 + c/3. This merges different boxes, so valid digits get rejected or invalid ones accepted.",
+      "Forgetting to undo the row, column and box marks (or to reset the cell to '.') when backtracking. The tables then disagree with the board and the search wrongly prunes valid branches.",
+      "Continuing the loop after a recursive call returns true. Later trials overwrite the solved cells, so you must return immediately on success.",
+      "Comparing chars and ints carelessly: board holds '1'-'9', so the digit index is board[r][c] - '1', not board[r][c] itself."
+    ],
+    "edgeCases": [
+      "{\"case\":\"A board with very few givens (for example 17 clues)\",\"why\":\"The search is deepest here, so the performance of fill-order heuristics matters most.\"}",
+      "{\"case\":\"A board that is already complete\",\"why\":\"The recursion must return true immediately without modifying anything.\"}",
+      "{\"case\":\"A cell with exactly one candidate early on\",\"why\":\"MRV should take it as a forced move. A fixed order might branch elsewhere first and waste work.\"}",
+      "{\"case\":\"Puzzles designed against row-major order (the first row's solution is 987654321)\",\"why\":\"These make the naive solver try many wrong digits in the first cells, which exposes slow implementations.\"}"
+    ],
+    "related": [
+      {
+        "title": "Valid Sudoku",
+        "slug": "valid-sudoku",
+        "why": "Uses the same row/column/box bookkeeping and the (r/3)*3 + c/3 index, without the search."
+      },
+      {
+        "title": "N-Queens",
+        "slug": "n-queens",
+        "why": "Backtracking with O(1) conflict tracking per column and diagonal, placing one item per row and undoing it."
+      },
+      {
+        "title": "Word Search",
+        "slug": "word-search",
+        "why": "Grid backtracking where you mark state, recurse, and unmark on return."
+      },
+      {
+        "title": "Permutations",
+        "slug": "permutations",
+        "why": "The basic choose, recurse, un-choose template that Sudoku solving builds on."
+      }
+    ],
+    "takeaways": [
+      "In backtracking, keep incremental state (sets or bitmasks) that you update on place and undo, so legality checks are O(1) instead of rescans.",
+      "Branch on the most constrained variable first (minimum remaining values); finding dead ends early shrinks the search tree enormously.",
+      "When the domain is tiny (digits 1-9), bitmasks give free set operations: union with OR, complement with a mask, iterating with lowbit, and counting with popcount.",
+      "When the input size is fixed, judge the algorithm by search-tree pruning, not by asymptotic growth in n."
+    ]
+  }
 }

@@ -181,8 +181,11 @@
     "space": "O(n) besides output",
     "dir": "leetcode/n-queens",
     "solution": "leetcode/n-queens/n-queens.cpp",
-    "mine": null,
-    "updatedAt": "2026-11-24T08:40:59.577Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/n-queens/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-24T08:41:43.508Z"
   },
   "leetcode/expression-add-operators": {
     "title": "Expression Add Operators",

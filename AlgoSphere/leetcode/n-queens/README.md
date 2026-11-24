@@ -1,10 +1,10 @@
 # N-Queens
 
-**LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/n-queens/) · Pattern: **Backtracking with constant-time conflict sets**
+**LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/n-queens/) · Pattern: **Backtracking with constant-time conflict sets** · ✅ Solved in C++
 
 > List every way to put `n` queens on an `n x n` board so that no two share a row, a column or a diagonal, with each board written as strings of 'Q' and '.'.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -410,6 +410,58 @@ int main() {
 **Complexity:** time `O(n!) roughly`, space `O(n) besides output`. Running time is dominated by the number of nodes in the pruned search tree, which is bounded by n!, with O(1) work per candidate column plus O(n^2) to copy each found board. The extra memory is the three flag arrays of size O(n), the board, and the recursion depth `n`.
 
 **Why this is the best:** No polynomial algorithm is known for listing all solutions, and the output itself can be large, so exponential search is unavoidable. This approach removes all redundant checking. The cost is careful bookkeeping: every flag set on the way down must be undone on the way back.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 1 of 8 | 2026-11-24 |
+
+For comparison, the optimal approach (Backtracking with column/diagonal sets) runs in `O(n!) roughly` time and `O(n) besides output` space.
+
+```cpp
+class Solution {
+public:
+    vector<vector<string>> ans;
+    bool valid(vector<string>& s, int r, int c)
+    {
+        int n = s.size();
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<c;j++)
+            {
+                if(s[i][j]=='Q')
+                {
+                    if(i==r || (i+j == r+c) || (r-i == c-j) )
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
+    void nqueen(vector<string>& s, int c, int n)
+    {
+        if(c==n)
+        {
+            ans.push_back(s);
+            return;
+        }
+        for(int i=0;i<n;i++)
+        {
+            s[i][c]='Q';
+            if(valid(s,i,c))
+                nqueen(s,c+1,n);
+            s[i][c]='.';
+        }
+    }
+    vector<vector<string>> solveNQueens(int n) {
+        string s(n,'.');
+        vector<string> v(n,s);
+        nqueen(v,0,n);
+        return ans;
+    }
+};
+```
 
 ## Test cases
 

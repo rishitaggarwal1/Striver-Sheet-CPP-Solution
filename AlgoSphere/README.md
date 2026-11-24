@@ -2,7 +2,7 @@
 
 Problem-by-problem notes. Each folder walks through one problem: progressive hints, the intuition behind it, every approach from brute force to optimal with a complexity breakdown and a step-by-step dry run, a commented C++ solution, and test cases.
 
-**23 problems** · 5 solved · Easy 4 · Medium 13 · Hard 6 · 18 patterns
+**23 problems** · 6 solved · Easy 4 · Medium 13 · Hard 6 · 18 patterns
 
 **How to use these notes:** try the problem first, then open the hints one at a time. Read the intuition and the approaches only after you've made an attempt.
 
@@ -23,7 +23,7 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 13 | [Maximum Subarray With Equal Products](leetcode/maximum-subarray-with-equal-products/) | LeetCode | Easy | Prime-exponent reasoning + sliding window | `O(n)` time, `O(1)` space | [C++](leetcode/maximum-subarray-with-equal-products/maximum-subarray-with-equal-products.cpp) | ✅ [C++](leetcode/maximum-subarray-with-equal-products/my-solution.cpp) |
 | 14 | [Median of Two Sorted Arrays](leetcode/median-of-two-sorted-arrays/) | LeetCode | Hard |   |   |   |   |
 | 15 | [Minimum Falling Path Sum](leetcode/minimum-falling-path-sum/) | LeetCode | Medium | Grid DP, row by row (free start and end) | `O(n^2)` time, `O(n)` space | [C++](leetcode/minimum-falling-path-sum/minimum-falling-path-sum.cpp) |   |
-| 16 | [N-Queens](leetcode/n-queens/) | LeetCode | Hard | Backtracking with constant-time conflict sets | `O(n!) roughly` time, `O(n) besides output` space | [C++](leetcode/n-queens/n-queens.cpp) |   |
+| 16 | [N-Queens](leetcode/n-queens/) | LeetCode | Hard | Backtracking with constant-time conflict sets | `O(n!) roughly` time, `O(n) besides output` space | [C++](leetcode/n-queens/n-queens.cpp) | ✅ [C++](leetcode/n-queens/my-solution.cpp) |
 | 17 | [Network Delay Time](leetcode/network-delay-time/) | LeetCode | Medium | Single-source shortest paths (Dijkstra) | `O(E log E), i.e. O(E log n)` time, `O(n + E)` space | [C++](leetcode/network-delay-time/network-delay-time.cpp) | ✅ [C++](leetcode/network-delay-time/my-solution.cpp) |
 | 18 | [Product of the Last K Numbers](leetcode/product-of-the-last-k-numbers/) | LeetCode | Medium | Prefix products reset at zero | `O(1) per add and getProduct (amortised for append)` time, `O(n)` space | [C++](leetcode/product-of-the-last-k-numbers/product-of-the-last-k-numbers.cpp) | ✅ [C++](leetcode/product-of-the-last-k-numbers/my-solution.cpp) |
 | 19 | [Rotate Array](leetcode/rotate-array/) | LeetCode | Medium | Array reversal (three reverses) | `O(n)` time, `O(1)` space |   | ✅ [C++](leetcode/rotate-array/my-solution.cpp) |

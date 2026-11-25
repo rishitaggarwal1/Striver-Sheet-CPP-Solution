@@ -2,6 +2,8 @@
 
 **LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/smallest-unique-subarray/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -149,6 +151,29 @@ Return `lo`.
 The trickiest part is hash collisions: a collision can make two different windows look identical and hide a unique one, so use double hashing or verify suspicious matches. Edge cases: `n = 1` gives 1, and an all-equal array gives `n`. Time is `O(n log n)` expected, and space is `O(n)`. A suffix array alternative computes, for each suffix, the maximum LCP with its neighbors and takes the minimum of that value plus 1 over valid suffixes.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| nums = [1,2,1,2] | 2 | Alternating pattern; [2,1] is unique. |
+| nums = [5,5,5,5,1] | 1 | Single unique element at the end. |
+| nums = [1,2,1,2,1] | 3 | Overlapping repeats force length 3. |
+| nums = [4,4,7,4,4,7] | 2 | Repeated block; the junction pair is unique. |
+| nums = [1,2,3,1,2,3] | 2 | Doubled sequence; the wrap pair [3,1] is unique. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single element | nums = [7] | 1 | Whole array is unique. |
+| Two equal elements | nums = [2,2] | 2 | Only the full array is unique. |
+| All equal | nums = [1,1,1,1,1] | 5 | Answer equals n. |
+| Max and min values | nums = [100000,1] | 1 | Both elements are unique. |
+| All distinct | nums = [1,2,3,4,5] | 1 | Any single element is unique. |
+| Long periodic array | nums = [1,2,1,2,1,2] | 4 | Uniqueness appears only at length 4. |
 
 ---
 

@@ -341,8 +341,8 @@
     "time": "O(n log n)",
     "space": "O(n)",
     "dir": "leetcode/smallest-unique-subarray",
-    "solution": "",
+    "solution": "leetcode/smallest-unique-subarray/smallest-unique-subarray.cpp",
     "mine": null,
-    "updatedAt": "2026-11-25T04:59:31.822Z"
+    "updatedAt": "2026-11-25T05:00:08.902Z"
   }
 }

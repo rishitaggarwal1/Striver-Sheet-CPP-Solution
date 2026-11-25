@@ -249,7 +249,147 @@ Pick a base larger than the maximum value `10^5`. Use a large modulus, ideally t
 4. If any value in the map equals 1, return L.
 5. Return n (this line is reached only if the loop logic allows it; L = n always succeeds).
 
-**Complexity:** time `O(n^3)`, space `O(n^2)`. There are up to n lengths, each with about n windows, and hashing or copying each window costs O(L). An all-equal input forces every length to be checked, giving roughly n^3/6 work. The map can hold about n windows of length up to n.
+**Pseudocode**
+
+```text
+ 1 │ function smallestUniqueSubarray(nums):
+ 2 │   n ← length(nums)
+ 3 │   for L ← 1 to n:
+ 4 │     count ← empty map from tuple to integer   // fresh counts for this length
+ 5 │     for i ← 0 to n − L:
+ 6 │       window ← tuple(nums[i..i+L−1])   // copy the L elements starting at i
+ 7 │       count[window] ← count[window] + 1   // a missing key counts as 0
+ 8 │     for each (window, c) in count:
+ 9 │       if c = 1:
+10 │         return L   // lengths are tried in increasing order, so this is the minimum
+11 │   return n   // unreachable: at L = n there is only one window, so its count is 1
+```
+
+**Time complexity: `O(n^3)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Outer loop over lengths (lines 3-10) | up to n iterations | In the worst case no unique window appears until L = n. |
+| Building windows (lines 5-7) | (n−L+1) windows × O(L) per copy and hash | Each window copies L numbers and then hashes and compares those L numbers. |
+| Scanning the map (lines 8-10) | at most (n−L+1) entries × O(1) | There is at most one map entry per window, and checking a count takes constant time. |
+
+- **Adding it up:** Σ_{L=1..n} L·(n−L+1) = n(n+1)(n+2)/6 = O(n^3). The O(n) map scan per length adds only O(n^2), so the window-building work dominates.
+- **Best vs worst case:** Best case: some value occurs exactly once (e.g. [2,1,2,3,3]). The loop stops at L = 1 after O(n) work. Worst case: all elements are equal (e.g. [3,3,…,3]). Every length up to n must be tried, which costs the full O(n^3).
+- **At the maximum input:** n = 10^5 with all elements equal gives about n^3/6 ≈ 1.7·10^14 steps, which is hopelessly slow. This approach is only practical for n up to a few hundred.
+
+**Space complexity: `O(n^2)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Map of windows (line 4, filled on line 7) | (n−L+1) tuples × L numbers each | The map can store every window of the current length as a full copy. The product L·(n−L+1) peaks near n^2/4 when L ≈ n/2. |
+| Current window tuple (line 6) | O(L) ≤ O(n) | It is a temporary copy of one window. |
+
+- **Adding it up:** O(n^2) + O(n) = O(n^2). Only one length's map exists at a time.
+- **Not counted:** The input array is not counted. There is no recursion.
+
+**Dry run** on `nums = [3,3,3]`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 2 | Store the array length: n = 3. | `n = 3`<br>`nums = [3, 3, 3]` |
+| 2 | 4 | Start with length L = 1 and an empty count map. | `L = 1`<br>`count = {}` |
+| 3 | 7 | i = 0: the window is (3). It is new, so its count becomes 1. | `i = 0`<br>`window = (3)`<br>`nums = [3, 3, 3]` (i→0)<br>`count = {(3)→1}` |
+| 4 | 7 | i = 1: the window is (3) again, so its count rises to 2. | `i = 1`<br>`nums = [3, 3, 3]` (i→1)<br>`count = {(3)→2}` |
+| 5 | 7 | i = 2: the window is (3) a third time, so its count rises to 3. | `i = 2`<br>`nums = [3, 3, 3]` (i→2)<br>`count = {(3)→3}` |
+| 6 | 9 | The only entry has c = 3, not 1. No length-1 window is unique. | `c = 3`<br>`nums = [3, 3, 3]` |
+| 7 | 4 | Move to L = 2 and reset the map to empty. | `L = 2`<br>`count = {}` |
+| 8 | 7 | i = 0: the window nums[0..1] = (3,3) gets count 1. | `i = 0`<br>`window = (3,3)`<br>`nums = [3, 3, 3]` (i→0)<br>`count = {(3,3)→1}` |
+| 9 | 7 | i = 1: the window nums[1..2] = (3,3) is the same tuple, so its count becomes 2. The loop ends because n − L = 1. | `i = 1`<br>`nums = [3, 3, 3]` (i→1)<br>`count = {(3,3)→2}` |
+| 10 | 9 | The only entry has c = 2, not 1. No length-2 window is unique. | `c = 2`<br>`nums = [3, 3, 3]` |
+| 11 | 4 | Move to L = 3 and reset the map to empty. | `L = 3`<br>`count = {}` |
+| 12 | 7 | i = 0 is the only start: the window (3,3,3) gets count 1. | `i = 0`<br>`window = (3,3,3)`<br>`nums = [3, 3, 3]` (i→0)<br>`count = {(3,3,3)→1}` |
+| 13 | 9 | The entry (3,3,3) has c = 1, so the condition is true. | `c = 1`<br>`nums = [3, 3, 3]` |
+| 14 | 10 | Return L = 3, the first length that has a unique window. | (no change) |
+
+**Result:** 3. Every window of length 1 or 2 is repeated, and the single window of length 3 is unique; since lengths are checked in increasing order, 3 is the minimum.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    // Hash for a vector<int>, so whole windows can be used as unordered_map keys
+    struct VecHash {
+        size_t operator()(const vector<int>& v) const {
+            size_t h = 1469598103934665603ULL;      // FNV-style starting seed
+            for (int x : v) {
+                h ^= (size_t)x + 0x9e3779b97f4a7c15ULL + (h << 6) + (h >> 2); // mix in each element
+            }
+            return h;
+        }
+    };
+
+    int smallestUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        for (int L = 1; L <= n; ++L) {                    // try lengths in increasing order
+            unordered_map<vector<int>, int, VecHash> count; // fresh counts for this length
+            for (int i = 0; i + L <= n; ++i) {            // every start of a length-L window
+                vector<int> window(nums.begin() + i, nums.begin() + i + L); // copy the window as a tuple
+                count[window]++;                          // a missing key starts at 0
+            }
+            for (auto& entry : count) {                   // look for a window seen exactly once
+                if (entry.second == 1) return L;          // first such L is the minimum
+            }
+        }
+        return n; // unreachable: at L = n there is a single window
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    // Hash for a vector<int>, so whole windows can be used as unordered_map keys
+    struct VecHash {
+        size_t operator()(const vector<int>& v) const {
+            size_t h = 1469598103934665603ULL;      // FNV-style starting seed
+            for (int x : v) {
+                h ^= (size_t)x + 0x9e3779b97f4a7c15ULL + (h << 6) + (h >> 2); // mix in each element
+            }
+            return h;
+        }
+    };
+
+    int smallestUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        for (int L = 1; L <= n; ++L) {                    // try lengths in increasing order
+            unordered_map<vector<int>, int, VecHash> count; // fresh counts for this length
+            for (int i = 0; i + L <= n; ++i) {            // every start of a length-L window
+                vector<int> window(nums.begin() + i, nums.begin() + i + L); // copy the window as a tuple
+                count[window]++;                          // a missing key starts at 0
+            }
+            for (auto& entry : count) {                   // look for a window seen exactly once
+                if (entry.second == 1) return L;          // first such L is the minimum
+            }
+        }
+        return n; // unreachable: at L = n there is a single window
+    }
+};
+
+int main() {
+    Solution s;
+    vector<vector<int>> tests = {{3,3,3}, {2,1,2,3,3}, {1,1,2,2,1}};
+    vector<int> expected = {3, 1, 2};
+    for (size_t t = 0; t < tests.size(); ++t) {
+        int got = s.smallestUniqueSubarray(tests[t]);
+        cout << "Example " << t + 1 << ": output = " << got << ", expected = " << expected[t] << endl;
+    }
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** For n = 10^5 this is about 10^14 operations, hopeless. The waste is rehashing overlapping windows from scratch and checking every length in turn.
 

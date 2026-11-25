@@ -4,7 +4,7 @@
   "slug": "smallest-unique-subarray",
   "title": "Smallest Unique Subarray",
   "url": "https://leetcode.com/problems/smallest-unique-subarray/",
-  "updatedAt": "2026-11-25T04:59:31.822Z",
+  "updatedAt": "2026-11-25T05:00:08.902Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given an integer array nums.\n\nFind the minimum length of a subarray that is not identical to any other subarray in nums.\n\nReturn an integer denoting the minimum possible length of such a subarray.\n\nTwo subarrays are considered identical if they have the same length and the same elements in corresponding positions.\n\nExample 1:\n\nInput: nums = [3,3,3]\n\nOutput: 3\n\nExplanation:\n\n- Subarrays of length 1: [3] → appears 3 times\n\n- Subarrays of length 2: [3, 3] → appears 2 times\n\n- Subarrays of length 3: [3, 3, 3] → appears once\n\nThe subarray [3, 3, 3] is unique, so the smallest unique subarray length is 3.\n\nExample 2:\n\nInput: nums = [2,1,2,3,3]\n\nOutput: 1\n\nExplanation:\n\nSubarrays of length 1:\n\n- [2] → appears 2 times\n\n- [1] → appears once\n\n- [3] → appears 2 times\n\nThe subarray [1] is unique, so the smallest unique subarray length is 1.\n\nExample 3:\n\nInput: nums = [1,1,2,2,1]\n\nOutput: 2\n\nExplanation:\n\nSubarrays of length 1:\n\n- [1] → appears 3 times\n\n- [2] → appears 2 times\n\nSubarrays of length 2:\n\n- [1, 1] → appears once\n\n- [1, 2] → appears once\n\n- [2, 2] → appears once\n\n- [2, 1] → appears once\n\nThere is at least one subarray of length 2 that is unique, so the smallest unique subarray length is 2.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^5"
@@ -189,7 +189,536 @@
         "time": "O(n^3)",
         "space": "O(n^2)",
         "complexity": "There are up to n lengths, each with about n windows, and hashing or copying each window costs O(L). An all-equal input forces every length to be checked, giving roughly n^3/6 work. The map can hold about n windows of length up to n.",
-        "tradeoff": "For n = 10^5 this is about 10^14 operations, hopeless. The waste is rehashing overlapping windows from scratch and checking every length in turn."
+        "tradeoff": "For n = 10^5 this is about 10^14 operations, hopeless. The waste is rehashing overlapping windows from scratch and checking every length in turn.",
+        "deep": {
+          "pseudocode": [
+            "function smallestUniqueSubarray(nums):",
+            "  n ← length(nums)",
+            "  for L ← 1 to n:",
+            "    count ← empty map from tuple to integer   // fresh counts for this length",
+            "    for i ← 0 to n − L:",
+            "      window ← tuple(nums[i..i+L−1])   // copy the L elements starting at i",
+            "      count[window] ← count[window] + 1   // a missing key counts as 0",
+            "    for each (window, c) in count:",
+            "      if c = 1:",
+            "        return L   // lengths are tried in increasing order, so this is the minimum",
+            "  return n   // unreachable: at L = n there is only one window, so its count is 1"
+          ],
+          "time": {
+            "total": "O(n^3)",
+            "parts": [
+              {
+                "part": "Outer loop over lengths (lines 3-10)",
+                "cost": "up to n iterations",
+                "why": "In the worst case no unique window appears until L = n."
+              },
+              {
+                "part": "Building windows (lines 5-7)",
+                "cost": "(n−L+1) windows × O(L) per copy and hash",
+                "why": "Each window copies L numbers and then hashes and compares those L numbers."
+              },
+              {
+                "part": "Scanning the map (lines 8-10)",
+                "cost": "at most (n−L+1) entries × O(1)",
+                "why": "There is at most one map entry per window, and checking a count takes constant time."
+              }
+            ],
+            "sum": "Σ_{L=1..n} L·(n−L+1) = n(n+1)(n+2)/6 = O(n^3). The O(n) map scan per length adds only O(n^2), so the window-building work dominates.",
+            "cases": "Best case: some value occurs exactly once (e.g. [2,1,2,3,3]). The loop stops at L = 1 after O(n) work. Worst case: all elements are equal (e.g. [3,3,…,3]). Every length up to n must be tried, which costs the full O(n^3).",
+            "feel": "n = 10^5 with all elements equal gives about n^3/6 ≈ 1.7·10^14 steps, which is hopelessly slow. This approach is only practical for n up to a few hundred.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Map of windows (line 4, filled on line 7)",
+                "cost": "(n−L+1) tuples × L numbers each",
+                "why": "The map can store every window of the current length as a full copy. The product L·(n−L+1) peaks near n^2/4 when L ≈ n/2."
+              },
+              {
+                "part": "Current window tuple (line 6)",
+                "cost": "O(L) ≤ O(n)",
+                "why": "It is a temporary copy of one window."
+              }
+            ],
+            "sum": "O(n^2) + O(n) = O(n^2). Only one length's map exists at a time.",
+            "cases": "",
+            "feel": "",
+            "note": "The input array is not counted. There is no recursion."
+          },
+          "dryRun": {
+            "input": "nums = [3,3,3]",
+            "steps": [
+              {
+                "line": 2,
+                "explain": "Store the array length: n = 3.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 4,
+                "explain": "Start with length L = 1 and an empty count map.",
+                "vars": {
+                  "n": "3",
+                  "L": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 0: the window is (3). It is new, so its count becomes 1.",
+                "vars": {
+                  "n": "3",
+                  "L": "1",
+                  "i": "0",
+                  "window": "(3)"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3)→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 1: the window is (3) again, so its count rises to 2.",
+                "vars": {
+                  "n": "3",
+                  "L": "1",
+                  "i": "1",
+                  "window": "(3)"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3)→2"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 2: the window is (3) a third time, so its count rises to 3.",
+                "vars": {
+                  "n": "3",
+                  "L": "1",
+                  "i": "2",
+                  "window": "(3)"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3)→3"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "The only entry has c = 3, not 1. No length-1 window is unique.",
+                "vars": {
+                  "n": "3",
+                  "L": "1",
+                  "window": "(3)",
+                  "c": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3)→3"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 4,
+                "explain": "Move to L = 2 and reset the map to empty.",
+                "vars": {
+                  "n": "3",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 0: the window nums[0..1] = (3,3) gets count 1.",
+                "vars": {
+                  "n": "3",
+                  "L": "2",
+                  "i": "0",
+                  "window": "(3,3)"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3,3)→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 1: the window nums[1..2] = (3,3) is the same tuple, so its count becomes 2. The loop ends because n − L = 1.",
+                "vars": {
+                  "n": "3",
+                  "L": "2",
+                  "i": "1",
+                  "window": "(3,3)"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3,3)→2"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "The only entry has c = 2, not 1. No length-2 window is unique.",
+                "vars": {
+                  "n": "3",
+                  "L": "2",
+                  "window": "(3,3)",
+                  "c": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3,3)→2"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 4,
+                "explain": "Move to L = 3 and reset the map to empty.",
+                "vars": {
+                  "n": "3",
+                  "L": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 0 is the only start: the window (3,3,3) gets count 1.",
+                "vars": {
+                  "n": "3",
+                  "L": "3",
+                  "i": "0",
+                  "window": "(3,3,3)"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3,3,3)→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "The entry (3,3,3) has c = 1, so the condition is true.",
+                "vars": {
+                  "n": "3",
+                  "L": "3",
+                  "window": "(3,3,3)",
+                  "c": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3,3,3)→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 10,
+                "explain": "Return L = 3, the first length that has a unique window.",
+                "vars": {
+                  "n": "3",
+                  "L": "3",
+                  "window": "(3,3,3)",
+                  "c": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(3,3,3)→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "3. Every window of length 1 or 2 is repeated, and the single window of length 3 is unique; since lengths are checked in increasing order, 3 is the minimum."
+          },
+          "solution": "class Solution {\npublic:\n    // Hash for a vector<int>, so whole windows can be used as unordered_map keys\n    struct VecHash {\n        size_t operator()(const vector<int>& v) const {\n            size_t h = 1469598103934665603ULL;      // FNV-style starting seed\n            for (int x : v) {\n                h ^= (size_t)x + 0x9e3779b97f4a7c15ULL + (h << 6) + (h >> 2); // mix in each element\n            }\n            return h;\n        }\n    };\n\n    int smallestUniqueSubarray(vector<int>& nums) {\n        int n = nums.size();\n        for (int L = 1; L <= n; ++L) {                    // try lengths in increasing order\n            unordered_map<vector<int>, int, VecHash> count; // fresh counts for this length\n            for (int i = 0; i + L <= n; ++i) {            // every start of a length-L window\n                vector<int> window(nums.begin() + i, nums.begin() + i + L); // copy the window as a tuple\n                count[window]++;                          // a missing key starts at 0\n            }\n            for (auto& entry : count) {                   // look for a window seen exactly once\n                if (entry.second == 1) return L;          // first such L is the minimum\n            }\n        }\n        return n; // unreachable: at L = n there is a single window\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution s;\n    vector<vector<int>> tests = {{3,3,3}, {2,1,2,3,3}, {1,1,2,2,1}};\n    vector<int> expected = {3, 1, 2};\n    for (size_t t = 0; t < tests.size(); ++t) {\n        int got = s.smallestUniqueSubarray(tests[t]);\n        cout << \"Example \" << t + 1 << \": output = \" << got << \", expected = \" << expected[t] << endl;\n    }\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

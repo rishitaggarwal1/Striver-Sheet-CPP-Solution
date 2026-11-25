@@ -4,7 +4,7 @@
   "slug": "smallest-unique-subarray",
   "title": "Smallest Unique Subarray",
   "url": "https://leetcode.com/problems/smallest-unique-subarray/",
-  "updatedAt": "2026-11-25T09:13:55.594Z",
+  "updatedAt": "2026-11-25T09:37:36.157Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given an integer array nums.\n\nFind the minimum length of a subarray that is not identical to any other subarray in nums.\n\nReturn an integer denoting the minimum possible length of such a subarray.\n\nTwo subarrays are considered identical if they have the same length and the same elements in corresponding positions.\n\nExample 1:\n\nInput: nums = [3,3,3]\n\nOutput: 3\n\nExplanation:\n\n- Subarrays of length 1: [3] → appears 3 times\n\n- Subarrays of length 2: [3, 3] → appears 2 times\n\n- Subarrays of length 3: [3, 3, 3] → appears once\n\nThe subarray [3, 3, 3] is unique, so the smallest unique subarray length is 3.\n\nExample 2:\n\nInput: nums = [2,1,2,3,3]\n\nOutput: 1\n\nExplanation:\n\nSubarrays of length 1:\n\n- [2] → appears 2 times\n\n- [1] → appears once\n\n- [3] → appears 2 times\n\nThe subarray [1] is unique, so the smallest unique subarray length is 1.\n\nExample 3:\n\nInput: nums = [1,1,2,2,1]\n\nOutput: 2\n\nExplanation:\n\nSubarrays of length 1:\n\n- [1] → appears 3 times\n\n- [2] → appears 2 times\n\nSubarrays of length 2:\n\n- [1, 1] → appears once\n\n- [1, 2] → appears once\n\n- [2, 2] → appears once\n\n- [2, 1] → appears once\n\nThere is at least one subarray of length 2 that is unique, so the smallest unique subarray length is 2.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^5"
@@ -2366,5 +2366,20 @@
       "`ans` is always assigned, because `mid = n` always succeeds."
     ]
   },
-  "reviewFor": "class Solution {\npublic:\n    int smallestUniqueSubarray(vector<int>& nums) {\n        int n = nums.size();\n        int l=1,r = n;\n        int ans;\n        while(l<=r)\n        {\n            int mid = l + (r-l)/2;\n            unordered_map<string,int> m;\n            string s=\"\";\n            for(int i=0;i<mid;i++)\n            {\n                s+=to_string(nums[i]);\n            }\n            m[s]++;\n            bool win = false;\n            for(int i=mid;i<n;i++)\n            {\n                s.erase(0, 1);\n                s+=to_string(nums[i]);\n                m[s]++;\n            }\n            for(auto it:m)\n            {\n                if(it.second==1)\n                {\n                    win=true;\n                    break;\n                }\n            }\n            if(win)\n            {\n                ans = mid;\n                r=mid-1;\n            }\n            else\n            {\n                l=mid+1;\n            }\n        }\n        return ans;\n    }\n};"
+  "reviewFor": "class Solution {\npublic:\n    int smallestUniqueSubarray(vector<int>& nums) {\n        int n = nums.size();\n        int l=1,r = n;\n        int ans;\n        while(l<=r)\n        {\n            int mid = l + (r-l)/2;\n            unordered_map<string,int> m;\n            string s=\"\";\n            for(int i=0;i<mid;i++)\n            {\n                s+=to_string(nums[i]);\n            }\n            m[s]++;\n            bool win = false;\n            for(int i=mid;i<n;i++)\n            {\n                s.erase(0, 1);\n                s+=to_string(nums[i]);\n                m[s]++;\n            }\n            for(auto it:m)\n            {\n                if(it.second==1)\n                {\n                    win=true;\n                    break;\n                }\n            }\n            if(win)\n            {\n                ans = mid;\n                r=mid-1;\n            }\n            else\n            {\n                l=mid+1;\n            }\n        }\n        return ans;\n    }\n};",
+  "mySolutions": [
+    {
+      "code": "class Solution {\npublic:\n    bool hasUnique(vector<int>& nums, int len) {\n        const long long base = 100000;\n        const long long mod  = 1000000000037LL;\n\n        long long power = 1;                       // base^len\n        for (int k = 0; k < len; k++) power = power * base % mod;\n\n        unordered_map<long long, int> count;\n        long long h = 0;\n        for (int i = 0; i < (int)nums.size(); i++) {\n            h = (h * base + nums[i]) % mod;        // add new element at the back\n            if (i >= len) {                        // remove element leaving the window\n                h = (h - (long long)nums[i - len] * power % mod + mod) % mod;\n            }\n            if (i >= len - 1) count[h]++;          // window [i-len+1, i] is complete\n        }\n        for (auto& [hash, c] : count)\n            if (c == 1) return true;\n        return false;\n    }\n    int smallestUniqueSubarray(vector<int>& nums) {\n        int n = nums.size();\n        int l=1,r = n;\n        int ans;\n        while(l<=r)\n        {\n            int mid = l + (r-l)/2;\n            if(hasUnique(nums,mid))\n            {\n                ans = mid;\n                r=mid-1;\n            }\n            else\n            {\n                l=mid+1;\n            }\n        }\n        return ans;\n    }\n};",
+      "lang": "C++",
+      "runtime": "",
+      "memory": "",
+      "runtimePercentile": null,
+      "memoryPercentile": null,
+      "passed": "",
+      "attempts": 1,
+      "hintsUsed": 4,
+      "acceptedAt": "2026-11-25T09:37:32.963Z",
+      "platform": "LeetCode"
+    }
+  ]
 }

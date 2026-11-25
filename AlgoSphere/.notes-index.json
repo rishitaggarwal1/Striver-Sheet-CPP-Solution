@@ -342,7 +342,10 @@
     "space": "O(n)",
     "dir": "leetcode/smallest-unique-subarray",
     "solution": "leetcode/smallest-unique-subarray/smallest-unique-subarray.cpp",
-    "mine": null,
-    "updatedAt": "2026-11-25T09:13:55.594Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/smallest-unique-subarray/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-25T09:37:36.157Z"
   }
 }

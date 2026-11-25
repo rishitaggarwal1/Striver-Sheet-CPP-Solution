@@ -1,10 +1,10 @@
 # Smallest Unique Subarray
 
-**LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/smallest-unique-subarray/) · Pattern: **Binary search on answer + rolling hash**
+**LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/smallest-unique-subarray/) · Pattern: **Binary search on answer + rolling hash** · ✅ Solved in C++
 
 > Find the smallest length `L` such that some contiguous subarray of `nums` of length `L` occurs at exactly one starting position.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -759,6 +759,59 @@ int main() {
 </details>
 
 **Why this is the best:** It is probabilistic: a hash collision could merge two different windows. Double hashing makes this negligible. A suffix automaton gives a deterministic O(n) solution but is much harder to implement. Any solution must read all n values, so log n is the only gap from linear.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 4 of 8 | 2026-11-25 |
+
+For comparison, the optimal approach (Binary search on length + rolling hash) runs in `O(n log n)` time and `O(n)` space.
+
+```cpp
+class Solution {
+public:
+    bool hasUnique(vector<int>& nums, int len) {
+        const long long base = 100000;
+        const long long mod  = 1000000000037LL;
+
+        long long power = 1;                       // base^len
+        for (int k = 0; k < len; k++) power = power * base % mod;
+
+        unordered_map<long long, int> count;
+        long long h = 0;
+        for (int i = 0; i < (int)nums.size(); i++) {
+            h = (h * base + nums[i]) % mod;        // add new element at the back
+            if (i >= len) {                        // remove element leaving the window
+                h = (h - (long long)nums[i - len] * power % mod + mod) % mod;
+            }
+            if (i >= len - 1) count[h]++;          // window [i-len+1, i] is complete
+        }
+        for (auto& [hash, c] : count)
+            if (c == 1) return true;
+        return false;
+    }
+    int smallestUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        int l=1,r = n;
+        int ans;
+        while(l<=r)
+        {
+            int mid = l + (r-l)/2;
+            if(hasUnique(nums,mid))
+            {
+                ans = mid;
+                r=mid-1;
+            }
+            else
+            {
+                l=mid+1;
+            }
+        }
+        return ans;
+    }
+};
+```
 
 ## Test cases
 

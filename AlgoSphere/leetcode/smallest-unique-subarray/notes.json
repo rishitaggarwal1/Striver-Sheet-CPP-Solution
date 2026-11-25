@@ -4,7 +4,7 @@
   "slug": "smallest-unique-subarray",
   "title": "Smallest Unique Subarray",
   "url": "https://leetcode.com/problems/smallest-unique-subarray/",
-  "updatedAt": "2026-11-25T08:56:26.108Z",
+  "updatedAt": "2026-11-25T09:11:30.009Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given an integer array nums.\n\nFind the minimum length of a subarray that is not identical to any other subarray in nums.\n\nReturn an integer denoting the minimum possible length of such a subarray.\n\nTwo subarrays are considered identical if they have the same length and the same elements in corresponding positions.\n\nExample 1:\n\nInput: nums = [3,3,3]\n\nOutput: 3\n\nExplanation:\n\n- Subarrays of length 1: [3] → appears 3 times\n\n- Subarrays of length 2: [3, 3] → appears 2 times\n\n- Subarrays of length 3: [3, 3, 3] → appears once\n\nThe subarray [3, 3, 3] is unique, so the smallest unique subarray length is 3.\n\nExample 2:\n\nInput: nums = [2,1,2,3,3]\n\nOutput: 1\n\nExplanation:\n\nSubarrays of length 1:\n\n- [2] → appears 2 times\n\n- [1] → appears once\n\n- [3] → appears 2 times\n\nThe subarray [1] is unique, so the smallest unique subarray length is 1.\n\nExample 3:\n\nInput: nums = [1,1,2,2,1]\n\nOutput: 2\n\nExplanation:\n\nSubarrays of length 1:\n\n- [1] → appears 3 times\n\n- [2] → appears 2 times\n\nSubarrays of length 2:\n\n- [1, 1] → appears once\n\n- [1, 2] → appears once\n\n- [2, 2] → appears once\n\n- [2, 1] → appears once\n\nThere is at least one subarray of length 2 that is unique, so the smallest unique subarray length is 2.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^5"
@@ -1678,5 +1678,58 @@
       "Prove monotonicity explicitly with an extension or containment argument before binary searching. Here, any copy of the extended window would contain a copy of the original.",
       "Substring-uniqueness and repetition questions on arrays are string problems in disguise, so suffix arrays, LCP and suffix automata are deterministic alternatives."
     ]
-  }
+  },
+  "review": {
+    "verdict": "wrong_answer",
+    "summary": "Binary searching on the length is the right idea, but the sliding string window is corrupted for multi-digit numbers, can't tell `[1,12]` from `[11,2]`, and is far too slow and memory-hungry for n = 10^5.",
+    "yourIdea": "You binary search on the answer length `mid`. For each `mid` you slide a window over the array, encode each window as a string of concatenated numbers, count the strings in a hash map, and check whether any window appears exactly once. If one does, you try shorter lengths; if not, you try longer ones.",
+    "gaps": [
+      {
+        "title": "Encoding windows as strings costs O(window length) each",
+        "explanation": "Even with a correct encoding, every window string has about `mid * digits` characters. Hashing it, copying it into the map and the `erase(0, ...)` call each cost that much. So one check is O(n * mid), not O(n). The map also stores up to n strings of that size, which is gigabytes for large `mid`. What you need is a fingerprint of a window that updates in O(1) when you drop the left element and add a new one on the right.",
+        "lines": "10-23"
+      },
+      {
+        "title": "Your monotonicity reasoning is right, but worth stating",
+        "explanation": "Binary search works here because a unique subarray of length L, extended by one element, stays unique: any other occurrence of the longer subarray would contain another occurrence of the shorter one. The whole array (length n) is always unique. This is why your search on `mid` is valid. Keep that argument; only the per-length check needs replacing.",
+        "lines": "7-40"
+      }
+    ],
+    "bugs": [
+      {
+        "lines": "20",
+        "issue": "`s.erase(0, 1)` removes one character, but `nums[i-mid]` may have up to 6 digits. For multi-digit values the window keeps leftover digits and stops matching any real subarray.",
+        "fix": "Remove exactly the length of the outgoing number's text (or better, drop strings entirely and use a rolling hash over the integers)."
+      },
+      {
+        "lines": "14, 21",
+        "issue": "Numbers are concatenated without a separator, so different subarrays can produce the same string (for example `[1,12]` and `[11,2]` both give \"112\"). This can hide a unique subarray.",
+        "fix": "If you keep strings, append a delimiter such as `','` after each number; a hash over integer values avoids the problem entirely."
+      },
+      {
+        "lines": "10-23",
+        "issue": "Each window's string is rebuilt, hashed and stored at full length, so a check is O(n * mid * digits) time and memory. That causes TLE/MLE at n = 10^5.",
+        "fix": "Maintain a polynomial rolling hash: `h = (h - nums[i-mid]*pw[mid-1]) * B + nums[i]` modulo a large prime, using double hashing or a random 64-bit base to avoid collisions."
+      }
+    ],
+    "counterexample": {
+      "input": "nums = [10,10]",
+      "expected": "2",
+      "yours": "1",
+      "why": "With mid = 1 the first window is \"10\". Then `erase(0,1)` leaves \"0\" and appending \"10\" gives \"010\", which is not a real window. Both strings get count 1, so you wrongly report that a unique length-1 subarray exists."
+    },
+    "complexity": {
+      "time": "O(n * L * d * log n), where L is the window length tried and d is the digits per number; worst case O(n^2 log n).",
+      "space": "O(n * L * d) for the map of window strings.",
+      "verdict": "Too slow: with n = 10^5 and mid around 5*10^4, a single check is about 10^5 * 5*10^4 * 6 ≈ 3*10^10 character operations, plus tens of GB of memory, far beyond the roughly 10^8 operations that fit."
+    },
+    "nudge": "Your binary search is fine. Focus on the check: how could you represent each window of length `mid` by a single number that you can update in O(1) when the window slides one step right? Then count those numbers instead of strings.",
+    "correctIdea": "Binary search the length L (valid because uniqueness is monotone in L). To check a given L, compute a rolling polynomial hash of every length-L window in O(n), using double modulus or a randomized 64-bit base to make collisions negligible. Count the hashes and see whether any appears exactly once. That gives O(n log n) overall. An alternative that also runs in O(n log n) uses a suffix array with LCP: for each suffix i, let m be the max LCP with its two sorted neighbours; if m + 1 <= n - i, a unique subarray of length m + 1 starts at i, and the answer is the minimum such m + 1.",
+    "strengths": [
+      "You recognized that the property is monotone in length and that binary search on the answer applies.",
+      "Using a sliding window plus a frequency map to detect a count-1 window is the right shape for the check.",
+      "`ans` is always assigned, because `mid = n` always succeeds."
+    ]
+  },
+  "reviewFor": "class Solution {\npublic:\n    int smallestUniqueSubarray(vector<int>& nums) {\n        int n = nums.size();\n        int l=1,r = n;\n        int ans;\n        while(l<=r)\n        {\n            int mid = l + (r-l)/2;\n            unordered_map<string,int> m;\n            string s=\"\";\n            for(int i=0;i<mid;i++)\n            {\n                s+=to_string(nums[i]);\n            }\n            m[s]++;\n            bool win = false;\n            for(int i=mid;i<n;i++)\n            {\n                s.erase(0, 1);\n                s+=to_string(nums[i]);\n                m[s]++;\n            }\n            for(auto it:m)\n            {\n                if(it.second==1)\n                {\n                    win=true;\n                    break;\n                }\n            }\n            if(win)\n            {\n                ans = mid;\n                r=mid-1;\n            }\n            else\n            {\n                l=mid+1;\n            }\n        }\n        return ans;\n    }\n};"
 }

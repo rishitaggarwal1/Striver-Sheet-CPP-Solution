@@ -577,7 +577,186 @@ int main() {
 5. If has_unique(mid), set hi = mid; otherwise set lo = mid + 1.
 6. Return lo.
 
-**Complexity:** time `O(n log n)`, space `O(n)`. About log2(10^5) ≈ 17 calls to has_unique, each O(n) for hashing and map counting. Memory is the prefix and power arrays plus one hash map of at most n entries.
+**Pseudocode**
+
+```text
+ 1 │ function hasUnique(L):
+ 2 │   count ← empty map // fingerprint pair → number of windows with it
+ 3 │   for i from 0 to n − L:
+ 4 │     key ← ((H1[i+L] − H1[i]·P1[L]) mod M1, (H2[i+L] − H2[i]·P2[L]) mod M2) // O(1) hash of nums[i..i+L−1]
+ 5 │     count[key] ← count[key] + 1
+ 6 │   for each (key, c) in count:
+ 7 │     if c = 1: return true // some window of length L occurs exactly once
+ 8 │   return false
+ 9 │ function smallestUniqueSubarray(nums):
+10 │   n ← length(nums)
+11 │   H1[0] ← 0; H2[0] ← 0; P1[0] ← 1; P2[0] ← 1 // B1, B2 > 10^5 so values never alias; M1, M2 large primes
+12 │   for i from 0 to n − 1:
+13 │     H1[i+1] ← (H1[i]·B1 + nums[i]) mod M1
+14 │     H2[i+1] ← (H2[i]·B2 + nums[i]) mod M2
+15 │     P1[i+1] ← P1[i]·B1 mod M1; P2[i+1] ← P2[i]·B2 mod M2 // powers to shift a prefix hash
+16 │   lo ← 1; hi ← n // hasUnique(n) is always true, so the answer is in [1, n]
+17 │   while lo < hi:
+18 │     mid ← floor((lo + hi) / 2)
+19 │     if hasUnique(mid):
+20 │       hi ← mid // mid works, and by monotonicity the answer is ≤ mid
+21 │     else:
+22 │       lo ← mid + 1 // no length ≤ mid works
+23 │   return lo
+```
+
+**Time complexity: `O(n log n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Prefix hash and power build (lines 11-15) | n iterations × O(1) | Each prefix hash and power comes from the previous one with one multiply and one add. |
+| One call of hasUnique (lines 1-8) | (n − L + 1) windows × O(1) expected, plus a scan of at most n map entries | Each window fingerprint is computed in constant time from the prefix hashes, and inserting it into a hash map costs O(1) on average. |
+| Binary search loop (lines 16-22) | ⌈log2 n⌉ iterations × O(n) | Each iteration halves the range [lo, hi] and makes one hasUnique call. |
+
+- **Adding it up:** O(n) + log2(n) · O(n) = O(n log n); the binary search dominates the linear setup
+- **Best vs worst case:** Roughly the same for every input. The binary search always runs about log2 n rounds, and each round scans all n − mid + 1 windows. Only hash-map behaviour (collisions) could make it slower, and that is unlikely in practice.
+- **At the maximum input:** n = 10^5 → about 17 rounds × 10^5 window hashes ≈ 1.7·10^6 map operations, well under 0.1 s
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Arrays H1, H2, P1, P2 (lines 11-15) | 4 × (n + 1) integers | One prefix hash and one power per position, for each of the two moduli. |
+| count map inside hasUnique (line 2) | up to n − L + 1 entries | In the worst case every window is distinct. The map is thrown away after each call. |
+
+- **Adding it up:** O(n) + O(n) = O(n)
+- **Not counted:** The input array is not counted. There is no recursion; hasUnique only lives inside one binary-search round at a time.
+
+**Dry run** on `nums = [3,3,3]  (B1 = 100003, M1 = 10^9+7, B2 = 100019, M2 = 10^9+9)`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 10 | Read the length of the array: n = 3. | `n = 3`<br>`nums = [3, 3, 3]` |
+| 2 | 11 | Initialise the empty-prefix hashes to 0 and the zeroth powers to 1. | `H1 = [0, -, -, -]`<br>`H2 = [0, -, -, -]`<br>`P1 = [1, -, -, -]`<br>`P2 = [1, -, -, -]` |
+| 3 | 15 | i = 0: H1[1] = 0·100003 + 3 = 3 and H2[1] = 3. The powers become P1[1] = 100003 and P2[1] = 100019. | `i = 0`<br>`nums = [3, 3, 3]` (i→0)<br>`H1 = [0, 3, -, -]`<br>`H2 = [0, 3, -, -]`<br>`P1 = [1, 100003, -, -]`<br>`P2 = [1, 100019, -, -]` |
+| 4 | 15 | i = 1: H1[2] = 3·100003 + 3 = 300012 and H2[2] = 3·100019 + 3 = 300060. The squared powers taken mod M1 and M2 are 599939 and 3800271. | `i = 1`<br>`nums = [3, 3, 3]` (i→1)<br>`H1 = [0, 3, 300012, -]`<br>`H2 = [0, 3, 300060, -]`<br>`P1 = [1, 100003, 599939, -]`<br>`P2 = [1, 100019, 3800271, -]` |
+| 5 | 15 | i = 2: H1[3] = (300012·100003 + 3) mod M1 = 2099829 and H2[3] = 11700873. The cubed powers are 995699404 and 99301729. | `i = 2`<br>`nums = [3, 3, 3]` (i→2)<br>`H1 = [0, 3, 300012, 2099829]`<br>`H2 = [0, 3, 300060, 11700873]`<br>`P1 = [1, 100003, 599939, 995699404]`<br>`P2 = [1, 100019, 3800271, 99301729]` |
+| 6 | 16 | The answer lies in [1, 3], because the whole array is always unique. | `lo = 1`<br>`hi = 3`<br>`nums = [3, 3, 3]` |
+| 7 | 18 | lo = 1 < hi = 3, so the loop runs and mid = (1 + 3) / 2 = 2. Next we test whether some length-2 window is unique. | `mid = 2` |
+| 8 | 5 | In hasUnique(2) with i = 0, window [3,3] has key (300012 − 0·599939, 300060 − 0·3800271) = (300012, 300060). Its count becomes 1. | `L = 2`<br>`i = 0`<br>`key = (300012,300060)`<br>`nums = [3, 3, 3]` (i→0)<br>`count = {(300012,300060)→1}` |
+| 9 | 5 | With i = 1, the key is (2099829 − 3·599939, 11700873 − 3·3800271) = (300012, 300060). That is the same fingerprint, because the window is again [3,3], so its count rises to 2. | `i = 1`<br>`nums = [3, 3, 3]` (i→1)<br>`count = {(300012,300060)→2}` |
+| 10 | 8 | The only entry has count 2, so no length-2 window is unique and hasUnique(2) returns false. | `nums = [3, 3, 3]` |
+| 11 | 22 | Length 2 fails, so by monotonicity length 1 fails too. Set lo = mid + 1 = 3. | `lo = 3` |
+| 12 | 17 | The check lo = 3 < hi = 3 is false, so the search range has shrunk to a single length and the loop ends. | (no change) |
+| 13 | 23 | Return lo = 3. | (no change) |
+
+**Result:** 3. No subarray of length 2 (and hence of length 1) is unique, while the full array of length 3 always is, so 3 is the smallest unique length.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    int smallestUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        // Two independent moduli (double hashing) make a false match astronomically unlikely
+        const long long M1 = 1000000007LL, M2 = 1000000009LL;
+        // Bases larger than the max value (1e5) so different arrays never alias before the mod
+        const long long B1 = 100003LL, B2 = 100019LL;
+        vector<long long> H1(n + 1, 0), H2(n + 1, 0), P1(n + 1, 1), P2(n + 1, 1);
+        for (int i = 0; i < n; i++) {
+            H1[i + 1] = (H1[i] * B1 + nums[i]) % M1; // prefix hash of nums[0..i]
+            H2[i + 1] = (H2[i] * B2 + nums[i]) % M2;
+            P1[i + 1] = P1[i] * B1 % M1;             // B1^(i+1), used to shift prefixes
+            P2[i + 1] = P2[i] * B2 % M2;
+        }
+        // Returns true if some window of length L occurs exactly once
+        auto hasUnique = [&](int L) {
+            unordered_map<unsigned long long, int> cnt;
+            cnt.reserve(2 * (n - L + 1)); // avoid rehashing
+            for (int i = 0; i + L <= n; i++) {
+                // O(1) fingerprint of nums[i..i+L-1]; products stay below ~1e18, so they fit in long long
+                long long a = ((H1[i + L] - H1[i] * P1[L]) % M1 + M1) % M1;
+                long long b = ((H2[i + L] - H2[i] * P2[L]) % M2 + M2) % M2;
+                // Both hashes are below 2^30, so pack them into one 64-bit key
+                unsigned long long key = ((unsigned long long)a << 32) | (unsigned long long)b;
+                cnt[key]++;
+            }
+            for (auto& p : cnt)
+                if (p.second == 1) return true; // found a window occurring exactly once
+            return false;
+        };
+        int lo = 1, hi = n; // hasUnique(n) is always true
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (hasUnique(mid)) hi = mid; // answer <= mid (monotonic predicate)
+            else lo = mid + 1;            // answer > mid
+        }
+        return lo;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int smallestUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        // Two independent moduli (double hashing) make a false match astronomically unlikely
+        const long long M1 = 1000000007LL, M2 = 1000000009LL;
+        // Bases larger than the max value (1e5) so different arrays never alias before the mod
+        const long long B1 = 100003LL, B2 = 100019LL;
+        vector<long long> H1(n + 1, 0), H2(n + 1, 0), P1(n + 1, 1), P2(n + 1, 1);
+        for (int i = 0; i < n; i++) {
+            H1[i + 1] = (H1[i] * B1 + nums[i]) % M1; // prefix hash of nums[0..i]
+            H2[i + 1] = (H2[i] * B2 + nums[i]) % M2;
+            P1[i + 1] = P1[i] * B1 % M1;             // B1^(i+1), used to shift prefixes
+            P2[i + 1] = P2[i] * B2 % M2;
+        }
+        // Returns true if some window of length L occurs exactly once
+        auto hasUnique = [&](int L) {
+            unordered_map<unsigned long long, int> cnt;
+            cnt.reserve(2 * (n - L + 1)); // avoid rehashing
+            for (int i = 0; i + L <= n; i++) {
+                // O(1) fingerprint of nums[i..i+L-1]; products stay below ~1e18, so they fit in long long
+                long long a = ((H1[i + L] - H1[i] * P1[L]) % M1 + M1) % M1;
+                long long b = ((H2[i + L] - H2[i] * P2[L]) % M2 + M2) % M2;
+                // Both hashes are below 2^30, so pack them into one 64-bit key
+                unsigned long long key = ((unsigned long long)a << 32) | (unsigned long long)b;
+                cnt[key]++;
+            }
+            for (auto& p : cnt)
+                if (p.second == 1) return true; // found a window occurring exactly once
+            return false;
+        };
+        int lo = 1, hi = n; // hasUnique(n) is always true
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (hasUnique(mid)) hi = mid; // answer <= mid (monotonic predicate)
+            else lo = mid + 1;            // answer > mid
+        }
+        return lo;
+    }
+};
+
+int main() {
+    Solution sol;
+    vector<pair<vector<int>, int>> tests = {
+        {{3, 3, 3}, 3},
+        {{2, 1, 2, 3, 3}, 1},
+        {{1, 1, 2, 2, 1}, 2}
+    };
+    for (auto& t : tests) {
+        vector<int> nums = t.first;
+        int got = sol.smallestUniqueSubarray(nums);
+        cout << "Output: " << got << "  Expected: " << t.second << (got == t.second ? "  OK" : "  MISMATCH") << "\n";
+    }
+    return 0;
+}
+```
+
+</details>
 
 **Why this is the best:** It is probabilistic: a hash collision could merge two different windows. Double hashing makes this negligible. A suffix automaton gives a deterministic O(n) solution but is much harder to implement. Any solution must read all n values, so log n is the only gap from linear.
 

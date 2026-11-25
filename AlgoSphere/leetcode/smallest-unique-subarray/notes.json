@@ -4,7 +4,7 @@
   "slug": "smallest-unique-subarray",
   "title": "Smallest Unique Subarray",
   "url": "https://leetcode.com/problems/smallest-unique-subarray/",
-  "updatedAt": "2026-11-25T09:11:30.009Z",
+  "updatedAt": "2026-11-25T09:13:55.594Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given an integer array nums.\n\nFind the minimum length of a subarray that is not identical to any other subarray in nums.\n\nReturn an integer denoting the minimum possible length of such a subarray.\n\nTwo subarrays are considered identical if they have the same length and the same elements in corresponding positions.\n\nExample 1:\n\nInput: nums = [3,3,3]\n\nOutput: 3\n\nExplanation:\n\n- Subarrays of length 1: [3] → appears 3 times\n\n- Subarrays of length 2: [3, 3] → appears 2 times\n\n- Subarrays of length 3: [3, 3, 3] → appears once\n\nThe subarray [3, 3, 3] is unique, so the smallest unique subarray length is 3.\n\nExample 2:\n\nInput: nums = [2,1,2,3,3]\n\nOutput: 1\n\nExplanation:\n\nSubarrays of length 1:\n\n- [2] → appears 2 times\n\n- [1] → appears once\n\n- [3] → appears 2 times\n\nThe subarray [1] is unique, so the smallest unique subarray length is 1.\n\nExample 3:\n\nInput: nums = [1,1,2,2,1]\n\nOutput: 2\n\nExplanation:\n\nSubarrays of length 1:\n\n- [1] → appears 3 times\n\n- [2] → appears 2 times\n\nSubarrays of length 2:\n\n- [1, 1] → appears once\n\n- [1, 2] → appears once\n\n- [2, 2] → appears once\n\n- [2, 1] → appears once\n\nThere is at least one subarray of length 2 that is unique, so the smallest unique subarray length is 2.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^5"
@@ -1634,7 +1634,642 @@
         "time": "O(n log n)",
         "space": "O(n)",
         "complexity": "About log2(10^5) ≈ 17 calls to has_unique, each O(n) for hashing and map counting. Memory is the prefix and power arrays plus one hash map of at most n entries.",
-        "tradeoff": "It is probabilistic: a hash collision could merge two different windows. Double hashing makes this negligible. A suffix automaton gives a deterministic O(n) solution but is much harder to implement. Any solution must read all n values, so log n is the only gap from linear."
+        "tradeoff": "It is probabilistic: a hash collision could merge two different windows. Double hashing makes this negligible. A suffix automaton gives a deterministic O(n) solution but is much harder to implement. Any solution must read all n values, so log n is the only gap from linear.",
+        "deep": {
+          "pseudocode": [
+            "function hasUnique(L):",
+            "  count ← empty map // fingerprint pair → number of windows with it",
+            "  for i from 0 to n − L:",
+            "    key ← ((H1[i+L] − H1[i]·P1[L]) mod M1, (H2[i+L] − H2[i]·P2[L]) mod M2) // O(1) hash of nums[i..i+L−1]",
+            "    count[key] ← count[key] + 1",
+            "  for each (key, c) in count:",
+            "    if c = 1: return true // some window of length L occurs exactly once",
+            "  return false",
+            "function smallestUniqueSubarray(nums):",
+            "  n ← length(nums)",
+            "  H1[0] ← 0; H2[0] ← 0; P1[0] ← 1; P2[0] ← 1 // B1, B2 > 10^5 so values never alias; M1, M2 large primes",
+            "  for i from 0 to n − 1:",
+            "    H1[i+1] ← (H1[i]·B1 + nums[i]) mod M1",
+            "    H2[i+1] ← (H2[i]·B2 + nums[i]) mod M2",
+            "    P1[i+1] ← P1[i]·B1 mod M1; P2[i+1] ← P2[i]·B2 mod M2 // powers to shift a prefix hash",
+            "  lo ← 1; hi ← n // hasUnique(n) is always true, so the answer is in [1, n]",
+            "  while lo < hi:",
+            "    mid ← floor((lo + hi) / 2)",
+            "    if hasUnique(mid):",
+            "      hi ← mid // mid works, and by monotonicity the answer is ≤ mid",
+            "    else:",
+            "      lo ← mid + 1 // no length ≤ mid works",
+            "  return lo"
+          ],
+          "time": {
+            "total": "O(n log n)",
+            "parts": [
+              {
+                "part": "Prefix hash and power build (lines 11-15)",
+                "cost": "n iterations × O(1)",
+                "why": "Each prefix hash and power comes from the previous one with one multiply and one add."
+              },
+              {
+                "part": "One call of hasUnique (lines 1-8)",
+                "cost": "(n − L + 1) windows × O(1) expected, plus a scan of at most n map entries",
+                "why": "Each window fingerprint is computed in constant time from the prefix hashes, and inserting it into a hash map costs O(1) on average."
+              },
+              {
+                "part": "Binary search loop (lines 16-22)",
+                "cost": "⌈log2 n⌉ iterations × O(n)",
+                "why": "Each iteration halves the range [lo, hi] and makes one hasUnique call."
+              }
+            ],
+            "sum": "O(n) + log2(n) · O(n) = O(n log n); the binary search dominates the linear setup",
+            "cases": "Roughly the same for every input. The binary search always runs about log2 n rounds, and each round scans all n − mid + 1 windows. Only hash-map behaviour (collisions) could make it slower, and that is unlikely in practice.",
+            "feel": "n = 10^5 → about 17 rounds × 10^5 window hashes ≈ 1.7·10^6 map operations, well under 0.1 s",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Arrays H1, H2, P1, P2 (lines 11-15)",
+                "cost": "4 × (n + 1) integers",
+                "why": "One prefix hash and one power per position, for each of the two moduli."
+              },
+              {
+                "part": "count map inside hasUnique (line 2)",
+                "cost": "up to n − L + 1 entries",
+                "why": "In the worst case every window is distinct. The map is thrown away after each call."
+              }
+            ],
+            "sum": "O(n) + O(n) = O(n)",
+            "cases": "",
+            "feel": "",
+            "note": "The input array is not counted. There is no recursion; hasUnique only lives inside one binary-search round at a time."
+          },
+          "dryRun": {
+            "input": "nums = [3,3,3]  (B1 = 100003, M1 = 10^9+7, B2 = 100019, M2 = 10^9+9)",
+            "steps": [
+              {
+                "line": 10,
+                "explain": "Read the length of the array: n = 3.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "Initialise the empty-prefix hashes to 0 and the zeroth powers to 1.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "H1": {
+                    "values": [
+                      "0",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "H2": {
+                    "values": [
+                      "0",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "P1": {
+                    "values": [
+                      "1",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "P2": {
+                    "values": [
+                      "1",
+                      "-",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "i = 0: H1[1] = 0·100003 + 3 = 3 and H2[1] = 3. The powers become P1[1] = 100003 and P2[1] = 100019.",
+                "vars": {
+                  "n": "3",
+                  "i": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "H1": {
+                    "values": [
+                      "0",
+                      "3",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "H2": {
+                    "values": [
+                      "0",
+                      "3",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "P1": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "P2": {
+                    "values": [
+                      "1",
+                      "100019",
+                      "-",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "i = 1: H1[2] = 3·100003 + 3 = 300012 and H2[2] = 3·100019 + 3 = 300060. The squared powers taken mod M1 and M2 are 599939 and 3800271.",
+                "vars": {
+                  "n": "3",
+                  "i": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "H1": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "H2": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300060",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "P1": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "P2": {
+                    "values": [
+                      "1",
+                      "100019",
+                      "3800271",
+                      "-"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "i = 2: H1[3] = (300012·100003 + 3) mod M1 = 2099829 and H2[3] = 11700873. The cubed powers are 995699404 and 99301729.",
+                "vars": {
+                  "n": "3",
+                  "i": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "H1": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "H2": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300060",
+                      "11700873"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "P1": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "P2": {
+                    "values": [
+                      "1",
+                      "100019",
+                      "3800271",
+                      "99301729"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 16,
+                "explain": "The answer lies in [1, 3], because the whole array is always unique.",
+                "vars": {
+                  "n": "3",
+                  "lo": "1",
+                  "hi": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "lo = 1 < hi = 3, so the loop runs and mid = (1 + 3) / 2 = 2. Next we test whether some length-2 window is unique.",
+                "vars": {
+                  "n": "3",
+                  "lo": "1",
+                  "hi": "3",
+                  "mid": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 5,
+                "explain": "In hasUnique(2) with i = 0, window [3,3] has key (300012 − 0·599939, 300060 − 0·3800271) = (300012, 300060). Its count becomes 1.",
+                "vars": {
+                  "n": "3",
+                  "lo": "1",
+                  "hi": "3",
+                  "mid": "2",
+                  "L": "2",
+                  "i": "0",
+                  "key": "(300012,300060)"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(300012,300060)→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 5,
+                "explain": "With i = 1, the key is (2099829 − 3·599939, 11700873 − 3·3800271) = (300012, 300060). That is the same fingerprint, because the window is again [3,3], so its count rises to 2.",
+                "vars": {
+                  "n": "3",
+                  "lo": "1",
+                  "hi": "3",
+                  "mid": "2",
+                  "L": "2",
+                  "i": "1",
+                  "key": "(300012,300060)"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(300012,300060)→2"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 8,
+                "explain": "The only entry has count 2, so no length-2 window is unique and hasUnique(2) returns false.",
+                "vars": {
+                  "n": "3",
+                  "lo": "1",
+                  "hi": "3",
+                  "mid": "2",
+                  "L": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "(300012,300060)→2"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 22,
+                "explain": "Length 2 fails, so by monotonicity length 1 fails too. Set lo = mid + 1 = 3.",
+                "vars": {
+                  "n": "3",
+                  "lo": "3",
+                  "hi": "3",
+                  "mid": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "The check lo = 3 < hi = 3 is false, so the search range has shrunk to a single length and the loop ends.",
+                "vars": {
+                  "n": "3",
+                  "lo": "3",
+                  "hi": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 23,
+                "explain": "Return lo = 3.",
+                "vars": {
+                  "n": "3",
+                  "lo": "3",
+                  "hi": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "3. No subarray of length 2 (and hence of length 1) is unique, while the full array of length 3 always is, so 3 is the smallest unique length."
+          },
+          "solution": "class Solution {\npublic:\n    int smallestUniqueSubarray(vector<int>& nums) {\n        int n = nums.size();\n        // Two independent moduli (double hashing) make a false match astronomically unlikely\n        const long long M1 = 1000000007LL, M2 = 1000000009LL;\n        // Bases larger than the max value (1e5) so different arrays never alias before the mod\n        const long long B1 = 100003LL, B2 = 100019LL;\n        vector<long long> H1(n + 1, 0), H2(n + 1, 0), P1(n + 1, 1), P2(n + 1, 1);\n        for (int i = 0; i < n; i++) {\n            H1[i + 1] = (H1[i] * B1 + nums[i]) % M1; // prefix hash of nums[0..i]\n            H2[i + 1] = (H2[i] * B2 + nums[i]) % M2;\n            P1[i + 1] = P1[i] * B1 % M1;             // B1^(i+1), used to shift prefixes\n            P2[i + 1] = P2[i] * B2 % M2;\n        }\n        // Returns true if some window of length L occurs exactly once\n        auto hasUnique = [&](int L) {\n            unordered_map<unsigned long long, int> cnt;\n            cnt.reserve(2 * (n - L + 1)); // avoid rehashing\n            for (int i = 0; i + L <= n; i++) {\n                // O(1) fingerprint of nums[i..i+L-1]; products stay below ~1e18, so they fit in long long\n                long long a = ((H1[i + L] - H1[i] * P1[L]) % M1 + M1) % M1;\n                long long b = ((H2[i + L] - H2[i] * P2[L]) % M2 + M2) % M2;\n                // Both hashes are below 2^30, so pack them into one 64-bit key\n                unsigned long long key = ((unsigned long long)a << 32) | (unsigned long long)b;\n                cnt[key]++;\n            }\n            for (auto& p : cnt)\n                if (p.second == 1) return true; // found a window occurring exactly once\n            return false;\n        };\n        int lo = 1, hi = n; // hasUnique(n) is always true\n        while (lo < hi) {\n            int mid = lo + (hi - lo) / 2;\n            if (hasUnique(mid)) hi = mid; // answer <= mid (monotonic predicate)\n            else lo = mid + 1;            // answer > mid\n        }\n        return lo;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n    vector<pair<vector<int>, int>> tests = {\n        {{3, 3, 3}, 3},\n        {{2, 1, 2, 3, 3}, 1},\n        {{1, 1, 2, 2, 1}, 2}\n    };\n    for (auto& t : tests) {\n        vector<int> nums = t.first;\n        int got = sol.smallestUniqueSubarray(nums);\n        cout << \"Output: \" << got << \"  Expected: \" << t.second << (got == t.second ? \"  OK\" : \"  MISMATCH\") << \"\\n\";\n    }\n    return 0;\n}"
+        }
       }
     ],
     "mistakes": [

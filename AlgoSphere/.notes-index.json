@@ -331,5 +331,18 @@
       "path": "leetcode/sudoku-solver/my-solution.cpp"
     },
     "updatedAt": "2026-11-24T10:50:05.324Z"
+  },
+  "leetcode/smallest-unique-subarray": {
+    "title": "Smallest Unique Subarray",
+    "site": "leetcode",
+    "slug": "smallest-unique-subarray",
+    "difficulty": "Hard",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/smallest-unique-subarray",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-25T04:58:38.753Z"
   }
 }

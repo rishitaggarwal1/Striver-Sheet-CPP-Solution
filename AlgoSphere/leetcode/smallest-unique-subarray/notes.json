@@ -4,7 +4,7 @@
   "slug": "smallest-unique-subarray",
   "title": "Smallest Unique Subarray",
   "url": "https://leetcode.com/problems/smallest-unique-subarray/",
-  "updatedAt": "2026-11-25T05:00:08.902Z",
+  "updatedAt": "2026-11-25T08:56:26.108Z",
   "problem": {
     "difficulty": "Hard",
     "description": "You are given an integer array nums.\n\nFind the minimum length of a subarray that is not identical to any other subarray in nums.\n\nReturn an integer denoting the minimum possible length of such a subarray.\n\nTwo subarrays are considered identical if they have the same length and the same elements in corresponding positions.\n\nExample 1:\n\nInput: nums = [3,3,3]\n\nOutput: 3\n\nExplanation:\n\n- Subarrays of length 1: [3] → appears 3 times\n\n- Subarrays of length 2: [3, 3] → appears 2 times\n\n- Subarrays of length 3: [3, 3, 3] → appears once\n\nThe subarray [3, 3, 3] is unique, so the smallest unique subarray length is 3.\n\nExample 2:\n\nInput: nums = [2,1,2,3,3]\n\nOutput: 1\n\nExplanation:\n\nSubarrays of length 1:\n\n- [2] → appears 2 times\n\n- [1] → appears once\n\n- [3] → appears 2 times\n\nThe subarray [1] is unique, so the smallest unique subarray length is 1.\n\nExample 3:\n\nInput: nums = [1,1,2,2,1]\n\nOutput: 2\n\nExplanation:\n\nSubarrays of length 1:\n\n- [1] → appears 3 times\n\n- [2] → appears 2 times\n\nSubarrays of length 2:\n\n- [1, 1] → appears once\n\n- [1, 2] → appears once\n\n- [2, 2] → appears once\n\n- [2, 1] → appears once\n\nThere is at least one subarray of length 2 that is unique, so the smallest unique subarray length is 2.\n\nConstraints:\n\n- 1 <= nums.length <= 10^5\n\n- 1 <= nums[i] <= 10^5"
@@ -735,7 +735,888 @@
         "time": "O(n^2)",
         "space": "O(n)",
         "complexity": "Each length costs O(n) for hashing and counting, and in the worst case (answer near n) all n lengths are tried. The prefix arrays and the per-length map use O(n) memory.",
-        "tradeoff": "On `[3,3,...,3]` with n = 10^5 the answer is n, so this does about 10^10 hash operations, which is too slow. It ignores that uniqueness is monotone in `L`."
+        "tradeoff": "On `[3,3,...,3]` with n = 10^5 the answer is n, so this does about 10^10 hash operations, which is too slow. It ignores that uniqueness is monotone in `L`.",
+        "deep": {
+          "pseudocode": [
+            "function smallestUniqueSubarray(nums):",
+            "  n ← length(nums)",
+            "  B ← 100003; M ← 1000000007  // B > every value, so different arrays act like different base-B numbers",
+            "  H ← array of n+1 zeros; P ← array of n+1 zeros; P[0] ← 1",
+            "  for i from 0 to n−1:",
+            "    H[i+1] ← (H[i]·B + nums[i]) mod M  // hash of prefix nums[0..i]",
+            "    P[i+1] ← (P[i]·B) mod M  // P[k] = B^k mod M",
+            "  for L from 1 to n:  // try lengths from shortest up",
+            "    count ← empty map  // window hash → how many windows have it",
+            "    for l from 0 to n−L:",
+            "      h ← (H[l+L] − H[l]·P[L]) mod M, made non-negative  // O(1): remove the prefix before l",
+            "      count[h] ← count[h] + 1",
+            "    for each (h, c) in count:",
+            "      if c = 1:",
+            "        return L  // first length that has a window seen exactly once",
+            "  return n  // unreachable: the single window of length n is always unique",
+            "// The C++ code runs the same hash with a second modulus and combines both, making false matches practically impossible"
+          ],
+          "time": {
+            "total": "O(n^2)",
+            "parts": [
+              {
+                "part": "Prefix hash and power build (lines 4-7)",
+                "cost": "n iterations × O(1)",
+                "why": "Each prefix hash extends the previous one by one multiply and one add."
+              },
+              {
+                "part": "Window hashing for one length L (lines 9-12)",
+                "cost": "(n−L+1) windows × O(1) expected",
+                "why": "Each window hash is one subtraction and one multiply, and each map increment is expected O(1)."
+              },
+              {
+                "part": "Scan of the map (lines 13-15)",
+                "cost": "at most n−L+1 entries × O(1)",
+                "why": "The map never holds more distinct hashes than there are windows."
+              },
+              {
+                "part": "Outer loop over L (lines 8-15)",
+                "cost": "up to n iterations",
+                "why": "In the worst case, such as all-equal arrays, no length below n has a unique window."
+              }
+            ],
+            "sum": "O(n) build + Σ_{L=1..ans} O(n−L+1). In the worst case ans = n, giving n + (n−1) + … + 1 = n(n+1)/2 = O(n^2). This dominates the O(n) setup.",
+            "cases": "Best case: some value appears exactly once (e.g. [2,1,2,3,3]). The loop stops at L = 1 after O(n) work. Worst case: all elements are equal (e.g. [3,3,…,3]). The answer is n and every length is processed, about n^2/2 window hashes.",
+            "feel": "n = 10^5 in the worst case → about 5·10^9 hash-map operations, many seconds and too slow. When the answer is small it finishes in a few milliseconds, which is why the optimal approach binary-searches L instead.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "Prefix arrays H and P (line 4)",
+                "cost": "2·(n+1) integers (×2 with the second modulus)",
+                "why": "One prefix hash and one power for each position."
+              },
+              {
+                "part": "count map (line 9)",
+                "cost": "up to n−L+1 entries",
+                "why": "It holds at most one entry per window of the current length, and it is rebuilt for each L."
+              }
+            ],
+            "sum": "O(n) + O(n) = O(n), because only one map is alive at a time.",
+            "cases": "",
+            "feel": "",
+            "note": "The input array is not counted. There is no recursion."
+          },
+          "dryRun": {
+            "input": "nums = [3,3,3]",
+            "steps": [
+              {
+                "line": 4,
+                "explain": "n = 3. We pick base 100003 and modulus 10^9+7, and allocate H and P with P[0] = 1.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 0: H[1] = 0·100003 + 3 = 3, and P[1] = 100003.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "i": "0"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 1: H[2] = 3·100003 + 3 = 300012. P[2] = 100003² mod M = 10000600009 − 10·M = 599939.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "i": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "i = 2: H[3] = (300012·100003 + 3) mod M = 30002100039 − 30·M = 2099829. P[3] = 599939·100003 mod M = 995699404.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "i": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "i": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 9,
+                "explain": "Start with length L = 1 and an empty count map.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "l = 0: h = H[1] − H[0]·P[1] = 3 − 0 = 3. count[3] becomes 1.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "1",
+                  "l": "0",
+                  "h": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "l": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "3→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "l = 1: h = H[2] − H[1]·P[1] = 300012 − 300009 = 3. This is the same window [3], so count[3] becomes 2.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "1",
+                  "l": "1",
+                  "h": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "l": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "3→2"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "l = 2: H[2]·P[1] mod M = 2099826, so h = 2099829 − 2099826 = 3. count[3] becomes 3.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "1",
+                  "l": "2",
+                  "h": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "l": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2,
+                      3
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "3→3"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "Scan the map for L = 1. The only entry has c = 3, not 1, so no length-1 window is unique. Move on to L = 2.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "1",
+                  "h": "3",
+                  "c": "3"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "3→3"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "L = 2, with the map reset. l = 0: h = H[2] − H[0]·P[2] = 300012. count[300012] becomes 1.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "2",
+                  "l": "0",
+                  "h": "300012"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "l": 0
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      2
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "300012→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "l = 1: h = H[3] − H[1]·P[2] = 2099829 − 3·599939 = 2099829 − 1799817 = 300012. count[300012] becomes 2.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "2",
+                  "l": "1",
+                  "h": "300012"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "l": 1
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1,
+                      3
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "300012→2"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "The only length-2 hash has c = 2, so [3,3] appears twice and is not unique. Move on to L = 3.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "2",
+                  "h": "300012",
+                  "c": "2"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "300012→2"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 12,
+                "explain": "L = 3, with the map reset. The only window is l = 0: h = H[3] − H[0]·P[3] = 2099829. count[2099829] becomes 1.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "3",
+                  "l": "0",
+                  "h": "2099829"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {
+                      "l": 0
+                    },
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      3
+                    ]
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      3
+                    ]
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "2099829→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 15,
+                "explain": "The map scan finds c = 1, so a length-3 window is unique and we return L = 3.",
+                "vars": {
+                  "n": "3",
+                  "B": "100003",
+                  "M": "1000000007",
+                  "L": "3",
+                  "h": "2099829",
+                  "c": "1"
+                },
+                "arrays": {
+                  "nums": {
+                    "values": [
+                      "3",
+                      "3",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  },
+                  "H": {
+                    "values": [
+                      "0",
+                      "3",
+                      "300012",
+                      "2099829"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "P": {
+                    "values": [
+                      "1",
+                      "100003",
+                      "599939",
+                      "995699404"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "count": {
+                    "type": "map",
+                    "items": [
+                      "2099829→1"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "3. Lengths 1 and 2 each produced only repeated hashes, and length 3 is the first length with a window whose hash appears exactly once."
+          },
+          "solution": "class Solution {\npublic:\n    int smallestUniqueSubarray(vector<int>& nums) {\n        int n = nums.size();\n        const long long B = 100003;            // base larger than any value (max 1e5)\n        const long long M1 = 1000000007LL;     // first modulus\n        const long long M2 = 998244353LL;      // second modulus: double hash makes collisions negligible\n        vector<long long> H1(n + 1, 0), H2(n + 1, 0), P1(n + 1, 1), P2(n + 1, 1);\n        for (int i = 0; i < n; ++i) {\n            H1[i + 1] = (H1[i] * B + nums[i]) % M1;   // prefix hash of nums[0..i]\n            H2[i + 1] = (H2[i] * B + nums[i]) % M2;\n            P1[i + 1] = (P1[i] * B) % M1;              // B^(i+1)\n            P2[i + 1] = (P2[i] * B) % M2;\n        }\n        for (int L = 1; L <= n; ++L) {                 // try lengths from shortest up\n            unordered_map<long long, int> cnt;\n            cnt.reserve(2 * (n - L + 1));              // avoid rehashing\n            for (int l = 0; l + L <= n; ++l) {\n                // O(1) window hash: strip the prefix before l, shifted by B^L\n                long long h1 = (H1[l + L] - H1[l] * P1[L] % M1 + M1) % M1;\n                long long h2 = (H2[l + L] - H2[l] * P2[L] % M2 + M2) % M2;\n                long long key = (h1 << 32) | h2;       // combine both hashes into one 64-bit key\n                ++cnt[key];\n            }\n            for (auto& kv : cnt)\n                if (kv.second == 1) return L;          // a window occurring exactly once\n        }\n        return n;                                      // unreachable: length n is always unique\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution s;\n    vector<vector<int>> tests = {{3, 3, 3}, {2, 1, 2, 3, 3}, {1, 1, 2, 2, 1}};\n    vector<int> expected = {3, 1, 2};\n    for (size_t t = 0; t < tests.size(); ++t) {\n        int got = s.smallestUniqueSubarray(tests[t]);\n        cout << \"Example \" << t + 1 << \": output = \" << got << \", expected = \" << expected[t] << \"\\n\";\n    }\n    return 0;\n}"
+        }
       },
       {
         "level": "Optimal",

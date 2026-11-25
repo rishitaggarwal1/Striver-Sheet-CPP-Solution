@@ -407,7 +407,158 @@ int main() {
 4. Count the hashes in a map.
 5. Return the first L for which some hash has count 1.
 
-**Complexity:** time `O(n^2)`, space `O(n)`. Each length costs O(n) for hashing and counting, and in the worst case (answer near n) all n lengths are tried. The prefix arrays and the per-length map use O(n) memory.
+**Pseudocode**
+
+```text
+ 1 │ function smallestUniqueSubarray(nums):
+ 2 │   n ← length(nums)
+ 3 │   B ← 100003; M ← 1000000007  // B > every value, so different arrays act like different base-B numbers
+ 4 │   H ← array of n+1 zeros; P ← array of n+1 zeros; P[0] ← 1
+ 5 │   for i from 0 to n−1:
+ 6 │     H[i+1] ← (H[i]·B + nums[i]) mod M  // hash of prefix nums[0..i]
+ 7 │     P[i+1] ← (P[i]·B) mod M  // P[k] = B^k mod M
+ 8 │   for L from 1 to n:  // try lengths from shortest up
+ 9 │     count ← empty map  // window hash → how many windows have it
+10 │     for l from 0 to n−L:
+11 │       h ← (H[l+L] − H[l]·P[L]) mod M, made non-negative  // O(1): remove the prefix before l
+12 │       count[h] ← count[h] + 1
+13 │     for each (h, c) in count:
+14 │       if c = 1:
+15 │         return L  // first length that has a window seen exactly once
+16 │   return n  // unreachable: the single window of length n is always unique
+17 │ // The C++ code runs the same hash with a second modulus and combines both, making false matches practically impossible
+```
+
+**Time complexity: `O(n^2)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Prefix hash and power build (lines 4-7) | n iterations × O(1) | Each prefix hash extends the previous one by one multiply and one add. |
+| Window hashing for one length L (lines 9-12) | (n−L+1) windows × O(1) expected | Each window hash is one subtraction and one multiply, and each map increment is expected O(1). |
+| Scan of the map (lines 13-15) | at most n−L+1 entries × O(1) | The map never holds more distinct hashes than there are windows. |
+| Outer loop over L (lines 8-15) | up to n iterations | In the worst case, such as all-equal arrays, no length below n has a unique window. |
+
+- **Adding it up:** O(n) build + Σ_{L=1..ans} O(n−L+1). In the worst case ans = n, giving n + (n−1) + … + 1 = n(n+1)/2 = O(n^2). This dominates the O(n) setup.
+- **Best vs worst case:** Best case: some value appears exactly once (e.g. [2,1,2,3,3]). The loop stops at L = 1 after O(n) work. Worst case: all elements are equal (e.g. [3,3,…,3]). The answer is n and every length is processed, about n^2/2 window hashes.
+- **At the maximum input:** n = 10^5 in the worst case → about 5·10^9 hash-map operations, many seconds and too slow. When the answer is small it finishes in a few milliseconds, which is why the optimal approach binary-searches L instead.
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Prefix arrays H and P (line 4) | 2·(n+1) integers (×2 with the second modulus) | One prefix hash and one power for each position. |
+| count map (line 9) | up to n−L+1 entries | It holds at most one entry per window of the current length, and it is rebuilt for each L. |
+
+- **Adding it up:** O(n) + O(n) = O(n), because only one map is alive at a time.
+- **Not counted:** The input array is not counted. There is no recursion.
+
+**Dry run** on `nums = [3,3,3]`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 4 | n = 3. We pick base 100003 and modulus 10^9+7, and allocate H and P with P[0] = 1. | `n = 3`<br>`B = 100003`<br>`M = 1000000007`<br>`nums = [3, 3, 3]`<br>`H = [0, 0, 0, 0]`<br>`P = [1, 0, 0, 0]` |
+| 2 | 7 | i = 0: H[1] = 0·100003 + 3 = 3, and P[1] = 100003. | `i = 0`<br>`nums = [3, 3, 3]` (i→0)<br>`H = [0, 3, 0, 0]`<br>`P = [1, 100003, 0, 0]` |
+| 3 | 7 | i = 1: H[2] = 3·100003 + 3 = 300012. P[2] = 100003² mod M = 10000600009 − 10·M = 599939. | `i = 1`<br>`nums = [3, 3, 3]` (i→1)<br>`H = [0, 3, 300012, 0]`<br>`P = [1, 100003, 599939, 0]` |
+| 4 | 7 | i = 2: H[3] = (300012·100003 + 3) mod M = 30002100039 − 30·M = 2099829. P[3] = 599939·100003 mod M = 995699404. | `i = 2`<br>`nums = [3, 3, 3]` (i→2)<br>`H = [0, 3, 300012, 2099829]`<br>`P = [1, 100003, 599939, 995699404]` |
+| 5 | 9 | Start with length L = 1 and an empty count map. | `L = 1`<br>`nums = [3, 3, 3]`<br>`count = {}` |
+| 6 | 12 | l = 0: h = H[1] − H[0]·P[1] = 3 − 0 = 3. count[3] becomes 1. | `l = 0`<br>`h = 3`<br>`nums = [3, 3, 3]` (l→0)<br>`count = {3→1}` |
+| 7 | 12 | l = 1: h = H[2] − H[1]·P[1] = 300012 − 300009 = 3. This is the same window [3], so count[3] becomes 2. | `l = 1`<br>`nums = [3, 3, 3]` (l→1)<br>`count = {3→2}` |
+| 8 | 12 | l = 2: H[2]·P[1] mod M = 2099826, so h = 2099829 − 2099826 = 3. count[3] becomes 3. | `l = 2`<br>`nums = [3, 3, 3]` (l→2)<br>`count = {3→3}` |
+| 9 | 14 | Scan the map for L = 1. The only entry has c = 3, not 1, so no length-1 window is unique. Move on to L = 2. | `c = 3`<br>`nums = [3, 3, 3]` |
+| 10 | 12 | L = 2, with the map reset. l = 0: h = H[2] − H[0]·P[2] = 300012. count[300012] becomes 1. | `L = 2`<br>`l = 0`<br>`h = 300012`<br>`nums = [3, 3, 3]` (l→0)<br>`count = {300012→1}` |
+| 11 | 12 | l = 1: h = H[3] − H[1]·P[2] = 2099829 − 3·599939 = 2099829 − 1799817 = 300012. count[300012] becomes 2. | `l = 1`<br>`nums = [3, 3, 3]` (l→1)<br>`count = {300012→2}` |
+| 12 | 14 | The only length-2 hash has c = 2, so [3,3] appears twice and is not unique. Move on to L = 3. | `c = 2`<br>`nums = [3, 3, 3]` |
+| 13 | 12 | L = 3, with the map reset. The only window is l = 0: h = H[3] − H[0]·P[3] = 2099829. count[2099829] becomes 1. | `L = 3`<br>`l = 0`<br>`h = 2099829`<br>`nums = [3, 3, 3]` (l→0)<br>`count = {2099829→1}` |
+| 14 | 15 | The map scan finds c = 1, so a length-3 window is unique and we return L = 3. | `c = 1`<br>`nums = [3, 3, 3]` |
+
+**Result:** 3. Lengths 1 and 2 each produced only repeated hashes, and length 3 is the first length with a window whose hash appears exactly once.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    int smallestUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        const long long B = 100003;            // base larger than any value (max 1e5)
+        const long long M1 = 1000000007LL;     // first modulus
+        const long long M2 = 998244353LL;      // second modulus: double hash makes collisions negligible
+        vector<long long> H1(n + 1, 0), H2(n + 1, 0), P1(n + 1, 1), P2(n + 1, 1);
+        for (int i = 0; i < n; ++i) {
+            H1[i + 1] = (H1[i] * B + nums[i]) % M1;   // prefix hash of nums[0..i]
+            H2[i + 1] = (H2[i] * B + nums[i]) % M2;
+            P1[i + 1] = (P1[i] * B) % M1;              // B^(i+1)
+            P2[i + 1] = (P2[i] * B) % M2;
+        }
+        for (int L = 1; L <= n; ++L) {                 // try lengths from shortest up
+            unordered_map<long long, int> cnt;
+            cnt.reserve(2 * (n - L + 1));              // avoid rehashing
+            for (int l = 0; l + L <= n; ++l) {
+                // O(1) window hash: strip the prefix before l, shifted by B^L
+                long long h1 = (H1[l + L] - H1[l] * P1[L] % M1 + M1) % M1;
+                long long h2 = (H2[l + L] - H2[l] * P2[L] % M2 + M2) % M2;
+                long long key = (h1 << 32) | h2;       // combine both hashes into one 64-bit key
+                ++cnt[key];
+            }
+            for (auto& kv : cnt)
+                if (kv.second == 1) return L;          // a window occurring exactly once
+        }
+        return n;                                      // unreachable: length n is always unique
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int smallestUniqueSubarray(vector<int>& nums) {
+        int n = nums.size();
+        const long long B = 100003;            // base larger than any value (max 1e5)
+        const long long M1 = 1000000007LL;     // first modulus
+        const long long M2 = 998244353LL;      // second modulus: double hash makes collisions negligible
+        vector<long long> H1(n + 1, 0), H2(n + 1, 0), P1(n + 1, 1), P2(n + 1, 1);
+        for (int i = 0; i < n; ++i) {
+            H1[i + 1] = (H1[i] * B + nums[i]) % M1;   // prefix hash of nums[0..i]
+            H2[i + 1] = (H2[i] * B + nums[i]) % M2;
+            P1[i + 1] = (P1[i] * B) % M1;              // B^(i+1)
+            P2[i + 1] = (P2[i] * B) % M2;
+        }
+        for (int L = 1; L <= n; ++L) {                 // try lengths from shortest up
+            unordered_map<long long, int> cnt;
+            cnt.reserve(2 * (n - L + 1));              // avoid rehashing
+            for (int l = 0; l + L <= n; ++l) {
+                // O(1) window hash: strip the prefix before l, shifted by B^L
+                long long h1 = (H1[l + L] - H1[l] * P1[L] % M1 + M1) % M1;
+                long long h2 = (H2[l + L] - H2[l] * P2[L] % M2 + M2) % M2;
+                long long key = (h1 << 32) | h2;       // combine both hashes into one 64-bit key
+                ++cnt[key];
+            }
+            for (auto& kv : cnt)
+                if (kv.second == 1) return L;          // a window occurring exactly once
+        }
+        return n;                                      // unreachable: length n is always unique
+    }
+};
+
+int main() {
+    Solution s;
+    vector<vector<int>> tests = {{3, 3, 3}, {2, 1, 2, 3, 3}, {1, 1, 2, 2, 1}};
+    vector<int> expected = {3, 1, 2};
+    for (size_t t = 0; t < tests.size(); ++t) {
+        int got = s.smallestUniqueSubarray(tests[t]);
+        cout << "Example " << t + 1 << ": output = " << got << ", expected = " << expected[t] << "\n";
+    }
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** On `[3,3,...,3]` with n = 10^5 the answer is n, so this does about 10^10 hash operations, which is too slow. It ignores that uniqueness is monotone in `L`.
 

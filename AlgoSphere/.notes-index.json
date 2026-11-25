@@ -337,12 +337,12 @@
     "site": "leetcode",
     "slug": "smallest-unique-subarray",
     "difficulty": "Hard",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Binary search on answer + rolling hash",
+    "time": "O(n log n)",
+    "space": "O(n)",
     "dir": "leetcode/smallest-unique-subarray",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-25T04:58:48.790Z"
+    "updatedAt": "2026-11-25T04:59:31.822Z"
   }
 }

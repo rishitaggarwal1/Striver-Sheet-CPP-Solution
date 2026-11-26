@@ -1,10 +1,10 @@
 # Stone Removal Game
 
-**LeetCode** · **Easy** · [Open the problem](https://leetcode.com/problems/stone-removal-game/) · Pattern: **Deterministic game simulation**
+**LeetCode** · **Easy** · [Open the problem](https://leetcode.com/problems/stone-removal-game/) · Pattern: **Deterministic game simulation** · ✅ Solved in C++
 
 > Players alternately remove 10, 9, 8, ... stones from a pile of `n`, with Alice taking 10 first; the first player who cannot remove the required amount loses, and you must decide whether Alice wins.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -237,6 +237,34 @@ Yes. `m` is the largest count with 10+9+...+(11-m) ≤ `n`, and Alice wins exact
 **Complexity:** time `O(1)`, space `O(1)`. At most 7 comparisons against fixed sums, or 4 range checks. There is no extra memory beyond constants.
 
 **Why this is the best:** Constant time cannot be beaten, but the hardcoded ranges are tied to the starting value 10 and to `n` ≤ 50. The loop version generalises to other start values and pile sizes without re-deriving anything.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 0 of 8 | 2026-11-26 |
+
+For comparison, the optimal approach (Partial-sum thresholds and parity) runs in `O(1)` time and `O(1)` space.
+
+```cpp
+class Solution {
+public:
+    bool canAliceWin(int n) {
+        int x = 10;
+        while(n>=x)
+        {
+            n = n-x;
+            x--;
+            if(x<=n)
+                n = n-x;
+            else
+                return true;
+            x--;
+        }
+        return false;
+    }
+};
+```
 
 ## Test cases
 

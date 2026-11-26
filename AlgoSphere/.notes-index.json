@@ -358,7 +358,10 @@
     "space": "O(1)",
     "dir": "leetcode/stone-removal-game",
     "solution": "",
-    "mine": null,
-    "updatedAt": "2026-11-26T03:07:53.922Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/stone-removal-game/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-26T03:08:05.853Z"
   }
 }

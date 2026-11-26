@@ -4,7 +4,7 @@
   "slug": "stone-removal-game",
   "title": "Stone Removal Game",
   "url": "https://leetcode.com/problems/stone-removal-game/",
-  "updatedAt": "2026-11-26T03:07:53.922Z",
+  "updatedAt": "2026-11-26T03:08:05.853Z",
   "problem": {
     "difficulty": "Easy",
     "description": "Alice and Bob are playing a game where they take turns removing stones from a pile, with Alice going first.\n\n- Alice starts by removing exactly 10 stones on her first turn.\n\n- For each subsequent turn, each player removes exactly 1 fewer stone than the previous opponent.\n\nThe player who cannot make a move loses the game.\n\nGiven a positive integer n, return true if Alice wins the game and false otherwise.\n\nExample 1:\n\nInput: n = 12\n\nOutput: true\n\nExplanation:\n\n- Alice removes 10 stones on her first turn, leaving 2 stones for Bob.\n\n- Bob cannot remove 9 stones, so Alice wins.\n\nExample 2:\n\nInput: n = 1\n\nOutput: false\n\nExplanation:\n\n- Alice cannot remove 10 stones, so Alice loses.\n\nConstraints:\n\n- 1 <= n <= 50"
@@ -265,5 +265,20 @@
       "Fixed step sizes such as 10, 9, 8, ... turn a simulation into a partial-sum threshold lookup, which gives an O(1) closed form.",
       "Check boundary values where the remaining stones equal the required amount exactly (n=10, n=19); they expose `>` versus `>=` bugs."
     ]
-  }
+  },
+  "mySolutions": [
+    {
+      "code": "class Solution {\npublic:\n    bool canAliceWin(int n) {\n        int x = 10;\n        while(n>=x)\n        {\n            n = n-x;\n            x--;\n            if(x<=n)\n                n = n-x;\n            else\n                return true;\n            x--;\n        }\n        return false;\n    }\n};",
+      "lang": "C++",
+      "runtime": "",
+      "memory": "",
+      "runtimePercentile": null,
+      "memoryPercentile": null,
+      "passed": "",
+      "attempts": 1,
+      "hintsUsed": 0,
+      "acceptedAt": "2026-11-26T03:08:03.574Z",
+      "platform": "LeetCode"
+    }
+  ]
 }

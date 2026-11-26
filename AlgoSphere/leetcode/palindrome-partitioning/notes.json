@@ -4,7 +4,7 @@
   "slug": "palindrome-partitioning",
   "title": "Palindrome Partitioning",
   "url": "https://leetcode.com/problems/palindrome-partitioning/",
-  "updatedAt": "2026-11-26T08:32:45.000Z",
+  "updatedAt": "2026-11-26T08:33:36.024Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible palindrome partitioning of s.\n\nExample 1:\n\nInput: s = \"aab\"\nOutput: [[\"a\",\"a\",\"b\"],[\"aa\",\"b\"]]\n\nExample 2:\n\nInput: s = \"a\"\nOutput: [[\"a\"]]\n\nConstraints:\n\n- 1 <= s.length <= 16\n\n- s contains only lowercase English letters."
@@ -189,7 +189,626 @@
         "time": "O(n · 2^n)",
         "space": "O(n) besides output",
         "complexity": "There are 2^(n-1) masks, and each needs O(n) work to split and check. Extra memory is only the current list of pieces.",
-        "tradeoff": "It always does the full 2^(n-1) work, even when almost nothing is a palindrome. For example, \"abcd…\" has only one valid partition, yet every mask is still built and checked. It is fine at n=16, but it prunes nothing."
+        "tradeoff": "It always does the full 2^(n-1) work, even when almost nothing is a palindrome. For example, \"abcd…\" has only one valid partition, yet every mask is still built and checked. It is fine at n=16, but it prunes nothing.",
+        "deep": {
+          "pseudocode": [
+            "function partition(s):",
+            "  n ← length(s)",
+            "  result ← empty list of lists",
+            "  for mask ← 0 to 2^(n−1) − 1:  // n−1 gaps, each either cut or not",
+            "    pieces ← empty list",
+            "    start ← 0  // first index of the current piece",
+            "    ok ← true",
+            "    for k ← 0 to n − 1:",
+            "      if k = n − 1 or bit k of mask = 1:  // piece ends at k (string end or cut after k)",
+            "        lo ← start; hi ← k",
+            "        while lo < hi and s[lo] = s[hi]:  // two-pointer palindrome check",
+            "          lo ← lo + 1; hi ← hi − 1",
+            "        if lo < hi:  // stopped early, so a mismatch was found",
+            "          ok ← false",
+            "          break  // this mask can't be valid; skip the rest",
+            "        append s[start..k] to pieces",
+            "        start ← k + 1  // the next piece begins right after the cut",
+            "    if ok:",
+            "      append pieces to result",
+            "  return result"
+          ],
+          "time": {
+            "total": "O(n · 2^n)",
+            "parts": [
+              {
+                "part": "Outer mask loop (lines 4-19)",
+                "cost": "2^(n−1) iterations × (cost of one split)",
+                "why": "Each of the n−1 gaps between characters is either cut or not, so there are exactly 2^(n−1) masks."
+              },
+              {
+                "part": "Index walk (lines 8-9, 17)",
+                "cost": "n iterations × O(1) per mask",
+                "why": "Every index is visited once to decide whether a piece ends there."
+              },
+              {
+                "part": "Palindrome checks (lines 10-15)",
+                "cost": "O(n) total per mask",
+                "why": "The pieces don't overlap, so the two-pointer checks together touch each character at most once."
+              },
+              {
+                "part": "Building pieces (line 16, line 19)",
+                "cost": "O(n) per mask",
+                "why": "The substrings copied for one mask have total length n."
+              }
+            ],
+            "sum": "2^(n−1) × (O(n) walk + O(n) checks + O(n) copying) = 2^(n−1) · O(n) = O(n · 2^n)",
+            "cases": "Best case: a mask fails at its first piece, for example a long uncut prefix that isn't a palindrome, so the work for that mask stops early. Worst case: s = \"aaaa…a\". Every mask is valid, and each one does the full O(n) work plus an O(n) copy into the result.",
+            "feel": "n = 16 → 2^15 = 32,768 masks × about 16·3 operations ≈ 1.5·10^6 steps, well under a millisecond.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "pieces list (lines 5, 16)",
+                "cost": "O(n)",
+                "why": "It holds the substrings of one split, whose total length is n."
+              },
+              {
+                "part": "Scalars mask, start, ok, k, lo, hi (lines 4-12)",
+                "cost": "O(1)",
+                "why": "A fixed number of integers and booleans."
+              }
+            ],
+            "sum": "O(n) + O(1) = O(n)",
+            "cases": "",
+            "feel": "",
+            "note": "The result list is not counted. It can hold up to 2^(n−1) partitions of total size O(n · 2^n). There is no recursion, so there is no stack depth to count."
+          },
+          "dryRun": {
+            "input": "s = \"aab\"",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "n = 3, so there are 2 gaps and 2^2 = 4 masks (0..3) to try. The result starts empty.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "mask = 0 (binary 00) means no cuts at all. A fresh, empty pieces list is set up with start = 0 and ok = true.",
+                "vars": {
+                  "n": "3",
+                  "mask": "0",
+                  "start": "0",
+                  "ok": "true"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "start": 0
+                    },
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": []
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "k = 0 and k = 1 have no cut bit. At k = 2 (string end) we check \"aab\": lo = 0, hi = 2, and 'a' ≠ 'b'. The check stops at once with lo < hi, so ok becomes false.",
+                "vars": {
+                  "n": "3",
+                  "mask": "0",
+                  "start": "0",
+                  "ok": "false",
+                  "k": "2",
+                  "lo": "0",
+                  "hi": "2"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "start": 0,
+                      "lo": 0,
+                      "hi": 2,
+                      "k": 2
+                    },
+                    "highlight": [
+                      0,
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": []
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "mask = 1 (binary 01) means cut after index 0. At k = 0 the piece \"a\" is a palindrome, so it is appended and start moves to 1.",
+                "vars": {
+                  "n": "3",
+                  "mask": "1",
+                  "start": "1",
+                  "ok": "true",
+                  "k": "0",
+                  "lo": "0",
+                  "hi": "0"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "start": 1,
+                      "k": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"a\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 14,
+                "explain": "k = 1 has no cut bit. At k = 2 the piece is s[1..2] = \"ab\", and 'a' ≠ 'b', so ok = false. We break, and mask 1 is discarded.",
+                "vars": {
+                  "n": "3",
+                  "mask": "1",
+                  "start": "1",
+                  "ok": "false",
+                  "k": "2",
+                  "lo": "1",
+                  "hi": "2"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "start": 1,
+                      "lo": 1,
+                      "hi": 2,
+                      "k": 2
+                    },
+                    "highlight": [
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"a\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "mask = 2 (binary 10) means cut after index 1. At k = 1 we check \"aa\": s[0] = s[1], so lo moves to 1 and hi to 0, and the loop ends with lo ≥ hi. The piece \"aa\" is appended and start = 2.",
+                "vars": {
+                  "n": "3",
+                  "mask": "2",
+                  "start": "2",
+                  "ok": "true",
+                  "k": "1",
+                  "lo": "1",
+                  "hi": "0"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "start": 2,
+                      "k": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"aa\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "At k = 2 (end), the piece \"b\" has length 1 and is trivially a palindrome. It is appended and start = 3.",
+                "vars": {
+                  "n": "3",
+                  "mask": "2",
+                  "start": "3",
+                  "ok": "true",
+                  "k": "2",
+                  "lo": "2",
+                  "hi": "2"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "k": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"aa\"",
+                      "\"b\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": []
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 19,
+                "explain": "ok is still true, so every piece passed. [\"aa\",\"b\"] is added to result.",
+                "vars": {
+                  "n": "3",
+                  "mask": "2",
+                  "start": "3",
+                  "ok": "true"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"aa\"",
+                      "\"b\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": [
+                      "[aa,b]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "mask = 3 (binary 11) means cut after both index 0 and index 1. At k = 0 the piece \"a\" is appended and start = 1.",
+                "vars": {
+                  "n": "3",
+                  "mask": "3",
+                  "start": "1",
+                  "ok": "true",
+                  "k": "0",
+                  "lo": "0",
+                  "hi": "0"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "start": 1,
+                      "k": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"a\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": [
+                      "[aa,b]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "At k = 1 bit 1 is set, so the piece s[1..1] = \"a\" is appended and start = 2.",
+                "vars": {
+                  "n": "3",
+                  "mask": "3",
+                  "start": "2",
+                  "ok": "true",
+                  "k": "1",
+                  "lo": "1",
+                  "hi": "1"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "start": 2,
+                      "k": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"a\"",
+                      "\"a\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": [
+                      "[aa,b]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 17,
+                "explain": "At k = 2 (end), the piece \"b\" is appended and start = 3.",
+                "vars": {
+                  "n": "3",
+                  "mask": "3",
+                  "start": "3",
+                  "ok": "true",
+                  "k": "2",
+                  "lo": "2",
+                  "hi": "2"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {
+                      "k": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"a\"",
+                      "\"a\"",
+                      "\"b\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": [
+                      "[aa,b]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 19,
+                "explain": "All three pieces passed, so [\"a\",\"a\",\"b\"] is added to result.",
+                "vars": {
+                  "n": "3",
+                  "mask": "3",
+                  "start": "3",
+                  "ok": "true"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "pieces": {
+                    "type": "list",
+                    "items": [
+                      "\"a\"",
+                      "\"a\"",
+                      "\"b\""
+                    ]
+                  },
+                  "result": {
+                    "type": "list",
+                    "items": [
+                      "[aa,b]",
+                      "[a,a,b]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 20,
+                "explain": "All 4 masks have been tried, so the result is returned.",
+                "vars": {
+                  "n": "3"
+                },
+                "arrays": {
+                  "s": {
+                    "values": [
+                      "a",
+                      "a",
+                      "b"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {
+                  "result": {
+                    "type": "list",
+                    "items": [
+                      "[aa,b]",
+                      "[a,a,b]"
+                    ]
+                  }
+                },
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "[[\"aa\",\"b\"],[\"a\",\"a\",\"b\"]]. This is the expected output in a different order, which LeetCode accepts. Every possible cut pattern was tried exactly once, and only those whose pieces are all palindromes were kept."
+          },
+          "solution": "class Solution {\npublic:\n    vector<vector<string>> partition(string s) {\n        int n = s.size();\n        vector<vector<string>> result;\n        // each of the n-1 gaps is cut (bit=1) or not (bit=0)\n        for (int mask = 0; mask < (1 << (n - 1)); ++mask) {\n            vector<string> pieces;   // pieces of this split\n            int start = 0;           // start index of current piece\n            bool ok = true;          // all pieces palindromes so far?\n            for (int k = 0; k < n; ++k) {\n                // a piece ends at k if we're at the string end or there's a cut after k\n                if (k == n - 1 || ((mask >> k) & 1)) {\n                    int lo = start, hi = k;\n                    // two-pointer palindrome check on s[start..k]\n                    while (lo < hi && s[lo] == s[hi]) { ++lo; --hi; }\n                    if (lo < hi) { ok = false; break; } // mismatch: reject this mask\n                    pieces.push_back(s.substr(start, k - start + 1));\n                    start = k + 1;   // next piece starts after the cut\n                }\n            }\n            if (ok) result.push_back(pieces); // keep only fully valid splits\n        }\n        return result;\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;\n\nstring show(const vector<vector<string>>& v) {\n    string out = \"[\";\n    for (size_t i = 0; i < v.size(); ++i) {\n        if (i) out += \",\";\n        out += \"[\";\n        for (size_t j = 0; j < v[i].size(); ++j) {\n            if (j) out += \",\";\n            out += \"\\\"\" + v[i][j] + \"\\\"\";\n        }\n        out += \"]\";\n    }\n    return out + \"]\";\n}",
+          "main": "int main() {\n    Solution sol;\n    cout << \"Example 1: \" << show(sol.partition(\"aab\")) << \"  expected (any order): [[\\\"a\\\",\\\"a\\\",\\\"b\\\"],[\\\"aa\\\",\\\"b\\\"]]\" << endl;\n    cout << \"Example 2: \" << show(sol.partition(\"a\")) << \"  expected: [[\\\"a\\\"]]\" << endl;\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

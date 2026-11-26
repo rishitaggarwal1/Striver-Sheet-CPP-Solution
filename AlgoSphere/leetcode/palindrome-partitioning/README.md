@@ -193,7 +193,162 @@ Mostly. The string "aaaa…a" has 2^(n-1) valid partitions, and copying each one
 4. If all pieces pass, add the list of pieces to the result.
 5. Return the result.
 
-**Complexity:** time `O(n · 2^n)`, space `O(n) besides output`. There are 2^(n-1) masks, and each needs O(n) work to split and check. Extra memory is only the current list of pieces.
+**Pseudocode**
+
+```text
+ 1 │ function partition(s):
+ 2 │   n ← length(s)
+ 3 │   result ← empty list of lists
+ 4 │   for mask ← 0 to 2^(n−1) − 1:  // n−1 gaps, each either cut or not
+ 5 │     pieces ← empty list
+ 6 │     start ← 0  // first index of the current piece
+ 7 │     ok ← true
+ 8 │     for k ← 0 to n − 1:
+ 9 │       if k = n − 1 or bit k of mask = 1:  // piece ends at k (string end or cut after k)
+10 │         lo ← start; hi ← k
+11 │         while lo < hi and s[lo] = s[hi]:  // two-pointer palindrome check
+12 │           lo ← lo + 1; hi ← hi − 1
+13 │         if lo < hi:  // stopped early, so a mismatch was found
+14 │           ok ← false
+15 │           break  // this mask can't be valid; skip the rest
+16 │         append s[start..k] to pieces
+17 │         start ← k + 1  // the next piece begins right after the cut
+18 │     if ok:
+19 │       append pieces to result
+20 │   return result
+```
+
+**Time complexity: `O(n · 2^n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Outer mask loop (lines 4-19) | 2^(n−1) iterations × (cost of one split) | Each of the n−1 gaps between characters is either cut or not, so there are exactly 2^(n−1) masks. |
+| Index walk (lines 8-9, 17) | n iterations × O(1) per mask | Every index is visited once to decide whether a piece ends there. |
+| Palindrome checks (lines 10-15) | O(n) total per mask | The pieces don't overlap, so the two-pointer checks together touch each character at most once. |
+| Building pieces (line 16, line 19) | O(n) per mask | The substrings copied for one mask have total length n. |
+
+- **Adding it up:** 2^(n−1) × (O(n) walk + O(n) checks + O(n) copying) = 2^(n−1) · O(n) = O(n · 2^n)
+- **Best vs worst case:** Best case: a mask fails at its first piece, for example a long uncut prefix that isn't a palindrome, so the work for that mask stops early. Worst case: s = "aaaa…a". Every mask is valid, and each one does the full O(n) work plus an O(n) copy into the result.
+- **At the maximum input:** n = 16 → 2^15 = 32,768 masks × about 16·3 operations ≈ 1.5·10^6 steps, well under a millisecond.
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| pieces list (lines 5, 16) | O(n) | It holds the substrings of one split, whose total length is n. |
+| Scalars mask, start, ok, k, lo, hi (lines 4-12) | O(1) | A fixed number of integers and booleans. |
+
+- **Adding it up:** O(n) + O(1) = O(n)
+- **Not counted:** The result list is not counted. It can hold up to 2^(n−1) partitions of total size O(n · 2^n). There is no recursion, so there is no stack depth to count.
+
+**Dry run** on `s = "aab"`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 3 | n = 3, so there are 2 gaps and 2^2 = 4 masks (0..3) to try. The result starts empty. | `n = 3`<br>`s = [a, a, b]`<br>`result = []` |
+| 2 | 7 | mask = 0 (binary 00) means no cuts at all. A fresh, empty pieces list is set up with start = 0 and ok = true. | `mask = 0`<br>`start = 0`<br>`ok = true`<br>`s = [a, a, b]` (start→0)<br>`pieces = []` |
+| 3 | 14 | k = 0 and k = 1 have no cut bit. At k = 2 (string end) we check "aab": lo = 0, hi = 2, and 'a' ≠ 'b'. The check stops at once with lo < hi, so ok becomes false. | `ok = false`<br>`k = 2`<br>`lo = 0`<br>`hi = 2`<br>`s = [a, a, b]` (start→0, lo→0, hi→2, k→2) |
+| 4 | 17 | mask = 1 (binary 01) means cut after index 0. At k = 0 the piece "a" is a palindrome, so it is appended and start moves to 1. | `mask = 1`<br>`start = 1`<br>`ok = true`<br>`k = 0`<br>`hi = 0`<br>`s = [a, a, b]` (start→1, k→0)<br>`pieces = ["a"]` |
+| 5 | 14 | k = 1 has no cut bit. At k = 2 the piece is s[1..2] = "ab", and 'a' ≠ 'b', so ok = false. We break, and mask 1 is discarded. | `ok = false`<br>`k = 2`<br>`lo = 1`<br>`hi = 2`<br>`s = [a, a, b]` (start→1, lo→1, hi→2, k→2) |
+| 6 | 17 | mask = 2 (binary 10) means cut after index 1. At k = 1 we check "aa": s[0] = s[1], so lo moves to 1 and hi to 0, and the loop ends with lo ≥ hi. The piece "aa" is appended and start = 2. | `mask = 2`<br>`start = 2`<br>`ok = true`<br>`k = 1`<br>`hi = 0`<br>`s = [a, a, b]` (start→2, k→1)<br>`pieces = ["aa"]` |
+| 7 | 17 | At k = 2 (end), the piece "b" has length 1 and is trivially a palindrome. It is appended and start = 3. | `start = 3`<br>`k = 2`<br>`lo = 2`<br>`hi = 2`<br>`s = [a, a, b]` (k→2)<br>`pieces = ["aa", "b"]` |
+| 8 | 19 | ok is still true, so every piece passed. ["aa","b"] is added to result. | `s = [a, a, b]`<br>`result = [[aa,b]]` |
+| 9 | 17 | mask = 3 (binary 11) means cut after both index 0 and index 1. At k = 0 the piece "a" is appended and start = 1. | `mask = 3`<br>`start = 1`<br>`k = 0`<br>`lo = 0`<br>`hi = 0`<br>`s = [a, a, b]` (start→1, k→0)<br>`pieces = ["a"]` |
+| 10 | 17 | At k = 1 bit 1 is set, so the piece s[1..1] = "a" is appended and start = 2. | `start = 2`<br>`k = 1`<br>`lo = 1`<br>`hi = 1`<br>`s = [a, a, b]` (start→2, k→1)<br>`pieces = ["a", "a"]` |
+| 11 | 17 | At k = 2 (end), the piece "b" is appended and start = 3. | `start = 3`<br>`k = 2`<br>`lo = 2`<br>`hi = 2`<br>`s = [a, a, b]` (k→2)<br>`pieces = ["a", "a", "b"]` |
+| 12 | 19 | All three pieces passed, so ["a","a","b"] is added to result. | `s = [a, a, b]`<br>`result = [[aa,b], [a,a,b]]` |
+| 13 | 20 | All 4 masks have been tried, so the result is returned. | (no change) |
+
+**Result:** [["aa","b"],["a","a","b"]]. This is the expected output in a different order, which LeetCode accepts. Every possible cut pattern was tried exactly once, and only those whose pieces are all palindromes were kept.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        int n = s.size();
+        vector<vector<string>> result;
+        // each of the n-1 gaps is cut (bit=1) or not (bit=0)
+        for (int mask = 0; mask < (1 << (n - 1)); ++mask) {
+            vector<string> pieces;   // pieces of this split
+            int start = 0;           // start index of current piece
+            bool ok = true;          // all pieces palindromes so far?
+            for (int k = 0; k < n; ++k) {
+                // a piece ends at k if we're at the string end or there's a cut after k
+                if (k == n - 1 || ((mask >> k) & 1)) {
+                    int lo = start, hi = k;
+                    // two-pointer palindrome check on s[start..k]
+                    while (lo < hi && s[lo] == s[hi]) { ++lo; --hi; }
+                    if (lo < hi) { ok = false; break; } // mismatch: reject this mask
+                    pieces.push_back(s.substr(start, k - start + 1));
+                    start = k + 1;   // next piece starts after the cut
+                }
+            }
+            if (ok) result.push_back(pieces); // keep only fully valid splits
+        }
+        return result;
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+string show(const vector<vector<string>>& v) {
+    string out = "[";
+    for (size_t i = 0; i < v.size(); ++i) {
+        if (i) out += ",";
+        out += "[";
+        for (size_t j = 0; j < v[i].size(); ++j) {
+            if (j) out += ",";
+            out += "\"" + v[i][j] + "\"";
+        }
+        out += "]";
+    }
+    return out + "]";
+}
+
+class Solution {
+public:
+    vector<vector<string>> partition(string s) {
+        int n = s.size();
+        vector<vector<string>> result;
+        // each of the n-1 gaps is cut (bit=1) or not (bit=0)
+        for (int mask = 0; mask < (1 << (n - 1)); ++mask) {
+            vector<string> pieces;   // pieces of this split
+            int start = 0;           // start index of current piece
+            bool ok = true;          // all pieces palindromes so far?
+            for (int k = 0; k < n; ++k) {
+                // a piece ends at k if we're at the string end or there's a cut after k
+                if (k == n - 1 || ((mask >> k) & 1)) {
+                    int lo = start, hi = k;
+                    // two-pointer palindrome check on s[start..k]
+                    while (lo < hi && s[lo] == s[hi]) { ++lo; --hi; }
+                    if (lo < hi) { ok = false; break; } // mismatch: reject this mask
+                    pieces.push_back(s.substr(start, k - start + 1));
+                    start = k + 1;   // next piece starts after the cut
+                }
+            }
+            if (ok) result.push_back(pieces); // keep only fully valid splits
+        }
+        return result;
+    }
+};
+
+int main() {
+    Solution sol;
+    cout << "Example 1: " << show(sol.partition("aab")) << "  expected (any order): [[\"a\",\"a\",\"b\"],[\"aa\",\"b\"]]" << endl;
+    cout << "Example 2: " << show(sol.partition("a")) << "  expected: [[\"a\"]]" << endl;
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** It always does the full 2^(n-1) work, even when almost nothing is a palindrome. For example, "abcd…" has only one valid partition, yet every mask is still built and checked. It is fine at n=16, but it prunes nothing.
 

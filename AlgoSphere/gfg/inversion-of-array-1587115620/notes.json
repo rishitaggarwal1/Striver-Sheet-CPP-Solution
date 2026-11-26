@@ -4,7 +4,7 @@
   "slug": "inversion-of-array-1587115620",
   "title": "Count Inversions",
   "url": "https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1",
-  "updatedAt": "2026-11-26T10:27:16.961Z",
+  "updatedAt": "2026-11-26T10:29:04.946Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an array of integers arr[]. You have to find the Inversion Count of the array. Inversion count is the number of pairs of elements (i, j) such that i < j and arr[i] > arr[j].\n\nExamples:\n\nInput: arr[] = [2, 4, 1, 3, 5]\nOutput: 3\nExplanation: The sequence 2, 4, 1, 3, 5 has three inversions (2, 1), (4, 1), (4, 3).\n\nInput: arr[] = [2, 3, 4, 5, 6]\nOutput: 0\nExplanation: As the sequence is already sorted so there is no inversion count.\n\nInput: arr[] = [10, 10, 10]\nOutput: 0\nExplanation: As all the elements of array are same, so there is no inversion count."
@@ -21,54 +21,59 @@
   ],
   "review": {
     "verdict": "wrong_answer",
-    "summary": "Using merge sort is the right idea, but the call order, the argument order and the inversion formula are all off, so the count is wrong and the merge can write past the end of its buffer.",
-    "yourIdea": "You are using merge sort to count inversions. While merging two sorted halves, every time a right-half element is placed before left-half elements, those left elements each form an inversion with it, so you add them to a global counter.",
+    "summary": "Merge-sort counting is the right idea, but the call order, the argument order and the counting formula are all off, so even `[2, 1]` fails.",
+    "yourIdea": "You are using merge sort to count inversions. Each time an element from the right half is placed before elements of the left half during a merge, you add the number of left-half elements it jumps over to a running counter.",
     "gaps": [
       {
         "title": "Merging before the right half is sorted",
-        "explanation": "The counting trick works only because both halves are already sorted when you merge them. Then, if `arr[i] > arr[j]`, you know every remaining left element is also bigger than `arr[j]`. You call merge on line 36 before `mergeSort(arr,mid+1,r)` on line 37, so the right half is still unsorted when you merge. That breaks both the sort and the counting logic. Think of it as: solve both subproblems first, then combine.",
+        "explanation": "The counting trick depends on both halves being sorted when you merge them. If `arr[i] > arr[j]` and the left half is sorted, then everything after `arr[i]` in the left half is also greater than `arr[j]`, so you can count them all at once. You call `merge` on line 36 before `mergeSort` on the right half (line 37). So the right half is still unsorted during the merge, which breaks both the count and the sort. Think of it as two steps: first make both halves sorted, then combine them.",
         "lines": "35-37"
       },
       {
         "title": "Counting the whole left half instead of what is left of it",
-        "explanation": "When `arr[j]` is smaller than `arr[i]`, the left elements already copied into `v` (indices l..i-1) were all `<= arr[j]`, so they are not inversions with it. Only the elements still waiting in the left half (i..mid) are larger than `arr[j]`. Adding `mid-l+1` overcounts every time i has moved forward. Ask yourself which left elements are actually guaranteed to be greater than `arr[j]` at that moment.",
+        "explanation": "When `arr[j]` (right side) is smaller than `arr[i]`, which left elements form an inversion with it? Only `arr[i..mid]`. The elements before `i` were already placed because they were `<= arr[j]`. Line 17 adds `mid-l+1`, the size of the entire left half, which overcounts as soon as some left elements have been consumed.",
         "lines": "17"
       }
     ],
     "bugs": [
       {
-        "lines": "4, 36",
-        "issue": "merge is declared as `(arr, l, r, mid)` but called as `merge(arr,l,mid,r)`, so inside merge `r` and `mid` are swapped. The buffer `v` gets size `mid-l+1`, but the loop on lines 21-22 copies `r-l+1` elements into it. That is an out-of-bounds write (undefined behavior), and part of the range is never merged.",
-        "fix": "Make the parameter order in the declaration and the call match, for example call `merge(arr,l,r,mid)`."
+        "lines": "36",
+        "issue": "`merge` is declared as `merge(arr, l, r, mid)`, but you call `merge(arr, l, mid, r)`. Inside `merge`, `r` becomes the real mid and `mid` becomes the real r. The buffer `v` gets the wrong size and lines 21-22 write past its end, which is undefined behaviour.",
+        "fix": "Make the call match the parameter order, for example `merge(arr, l, r, mid)`, or reorder the parameters in the declaration."
+      },
+      {
+        "lines": "36-37",
+        "issue": "The right half is sorted after the merge instead of before it.",
+        "fix": "Swap these two lines so that both recursive `mergeSort` calls happen before `merge`."
       },
       {
         "lines": "17",
-        "issue": "Adds the size of the whole left half instead of the number of left elements not yet merged.",
-        "fix": "Add the count of left elements still remaining, which depends on `i` rather than `l`."
+        "issue": "This adds the size of the whole left half instead of the number of left elements not yet placed.",
+        "fix": "Use `cnt += (mid - i + 1);`."
       },
       {
-        "lines": "3, 17, 43",
-        "issue": "For n up to about 1e5, the number of inversions can reach about 5e9, which overflows an `int` counter.",
-        "fix": "Keep `cnt` as `long long` while accumulating, and cast only at the return if the signature requires `int`."
+        "lines": "3",
+        "issue": "For about 1e5 elements the inversion count can reach roughly 5e9, which overflows `int`.",
+        "fix": "Keep the counter as `long long`, and return it as `long long` if the judge's signature allows that."
       }
     ],
     "counterexample": {
       "input": "arr = [2, 1]",
       "expected": "1",
-      "yours": "0 (and v[1] is written out of bounds, which may crash)",
-      "why": "mergeSort(0,1) calls merge(arr,0,0,1). Inside merge this means l=0, r=0, mid=1, so j starts at 2 and the main loop never runs. Nothing is counted, and the tail loop writes 2 elements into a buffer of size 1."
+      "yours": "0 (if it doesn't crash: `merge` gets l=0, r=0, mid=1, so `v` has size 1 while lines 21-22 write two elements into it, which is undefined behaviour)",
+      "why": "Because of the swapped arguments, the merge loop on line 9 never runs (`j=2 > r=0`). So `cnt` is never incremented, and the array is never actually merged."
     },
     "complexity": {
-      "time": "O(n log n)",
-      "space": "O(n)",
-      "verdict": "Once fixed, the merge-sort structure does roughly 1e5 * 17 ≈ 2e6 operations for n = 1e5, which fits comfortably."
+      "time": "O(n log n) once fixed",
+      "space": "O(n) for the merge buffers plus O(log n) recursion stack",
+      "verdict": "About 1e5 * 17 ≈ 1.7e6 operations, which fits comfortably once the logic is fixed."
     },
-    "nudge": "At the moment you merge, are both halves really sorted? And when `arr[j]` wins against `arr[i]`, which left elements have you already placed, and should they count?",
-    "correctIdea": "Recursively sort and count each half first, then merge the two sorted halves. During the merge, whenever the right element `arr[j]` is strictly smaller than the left element `arr[i]`, all left elements from i to mid are greater than it, so add mid - i + 1. The total is left inversions plus right inversions plus these cross inversions. Use a 64-bit counter.",
+    "nudge": "During a merge, what has to be true about the left and right halves for one comparison to tell you about several inversions at once? And at the moment `arr[i] > arr[j]`, exactly which left-half elements are still waiting to be placed?",
+    "correctIdea": "Sort the left half and the right half recursively, counting the inversions inside each, and then merge them. While merging, whenever the current right element is strictly smaller than the current left element `arr[i]`, all `mid - i + 1` remaining left elements are greater than it, so add that many. Use `<=` when comparing so equal elements are not counted. Keep the total in a 64-bit integer.",
     "strengths": [
-      "You recognized that merge sort is the right tool to count inversions in O(n log n).",
-      "Using `<=` on line 11 correctly avoids counting equal elements as inversions.",
-      "The `l + (r-l)/2` midpoint and the copy-back loop are written correctly."
+      "You recognised that merge sort is the right tool for counting inversions in O(n log n).",
+      "Using `arr[i] <= arr[j]` on line 11 correctly avoids counting equal elements, so a case like `[10, 10, 10]` is handled.",
+      "Computing mid as `l + (r-l)/2` avoids overflow, and the copy-back loop is clean."
     ]
   },
   "reviewFor": "class Solution {\n  public:\n    int cnt=0;\n    void merge(vector<int> &arr, int l, int r, int mid)\n    {\n        int i=l,j=mid+1;\n        vector<int> v(r-l+1);\n        int k=0;\n        while(i<=mid && j<=r)\n        {\n            if(arr[i]<=arr[j])\n            {\n                v[k++]=arr[i++];\n            }\n            else\n            {\n                cnt+=(mid-l+1);\n                v[k++]=arr[j++];\n            }\n        }\n        while(i<=mid)\n            v[k++]=arr[i++];\n        while(j<=r)\n            v[k++]=arr[j++];\n        for(int i=l,k=0;i<=r;i++,k++)\n        {\n            arr[i]=v[k];\n        }\n        return;\n    }\n    void mergeSort(vector<int> &arr, int l, int r)\n    {\n        if(l>=r)    return;\n        int mid = l + (r-l)/2;\n        mergeSort(arr,l,mid);\n        merge(arr,l,mid,r);\n        mergeSort(arr,mid+1,r);\n    }\n    int inversionCount(vector<int> &arr) {\n        // code here\n        int n = arr.size();\n        mergeSort(arr,0,n-1);\n        return cnt;\n    }\n};"

@@ -390,7 +390,10 @@
     "space": "O(n^2) besides output",
     "dir": "leetcode/palindrome-partitioning",
     "solution": "leetcode/palindrome-partitioning/palindrome-partitioning.cpp",
-    "mine": null,
-    "updatedAt": "2026-11-26T08:33:36.024Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/palindrome-partitioning/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-26T08:46:15.903Z"
   }
 }

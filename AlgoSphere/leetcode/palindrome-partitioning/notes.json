@@ -4,7 +4,7 @@
   "slug": "palindrome-partitioning",
   "title": "Palindrome Partitioning",
   "url": "https://leetcode.com/problems/palindrome-partitioning/",
-  "updatedAt": "2026-11-26T08:33:36.024Z",
+  "updatedAt": "2026-11-26T08:46:15.903Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible palindrome partitioning of s.\n\nExample 1:\n\nInput: s = \"aab\"\nOutput: [[\"a\",\"a\",\"b\"],[\"aa\",\"b\"]]\n\nExample 2:\n\nInput: s = \"a\"\nOutput: [[\"a\"]]\n\nConstraints:\n\n- 1 <= s.length <= 16\n\n- s contains only lowercase English letters."
@@ -886,5 +886,20 @@
       "If a predicate on a substring (i, j) is queried repeatedly, precompute an n×n table. Make sure the fill order computes dependencies such as `[i+1][j-1]` first.",
       "When saving a result from a mutable backtracking path, always store a copy."
     ]
-  }
+  },
+  "mySolutions": [
+    {
+      "code": "class Solution {\npublic:\n    vector<vector<string>> ans;\n    bool check(string s)\n    {\n        int n = s.length();\n        for(int i=0;i<n/2;i++)\n        {\n            if(s[i]!=s[n-i-1])\n                return false;\n        }\n        return true;\n    }\n    void solve(string s, vector<string>& str)\n    {\n        if(s.length()==0)\n        {\n            ans.push_back(str);\n        }        \n        int n = s.length();\n        for(int i=1;i<=n;i++)\n        {\n            if(check(s.substr(0,i)))\n            {\n                str.push_back(s.substr(0,i));\n                solve(s.substr(i),str);\n                str.pop_back();\n            }\n        }\n    }\n\n    vector<vector<string>> partition(string s) {\n        vector<string> str;\n        solve(s,str);\n        return ans;\n    }\n};",
+      "lang": "C++",
+      "runtime": "",
+      "memory": "",
+      "runtimePercentile": null,
+      "memoryPercentile": null,
+      "passed": "",
+      "attempts": 1,
+      "hintsUsed": 0,
+      "acceptedAt": "2026-11-26T08:46:13.197Z",
+      "platform": "LeetCode"
+    }
+  ]
 }

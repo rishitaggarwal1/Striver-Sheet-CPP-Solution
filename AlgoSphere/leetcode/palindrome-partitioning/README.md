@@ -1,10 +1,10 @@
 # Palindrome Partitioning
 
-**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/palindrome-partitioning/) · Pattern: **Backtracking with precomputed palindrome DP table**
+**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/palindrome-partitioning/) · Pattern: **Backtracking with precomputed palindrome DP table** · ✅ Solved in C++
 
 > List every way to cut the string `s` into consecutive pieces so that each piece reads the same forwards and backwards.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -388,6 +388,54 @@ int main() {
 **Complexity:** time `O(n · 2^n)`, space `O(n^2) besides output`. The table costs O(n^2). The backtracking produces up to 2^(n-1) partitions, each costing O(n) to build and copy, so this term dominates. The table uses O(n^2) memory, and the recursion uses O(n).
 
 **Why this is the best:** The output alone can be Θ(n · 2^n) characters (all 'a's), so no algorithm can do better asymptotically. The only cost is O(n^2) extra memory for the table.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 0 of 8 | 2026-11-26 |
+
+For comparison, the optimal approach (Backtracking + isPal DP table) runs in `O(n · 2^n)` time and `O(n^2) besides output` space.
+
+```cpp
+class Solution {
+public:
+    vector<vector<string>> ans;
+    bool check(string s)
+    {
+        int n = s.length();
+        for(int i=0;i<n/2;i++)
+        {
+            if(s[i]!=s[n-i-1])
+                return false;
+        }
+        return true;
+    }
+    void solve(string s, vector<string>& str)
+    {
+        if(s.length()==0)
+        {
+            ans.push_back(str);
+        }        
+        int n = s.length();
+        for(int i=1;i<=n;i++)
+        {
+            if(check(s.substr(0,i)))
+            {
+                str.push_back(s.substr(0,i));
+                solve(s.substr(i),str);
+                str.pop_back();
+            }
+        }
+    }
+
+    vector<vector<string>> partition(string s) {
+        vector<string> str;
+        solve(s,str);
+        return ans;
+    }
+};
+```
 
 ## Test cases
 

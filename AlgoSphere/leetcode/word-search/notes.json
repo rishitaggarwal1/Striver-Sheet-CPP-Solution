@@ -4,7 +4,7 @@
   "slug": "word-search",
   "title": "Word Search",
   "url": "https://leetcode.com/problems/word-search/",
-  "updatedAt": "2026-11-26T09:30:05.404Z",
+  "updatedAt": "2026-11-26T09:30:15.142Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an m x n grid of characters board and a string word, return true if word exists in the grid.\n\nThe word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.\n\nExample 1:\n\nInput: board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"\nOutput: true\n\nExample 2:\n\nInput: board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"SEE\"\nOutput: true\n\nExample 3:\n\nInput: board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCB\"\nOutput: false\n\nConstraints:\n\n- m == board.length\n\n- n = board[i].length\n\n- 1 <= m, n <= 6\n\n- 1 <= word.length <= 15\n\n- board and word consists of only lowercase and uppercase English letters.\n\nFollow up: Could you use search pruning to make your solution faster with a larger board?"
@@ -178,5 +178,58 @@
         "note": "Tricky backtracking: the long path loops through the E cluster."
       }
     ]
-  }
+  },
+  "review": {
+    "verdict": "wrong_answer",
+    "summary": "Your backtracking plan is right, but the visited check is inverted and two directions recurse into the wrong cell, so every word longer than one letter returns false.",
+    "yourIdea": "You start a DFS from every cell that matches `word[0]`. From each cell you try the four neighbours that match the next letter, mark the current cell as used while you go deeper, and unmark it when you backtrack. You stop with true once `k` reaches the word length.",
+    "gaps": [
+      {
+        "title": "What the visited array means got flipped",
+        "explanation": "`vis[x][y] == true` means the cell is already on your current path, so it must NOT be reused. Your guards only allow stepping onto cells where `vis` is true, which is the opposite. `vis` starts all false, and you only set it when a move succeeds, so the very first call can never move anywhere. To keep the invariant straight, say it in words (\"I can step onto a neighbour if it is in bounds, unused, and matches the next letter\") and check that each condition matches that sentence.",
+        "lines": "15, 22, 29, 36"
+      }
+    ],
+    "bugs": [
+      {
+        "lines": "15, 22, 29, 36",
+        "issue": "The neighbour is allowed only if it is already visited (`vis[...]` instead of `!vis[...]`).",
+        "fix": "Negate the check, e.g. `!vis[r+1][c]`."
+      },
+      {
+        "lines": "32",
+        "issue": "The Left branch checks `(r, c-1)` but recurses into `(r, c+1)`. Once the vis check is fixed, this can step outside the grid, and `vis[r][c] = true` on the next level then writes out of bounds.",
+        "fix": "Recurse with `solve(board, word, r, c-1, k+1, vis)`."
+      },
+      {
+        "lines": "39",
+        "issue": "The Up branch checks `(r-1, c)` but recurses into `(r+1, c)`, which is the same copy-paste slip.",
+        "fix": "Recurse with `solve(board, word, r-1, c, k+1, vis)`."
+      },
+      {
+        "lines": "7",
+        "issue": "`word` is passed by value, so every recursive call copies the string. That adds up to a factor of about 15 in work.",
+        "fix": "Take it as `const string& word`."
+      }
+    ],
+    "counterexample": {
+      "input": "board = [[\"A\",\"B\"]], word = \"AB\"",
+      "expected": "true",
+      "yours": "false",
+      "why": "`solve(0,0,k=1)` checks Right: `(0,1)` is in bounds and matches 'B', but `vis[0][1]` is false, so the guard on line 22 fails. No other direction is in bounds, so it returns false."
+    },
+    "complexity": {
+      "time": "O(m·n·4·3^(L-1)), times an extra factor of L because the string is copied on each call",
+      "space": "O(m·n) for vis plus O(L) recursion depth (O(L^2) with the string copies)",
+      "verdict": "Once fixed, the worst case is about 36·4·3^14 ≈ 7×10^8 steps, but pruning on mismatched letters makes real runs far smaller, so it fits easily, especially if you pass `word` by reference."
+    },
+    "nudge": "Read line 15 out loud: \"I may step down if the cell below is visited...\" Is that the rule you meant? After that, compare each branch's `check(...)` coordinates with the coordinates you pass to `solve(...)` in the same branch.",
+    "correctIdea": "Use DFS with backtracking. From each cell matching `word[0]`, recurse into the in-bounds, unvisited neighbours that match the next character. Mark a cell before exploring from it and unmark it afterwards, so other paths can use it again. For pruning, first make sure the board has enough of each letter in the word. If the last letter of the word is rarer on the board than the first, search for the reversed word instead, which cuts down the number of starting points.",
+    "strengths": [
+      "Correct overall backtracking structure, with mark, recurse, unmark, and an early return on success",
+      "The bounds helper `check` is clean and is evaluated before indexing, thanks to short-circuiting",
+      "The base case `k == word.length()` correctly handles single-letter words"
+    ]
+  },
+  "reviewFor": "class Solution {\npublic:\n    bool check(int i, int j, int m, int n)\n    {\n        return i>=0 && i<m && j>=0 &&j<n;\n    }\n    bool solve(vector<vector<char>>& board, string word, int r, int c, int k, vector<vector<bool>>& vis)\n    {\n        int m = board.size(), n=board[0].size();\n        if(k==word.length())\n        {\n            return true;\n        }\n        // Down\n        if(check(r+1,c,m,n) && vis[r+1][c] && board[r+1][c]==word[k])\n        {\n            vis[r][c]=true;\n            if(solve(board,word,r+1,c,k+1,vis)) return true;\n            vis[r][c]=false;\n        }\n        //Right\n        if(check(r,c+1,m,n) && vis[r][c+1] && board[r][c+1]==word[k])\n        {\n            vis[r][c]=true;\n            if(solve(board,word,r,c+1,k+1,vis)) return true;\n            vis[r][c]=false;\n        }\n        //Left\n        if(check(r,c-1,m,n) && vis[r][c-1] && board[r][c-1]==word[k])\n        {\n            vis[r][c]=true;\n            if(solve(board,word,r,c+1,k+1,vis)) return true;\n            vis[r][c]=false;\n        }\n        //UP\n        if(check(r-1,c,m,n) && vis[r-1][c] && board[r-1][c]==word[k])\n        {\n            vis[r][c]=true;\n            if(solve(board,word,r+1,c,k+1,vis)) return true;\n            vis[r][c]=false;\n        }\n        return false;\n    }\n    bool exist(vector<vector<char>>& board, string word) {\n        int m = board.size(), n=board[0].size();\n        vector<vector<bool>> vis(m,vector<bool>(n,false));\n        for(int i=0;i<m;i++)\n        {\n            for(int j=0;j<n;j++)\n            {\n                if(board[i][j] == word[0])\n                {\n                    if(solve(board,word,i,j,1,vis))\n                        return true;\n                }\n            }\n        }\n        return false;\n    }\n};"
 }

@@ -406,7 +406,10 @@
     "space": "",
     "dir": "gfg/rat-in-a-maze-problem",
     "solution": "",
-    "mine": null,
-    "updatedAt": "2026-11-26T09:15:35.061Z"
+    "mine": {
+      "lang": "C++",
+      "path": "gfg/rat-in-a-maze-problem/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-26T09:17:05.967Z"
   }
 }

@@ -214,7 +214,168 @@ k-1 written in the factorial number system (digits r/(n-1)!, r/(n-2)!, ...) tell
 4. When the counter equals k, record the string and stop.
 5. Return the recorded string.
 
-**Complexity:** time `O(k·n) with early stop, O(n!·n) worst case`, space `O(n) recursion, or O(n!·n) if all permutations are stored`. Every permutation before the k-th is fully built at O(n) cost. When k = n! that is 362,880 × 9 operations. Memory is the recursion stack plus the used array, or the whole list if you store it.
+**Pseudocode**
+
+```text
+ 1 │ function getPermutation(n, k)
+ 2 │   used ← array of n+1 booleans, all false   // used[d] is true if digit d is already in cur
+ 3 │   cur ← ""   // the permutation being built
+ 4 │   count ← 0   // how many complete permutations have been seen so far
+ 5 │   answer ← ""   // filled in when count reaches k
+ 6 │   dfs(n, k)
+ 7 │   return answer
+ 8 │ function dfs(n, k)
+ 9 │   if answer ≠ "" return   // the k-th permutation is already found, so stop exploring
+10 │   if length(cur) = n
+11 │     count ← count + 1   // one more full permutation, in lexicographic order
+12 │     if count = k
+13 │       answer ← cur
+14 │     return
+15 │   for d ← 1 to n   // ascending order gives lexicographic order
+16 │     if not used[d]
+17 │       used[d] ← true
+18 │       cur ← cur + d
+19 │       dfs(n, k)
+20 │       remove last character of cur   // backtrack
+21 │       used[d] ← false
+22 │       if answer ≠ "" return   // propagate the early stop upward
+```
+
+**Time complexity: `O(n!·n) worst case, O(k·n) with early stop`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Leaf handling (lines 10-14) | at most k leaves × O(1), plus one O(n) copy at line 13 | Each complete permutation only bumps the counter. The string is copied only once, for the k-th permutation. |
+| Digit loop at every internal node (lines 15-22) | about e·k internal nodes × n iterations | Every node of the recursion tree scans all n digits to find the unused ones. The number of internal nodes visited is a constant multiple of the leaves reached. |
+| Setup (lines 2-5) | O(n) | Allocating used[] and empty strings is linear. |
+
+- **Adding it up:** O(n) + O(k·n) + O(n) = O(k·n). With k = n! this becomes O(n!·n), and the recursion-tree scans dominate.
+- **Best vs worst case:** Best case is k = 1: it walks one path of depth n, O(n^2) scans. Worst case is k = n!: every permutation is generated before the last one is reached.
+- **At the maximum input:** n = 9, k = 9! = 362880 → about 362880·9·e ≈ 9·10^6 simple steps, well under 0.1 s.
+
+**Space complexity: `O(n)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| used[] array (line 2) | n+1 booleans | One flag per digit. |
+| cur and answer strings (lines 3, 5) | O(n) characters each | A permutation never has more than n characters. |
+| Recursion stack (line 19) | n+1 frames × O(1) | Each level adds one digit, so the depth is at most n+1. |
+
+- **Adding it up:** O(n) + O(n) + O(n) = O(n)
+- **Not counted:** Permutations are counted rather than stored, which avoids O(n!·n) memory. The returned string is the output.
+
+**Dry run** on `n = 3, k = 3`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 5 | Initialise: no digit is used, cur is empty, count = 0, answer is empty. | `n = 3`<br>`k = 3`<br>`count = 0`<br>`answer = ""`<br>`depth = 0`<br>`used = [F, F, F, F]`<br>`cur = []` |
+| 2 | 18 | At depth 0 the smallest unused digit is d = 1. Mark it used and append it, giving cur = "1". | `d = 1`<br>`used = [F, T, F, F]` (d→1)<br>`cur = [1]` |
+| 3 | 18 | At depth 1, d = 1 is used, so d = 2 is taken and cur = "12". | `depth = 1`<br>`d = 2`<br>`used = [F, T, T, F]` (d→2)<br>`cur = [1, 2]` |
+| 4 | 18 | At depth 2 only d = 3 is free, so cur = "123". | `depth = 2`<br>`d = 3`<br>`used = [F, T, T, T]` (d→3)<br>`cur = [1, 2, 3]` |
+| 5 | 11 | cur has length 3, so it is a full permutation and count becomes 1. Since 1 ≠ 3, we only return. | `count = 1`<br>`depth = 3`<br>`used = [F, T, T, T]` |
+| 6 | 18 | Backtrack: depth 2 removes '3' and its loop ends. Depth 1 removes '2', frees it, then tries d = 3, so cur = "13". | `depth = 1`<br>`d = 3`<br>`used = [F, T, F, T]` (d→3)<br>`cur = [1, 3]` |
+| 7 | 18 | At depth 2, d = 1 is used, so d = 2 is taken and cur = "132". | `depth = 2`<br>`d = 2`<br>`used = [F, T, T, T]` (d→2)<br>`cur = [1, 3, 2]` |
+| 8 | 11 | Second full permutation, "132": count becomes 2, which is still not k. | `count = 2`<br>`depth = 3`<br>`used = [F, T, T, T]` |
+| 9 | 21 | Backtrack all the way: '2' and then '3' are removed and freed. At depth 0, '1' is removed and used[1] is set back to false. | `depth = 0`<br>`d = 1`<br>`used = [F, F, F, F]` (d→1)<br>`cur = []` |
+| 10 | 18 | Depth 0 moves on to d = 2, so cur = "2". Every permutation starting with 2 comes next. | `d = 2`<br>`used = [F, F, T, F]` (d→2)<br>`cur = [2]` |
+| 11 | 18 | At depth 1, d = 1 is free, so cur = "21". | `depth = 1`<br>`d = 1`<br>`used = [F, T, T, F]` (d→1)<br>`cur = [2, 1]` |
+| 12 | 18 | At depth 2, digits 1 and 2 are used, so d = 3 is taken and cur = "213". | `depth = 2`<br>`d = 3`<br>`used = [F, T, T, T]` (d→3)<br>`cur = [2, 1, 3]` |
+| 13 | 11 | Third full permutation: count becomes 3. | `count = 3`<br>`depth = 3`<br>`used = [F, T, T, T]` |
+| 14 | 13 | count = k = 3, so answer = "213". | `answer = "213"` |
+| 15 | 22 | Each level backtracks once, sees that answer is non-empty and returns at once. No permutation after "213" is explored. | `depth = 0`<br>`d = 2`<br>`used = [F, F, F, F]`<br>`cur = []` |
+| 16 | 7 | getPermutation returns answer = "213". | (no change) |
+
+**Result:** "213". The DFS tries digits in ascending order, so it meets the permutations in lexicographic order: 123, 132, 213. The third one is the answer.
+
+**C++ solution**
+
+```cpp
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        used.assign(n + 1, false);   // used[d] marks digit d as already placed
+        cur.clear();                 // permutation under construction
+        answer.clear();              // will hold the k-th permutation
+        count = 0;                   // number of full permutations seen so far
+        dfs(n, k);                   // generate permutations in lexicographic order
+        return answer;
+    }
+
+private:
+    vector<bool> used;
+    string cur, answer;
+    int count = 0;
+
+    void dfs(int n, int k) {
+        if (!answer.empty()) return;              // already found the k-th, so stop
+        if ((int)cur.size() == n) {               // a complete permutation
+            if (++count == k) answer = cur;       // record it if it is the k-th
+            return;
+        }
+        for (int d = 1; d <= n; d++) {            // ascending digits give lexicographic order
+            if (used[d]) continue;                // skip digits already placed
+            used[d] = true;
+            cur.push_back(char('0' + d));         // place digit d
+            dfs(n, k);
+            cur.pop_back();                       // backtrack
+            used[d] = false;
+            if (!answer.empty()) return;          // propagate the early stop
+        }
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        used.assign(n + 1, false);   // used[d] marks digit d as already placed
+        cur.clear();                 // permutation under construction
+        answer.clear();              // will hold the k-th permutation
+        count = 0;                   // number of full permutations seen so far
+        dfs(n, k);                   // generate permutations in lexicographic order
+        return answer;
+    }
+
+private:
+    vector<bool> used;
+    string cur, answer;
+    int count = 0;
+
+    void dfs(int n, int k) {
+        if (!answer.empty()) return;              // already found the k-th, so stop
+        if ((int)cur.size() == n) {               // a complete permutation
+            if (++count == k) answer = cur;       // record it if it is the k-th
+            return;
+        }
+        for (int d = 1; d <= n; d++) {            // ascending digits give lexicographic order
+            if (used[d]) continue;                // skip digits already placed
+            used[d] = true;
+            cur.push_back(char('0' + d));         // place digit d
+            dfs(n, k);
+            cur.pop_back();                       // backtrack
+            used[d] = false;
+            if (!answer.empty()) return;          // propagate the early stop
+        }
+    }
+};
+
+int main() {
+    Solution s;
+    cout << "n=3,k=3 -> " << s.getPermutation(3, 3) << " (expected 213)" << endl;
+    cout << "n=4,k=9 -> " << s.getPermutation(4, 9) << " (expected 2314)" << endl;
+    cout << "n=3,k=1 -> " << s.getPermutation(3, 1) << " (expected 123)" << endl;
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** It passes for n <= 9, but the cost is proportional to k, so it is about 10^5 times more work than needed. It would collapse for n = 15 (1.3·10^12 permutations).
 

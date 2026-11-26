@@ -437,11 +437,11 @@
     "time": "O(n^2)",
     "space": "O(n)",
     "dir": "leetcode/permutation-sequence",
-    "solution": "",
+    "solution": "leetcode/permutation-sequence/permutation-sequence.cpp",
     "mine": {
       "lang": "C++",
       "path": "leetcode/permutation-sequence/my-solution.cpp"
     },
-    "updatedAt": "2026-11-26T10:06:30.454Z"
+    "updatedAt": "2026-11-26T10:07:18.223Z"
   }
 }

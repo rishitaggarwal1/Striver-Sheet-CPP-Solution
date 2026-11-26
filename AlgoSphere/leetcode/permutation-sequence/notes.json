@@ -4,7 +4,7 @@
   "slug": "permutation-sequence",
   "title": "Permutation Sequence",
   "url": "https://leetcode.com/problems/permutation-sequence/",
-  "updatedAt": "2026-11-26T10:06:30.454Z",
+  "updatedAt": "2026-11-26T10:07:18.223Z",
   "problem": {
     "difficulty": "Hard",
     "description": "The set [1, 2, 3, ..., n] contains a total of n! unique permutations.\n\nBy listing and labeling all of the permutations in order, we get the following sequence for n = 3:\n\n- \"123\"\n\n- \"132\"\n\n- \"213\"\n\n- \"231\"\n\n- \"312\"\n\n- \"321\"\n\nGiven n and k, return the k^th permutation sequence.\n\nExample 1:\n\nInput: n = 3, k = 3\nOutput: \"213\"\n\nExample 2:\n\nInput: n = 4, k = 9\nOutput: \"2314\"\n\nExample 3:\n\nInput: n = 3, k = 1\nOutput: \"123\"\n\nConstraints:\n\n- 1 <= n <= 9\n\n- 1 <= k <= n!"
@@ -262,7 +262,720 @@
         "time": "O(k·n) with early stop, O(n!·n) worst case",
         "space": "O(n) recursion, or O(n!·n) if all permutations are stored",
         "complexity": "Every permutation before the k-th is fully built at O(n) cost. When k = n! that is 362,880 × 9 operations. Memory is the recursion stack plus the used array, or the whole list if you store it.",
-        "tradeoff": "It passes for n <= 9, but the cost is proportional to k, so it is about 10^5 times more work than needed. It would collapse for n = 15 (1.3·10^12 permutations)."
+        "tradeoff": "It passes for n <= 9, but the cost is proportional to k, so it is about 10^5 times more work than needed. It would collapse for n = 15 (1.3·10^12 permutations).",
+        "deep": {
+          "pseudocode": [
+            "function getPermutation(n, k)",
+            "  used ← array of n+1 booleans, all false   // used[d] is true if digit d is already in cur",
+            "  cur ← \"\"   // the permutation being built",
+            "  count ← 0   // how many complete permutations have been seen so far",
+            "  answer ← \"\"   // filled in when count reaches k",
+            "  dfs(n, k)",
+            "  return answer",
+            "function dfs(n, k)",
+            "  if answer ≠ \"\" return   // the k-th permutation is already found, so stop exploring",
+            "  if length(cur) = n",
+            "    count ← count + 1   // one more full permutation, in lexicographic order",
+            "    if count = k",
+            "      answer ← cur",
+            "    return",
+            "  for d ← 1 to n   // ascending order gives lexicographic order",
+            "    if not used[d]",
+            "      used[d] ← true",
+            "      cur ← cur + d",
+            "      dfs(n, k)",
+            "      remove last character of cur   // backtrack",
+            "      used[d] ← false",
+            "      if answer ≠ \"\" return   // propagate the early stop upward"
+          ],
+          "time": {
+            "total": "O(n!·n) worst case, O(k·n) with early stop",
+            "parts": [
+              {
+                "part": "Leaf handling (lines 10-14)",
+                "cost": "at most k leaves × O(1), plus one O(n) copy at line 13",
+                "why": "Each complete permutation only bumps the counter. The string is copied only once, for the k-th permutation."
+              },
+              {
+                "part": "Digit loop at every internal node (lines 15-22)",
+                "cost": "about e·k internal nodes × n iterations",
+                "why": "Every node of the recursion tree scans all n digits to find the unused ones. The number of internal nodes visited is a constant multiple of the leaves reached."
+              },
+              {
+                "part": "Setup (lines 2-5)",
+                "cost": "O(n)",
+                "why": "Allocating used[] and empty strings is linear."
+              }
+            ],
+            "sum": "O(n) + O(k·n) + O(n) = O(k·n). With k = n! this becomes O(n!·n), and the recursion-tree scans dominate.",
+            "cases": "Best case is k = 1: it walks one path of depth n, O(n^2) scans. Worst case is k = n!: every permutation is generated before the last one is reached.",
+            "feel": "n = 9, k = 9! = 362880 → about 362880·9·e ≈ 9·10^6 simple steps, well under 0.1 s.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(n)",
+            "parts": [
+              {
+                "part": "used[] array (line 2)",
+                "cost": "n+1 booleans",
+                "why": "One flag per digit."
+              },
+              {
+                "part": "cur and answer strings (lines 3, 5)",
+                "cost": "O(n) characters each",
+                "why": "A permutation never has more than n characters."
+              },
+              {
+                "part": "Recursion stack (line 19)",
+                "cost": "n+1 frames × O(1)",
+                "why": "Each level adds one digit, so the depth is at most n+1."
+              }
+            ],
+            "sum": "O(n) + O(n) + O(n) = O(n)",
+            "cases": "",
+            "feel": "",
+            "note": "Permutations are counted rather than stored, which avoids O(n!·n) memory. The returned string is the output."
+          },
+          "dryRun": {
+            "input": "n = 3, k = 3",
+            "steps": [
+              {
+                "line": 5,
+                "explain": "Initialise: no digit is used, cur is empty, count = 0, answer is empty.",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "0",
+                  "answer": "\"\"",
+                  "depth": "0"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "At depth 0 the smallest unused digit is d = 1. Mark it used and append it, giving cur = \"1\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "0",
+                  "answer": "\"\"",
+                  "depth": "0",
+                  "d": "1"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {
+                      "d": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "At depth 1, d = 1 is used, so d = 2 is taken and cur = \"12\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "0",
+                  "answer": "\"\"",
+                  "depth": "1",
+                  "d": "2"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {
+                      "d": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "1",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "At depth 2 only d = 3 is free, so cur = \"123\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "0",
+                  "answer": "\"\"",
+                  "depth": "2",
+                  "d": "3"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {
+                      "d": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "cur has length 3, so it is a full permutation and count becomes 1. Since 1 ≠ 3, we only return.",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "1",
+                  "answer": "\"\"",
+                  "depth": "3"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "Backtrack: depth 2 removes '3' and its loop ends. Depth 1 removes '2', frees it, then tries d = 3, so cur = \"13\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "1",
+                  "answer": "\"\"",
+                  "depth": "1",
+                  "d": "3"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "F",
+                      "T"
+                    ],
+                    "pointers": {
+                      "d": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "1",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "At depth 2, d = 1 is used, so d = 2 is taken and cur = \"132\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "1",
+                  "answer": "\"\"",
+                  "depth": "2",
+                  "d": "2"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {
+                      "d": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "1",
+                      "3",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "Second full permutation, \"132\": count becomes 2, which is still not k.",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "2",
+                  "answer": "\"\"",
+                  "depth": "3"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "1",
+                      "3",
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 21,
+                "explain": "Backtrack all the way: '2' and then '3' are removed and freed. At depth 0, '1' is removed and used[1] is set back to false.",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "2",
+                  "answer": "\"\"",
+                  "depth": "0",
+                  "d": "1"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {
+                      "d": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "cur": {
+                    "values": [],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "Depth 0 moves on to d = 2, so cur = \"2\". Every permutation starting with 2 comes next.",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "2",
+                  "answer": "\"\"",
+                  "depth": "0",
+                  "d": "2"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "F",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {
+                      "d": 2
+                    },
+                    "highlight": [
+                      2
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "2"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "At depth 1, d = 1 is free, so cur = \"21\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "2",
+                  "answer": "\"\"",
+                  "depth": "1",
+                  "d": "1"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "F"
+                    ],
+                    "pointers": {
+                      "d": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "1"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 18,
+                "explain": "At depth 2, digits 1 and 2 are used, so d = 3 is taken and cur = \"213\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "2",
+                  "answer": "\"\"",
+                  "depth": "2",
+                  "d": "3"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {
+                      "d": 3
+                    },
+                    "highlight": [
+                      3
+                    ]
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "1",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 11,
+                "explain": "Third full permutation: count becomes 3.",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "3",
+                  "answer": "\"\"",
+                  "depth": "3"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "1",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 13,
+                "explain": "count = k = 3, so answer = \"213\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "3",
+                  "answer": "\"213\"",
+                  "depth": "3"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "T",
+                      "T",
+                      "T"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [
+                      "2",
+                      "1",
+                      "3"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 22,
+                "explain": "Each level backtracks once, sees that answer is non-empty and returns at once. No permutation after \"213\" is explored.",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "3",
+                  "answer": "\"213\"",
+                  "depth": "0",
+                  "d": "2"
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              },
+              {
+                "line": 7,
+                "explain": "getPermutation returns answer = \"213\".",
+                "vars": {
+                  "n": "3",
+                  "k": "3",
+                  "count": "3",
+                  "answer": "\"213\""
+                },
+                "arrays": {
+                  "used": {
+                    "values": [
+                      "F",
+                      "F",
+                      "F",
+                      "F"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  },
+                  "cur": {
+                    "values": [],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {}
+              }
+            ],
+            "result": "\"213\". The DFS tries digits in ascending order, so it meets the permutations in lexicographic order: 123, 132, 213. The third one is the answer."
+          },
+          "solution": "class Solution {\npublic:\n    string getPermutation(int n, int k) {\n        used.assign(n + 1, false);   // used[d] marks digit d as already placed\n        cur.clear();                 // permutation under construction\n        answer.clear();              // will hold the k-th permutation\n        count = 0;                   // number of full permutations seen so far\n        dfs(n, k);                   // generate permutations in lexicographic order\n        return answer;\n    }\n\nprivate:\n    vector<bool> used;\n    string cur, answer;\n    int count = 0;\n\n    void dfs(int n, int k) {\n        if (!answer.empty()) return;              // already found the k-th, so stop\n        if ((int)cur.size() == n) {               // a complete permutation\n            if (++count == k) answer = cur;       // record it if it is the k-th\n            return;\n        }\n        for (int d = 1; d <= n; d++) {            // ascending digits give lexicographic order\n            if (used[d]) continue;                // skip digits already placed\n            used[d] = true;\n            cur.push_back(char('0' + d));         // place digit d\n            dfs(n, k);\n            cur.pop_back();                       // backtrack\n            used[d] = false;\n            if (!answer.empty()) return;          // propagate the early stop\n        }\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution s;\n    cout << \"n=3,k=3 -> \" << s.getPermutation(3, 3) << \" (expected 213)\" << endl;\n    cout << \"n=4,k=9 -> \" << s.getPermutation(4, 9) << \" (expected 2314)\" << endl;\n    cout << \"n=3,k=1 -> \" << s.getPermutation(3, 1) << \" (expected 123)\" << endl;\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",

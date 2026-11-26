@@ -379,5 +379,18 @@
       "path": "gfg/m-coloring-problem-1587115620/my-solution.cpp"
     },
     "updatedAt": "2026-11-26T07:15:27.286Z"
+  },
+  "leetcode/palindrome-partitioning": {
+    "title": "Palindrome Partitioning",
+    "site": "leetcode",
+    "slug": "palindrome-partitioning",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/palindrome-partitioning",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-26T08:32:16.560Z"
   }
 }

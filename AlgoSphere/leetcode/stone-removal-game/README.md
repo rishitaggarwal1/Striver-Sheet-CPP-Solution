@@ -2,6 +2,8 @@
 
 **LeetCode** · **Easy** · [Open the problem](https://leetcode.com/problems/stone-removal-game/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -109,6 +111,30 @@ Return true if `moves` is odd, false otherwise.
 Use `>=` in the loop check, not `>`. If exactly `need` stones remain, the move is legal and the pile becomes empty, so the next player loses. Check `n < 10`: Alice cannot move, `moves` is 0, so return false. Check n = 10: return true. Check n = 19: Alice takes 10 and Bob takes the remaining 9, so `moves` is 2 and the answer is false. Time is `O(1)` (at most 10 iterations) and space is `O(1)`.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| n = 15 | true | Bob cannot remove 9 after Alice takes 10. |
+| n = 20 | false | After 10 and 9, one stone remains and Alice cannot take 8. |
+| n = 30 | true | Alice's second move of 8 succeeds and Bob cannot take 7. |
+| n = 37 | false | Bob's move of 7 leaves 3, so Alice cannot take 6. |
+| n = 42 | true | Alice takes 6 to reach 40 removed, and Bob cannot take 5. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Minimum n | n = 1 | false | Alice cannot remove 10. |
+| Maximum n | n = 50 | true | After 49 removed, Bob cannot remove 3. |
+| Exact boundary | n = 10 | true | Alice removes all 10 and Bob has none. |
+| Just below 10 | n = 9 | false | Alice cannot move. |
+| Exact boundary | n = 19 | false | Bob removes the last 9 stones. |
+| Just below 19 | n = 18 | true | Bob is one stone short. |
+| Exact boundary | n = 27 | true | Alice's 8 empties the pile. |
 
 ---
 

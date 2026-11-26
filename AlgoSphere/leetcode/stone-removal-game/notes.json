@@ -4,7 +4,7 @@
   "slug": "stone-removal-game",
   "title": "Stone Removal Game",
   "url": "https://leetcode.com/problems/stone-removal-game/",
-  "updatedAt": "2026-11-26T03:06:44.501Z",
+  "updatedAt": "2026-11-26T03:07:18.826Z",
   "problem": {
     "difficulty": "Easy",
     "description": "Alice and Bob are playing a game where they take turns removing stones from a pile, with Alice going first.\n\n- Alice starts by removing exactly 10 stones on her first turn.\n\n- For each subsequent turn, each player removes exactly 1 fewer stone than the previous opponent.\n\nThe player who cannot make a move loses the game.\n\nGiven a positive integer n, return true if Alice wins the game and false otherwise.\n\nExample 1:\n\nInput: n = 12\n\nOutput: true\n\nExplanation:\n\n- Alice removes 10 stones on her first turn, leaving 2 stones for Bob.\n\n- Bob cannot remove 9 stones, so Alice wins.\n\nExample 2:\n\nInput: n = 1\n\nOutput: false\n\nExplanation:\n\n- Alice cannot remove 10 stones, so Alice loses.\n\nConstraints:\n\n- 1 <= n <= 50"
@@ -18,5 +18,131 @@
     "Track three values: `remaining` (stones left in the pile), `need` (stones the current player must take, starting at 10), and either a turn counter or a boolean saying whose move it is.",
     "Set `remaining = n`, `need = 10`, `moves = 0`.\nWhile `remaining >= need`: subtract `need` from `remaining`, add 1 to `moves`, subtract 1 from `need`.\nWhen the loop stops, the player due to move cannot.\nReturn true if `moves` is odd, false otherwise.",
     "Use `>=` in the loop check, not `>`. If exactly `need` stones remain, the move is legal and the pile becomes empty, so the next player loses. Check `n < 10`: Alice cannot move, `moves` is 0, so return false. Check n = 10: return true. Check n = 19: Alice takes 10 and Bob takes the remaining 9, so `moves` is 2 and the answer is false. Time is `O(1)` (at most 10 iterations) and space is `O(1)`."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "15"
+          }
+        ],
+        "output": "true",
+        "note": "Bob cannot remove 9 after Alice takes 10."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "20"
+          }
+        ],
+        "output": "false",
+        "note": "After 10 and 9, one stone remains and Alice cannot take 8."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "30"
+          }
+        ],
+        "output": "true",
+        "note": "Alice's second move of 8 succeeds and Bob cannot take 7."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "37"
+          }
+        ],
+        "output": "false",
+        "note": "Bob's move of 7 leaves 3, so Alice cannot take 6."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "42"
+          }
+        ],
+        "output": "true",
+        "note": "Alice takes 6 to reach 40 removed, and Bob cannot take 5."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "1"
+          }
+        ],
+        "output": "false",
+        "note": "Minimum n: Alice cannot remove 10."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "50"
+          }
+        ],
+        "output": "true",
+        "note": "Maximum n: after 49 removed, Bob cannot remove 3."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "10"
+          }
+        ],
+        "output": "true",
+        "note": "Exact boundary: Alice removes all 10 and Bob has none."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "9"
+          }
+        ],
+        "output": "false",
+        "note": "Just below 10: Alice cannot move."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "19"
+          }
+        ],
+        "output": "false",
+        "note": "Exact boundary: Bob removes the last 9 stones."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "18"
+          }
+        ],
+        "output": "true",
+        "note": "Just below 19: Bob is one stone short."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "27"
+          }
+        ],
+        "output": "true",
+        "note": "Exact boundary: Alice's 8 empties the pile."
+      }
+    ]
+  }
 }

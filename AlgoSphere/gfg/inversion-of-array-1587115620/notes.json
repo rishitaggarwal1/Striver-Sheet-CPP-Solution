@@ -4,7 +4,7 @@
   "slug": "inversion-of-array-1587115620",
   "title": "Count Inversions",
   "url": "https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1",
-  "updatedAt": "2026-11-26T10:26:58.230Z",
+  "updatedAt": "2026-11-26T10:27:08.797Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an array of integers arr[]. You have to find the Inversion Count of the array. Inversion count is the number of pairs of elements (i, j) such that i < j and arr[i] > arr[j].\n\nExamples:\n\nInput: arr[] = [2, 4, 1, 3, 5]\nOutput: 3\nExplanation: The sequence 2, 4, 1, 3, 5 has three inversions (2, 1), (4, 1), (4, 3).\n\nInput: arr[] = [2, 3, 4, 5, 6]\nOutput: 0\nExplanation: As the sequence is already sorted so there is no inversion count.\n\nInput: arr[] = [10, 10, 10]\nOutput: 0\nExplanation: As all the elements of array are same, so there is no inversion count."
@@ -18,5 +18,121 @@
     "Track a running inversion total, a temporary buffer for merging, and two pointers `i` and `j` into the sorted left and right halves. The value `mid - i + 1` (or left length minus `i`) is how many left elements are still waiting, and each of them is greater than the right element being placed.",
     "Split the array at `mid` and recursively sort and count each half.\nMerge the halves with pointers `i` (left) and `j` (right).\nIf `left[i] <= right[j]`, place `left[i]` and advance `i` (no inversions).\nOtherwise place `right[j]`, add the number of remaining left elements to the count, and advance `j`.\nCopy any leftovers, then write the merged result back.\nReturn left count + right count + merge count.",
     "The trickiest step is using `<=` for the comparison, so equal elements (as in `[10,10,10]`) are not counted as inversions. Handle arrays of length 0 or 1 by returning 0, and use a 64-bit counter. Time is `O(n log n)` and extra space is `O(n)` for the buffer plus `O(log n)` for recursion. A Fenwick tree over compressed values is an equally fast alternative."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[5, 3, 2, 4, 1]"
+          }
+        ],
+        "output": "8",
+        "note": "Mixed order array with many inversions."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[1, 20, 6, 4, 5]"
+          }
+        ],
+        "output": "5",
+        "note": "Large element early creates several inversions."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[3, 1, 2]"
+          }
+        ],
+        "output": "2",
+        "note": "Small array with max at front."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[7, -2, 5, 0, 3]"
+          }
+        ],
+        "output": "6",
+        "note": "Includes negative numbers and zero."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[4, 4, 2, 2, 1]"
+          }
+        ],
+        "output": "8",
+        "note": "Duplicates must not count as inversions among themselves."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[1]"
+          }
+        ],
+        "output": "0",
+        "note": "Single element: no pairs exist."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[5, 4, 3, 2, 1]"
+          }
+        ],
+        "output": "10",
+        "note": "Reverse sorted: maximum n(n-1)/2 inversions; at n=1e5 needs 64-bit count."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[2, 1]"
+          }
+        ],
+        "output": "1",
+        "note": "Two elements: single inversion."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[1000000000, 0, 1000000000, 0]"
+          }
+        ],
+        "output": "3",
+        "note": "Extreme values: large and zero values with duplicates."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[-1, -5, -3]"
+          }
+        ],
+        "output": "2",
+        "note": "All negatives: comparisons on negative values."
+      },
+      {
+        "args": [
+          {
+            "name": "arr",
+            "value": "[3, 3, 1, 1]"
+          }
+        ],
+        "output": "4",
+        "note": "Duplicate groups: equal elements across groups not counted."
+      }
+    ]
+  }
 }

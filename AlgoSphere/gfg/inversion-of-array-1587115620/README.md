@@ -2,6 +2,8 @@
 
 **GeeksforGeeks** · **Medium** · [Open the problem](https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -91,6 +93,29 @@ Return left count + right count + merge count.
 The trickiest step is using `<=` for the comparison, so equal elements (as in `[10,10,10]`) are not counted as inversions. Handle arrays of length 0 or 1 by returning 0, and use a 64-bit counter. Time is `O(n log n)` and extra space is `O(n)` for the buffer plus `O(log n)` for recursion. A Fenwick tree over compressed values is an equally fast alternative.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| arr = [5, 3, 2, 4, 1] | 8 | Mixed order array with many inversions. |
+| arr = [1, 20, 6, 4, 5] | 5 | Large element early creates several inversions. |
+| arr = [3, 1, 2] | 2 | Small array with max at front. |
+| arr = [7, -2, 5, 0, 3] | 6 | Includes negative numbers and zero. |
+| arr = [4, 4, 2, 2, 1] | 8 | Duplicates must not count as inversions among themselves. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single element | arr = [1] | 0 | No pairs exist. |
+| Reverse sorted | arr = [5, 4, 3, 2, 1] | 10 | Maximum n(n-1)/2 inversions; at n=1e5 needs 64-bit count. |
+| Two elements | arr = [2, 1] | 1 | Single inversion. |
+| Extreme values | arr = [1000000000, 0, 1000000000, 0] | 3 | Large and zero values with duplicates. |
+| All negatives | arr = [-1, -5, -3] | 2 | Comparisons on negative values. |
+| Duplicate groups | arr = [3, 3, 1, 1] | 4 | Equal elements across groups not counted. |
 
 ---
 

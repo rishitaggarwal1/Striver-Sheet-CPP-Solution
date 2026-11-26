@@ -4,7 +4,7 @@
   "slug": "word-search",
   "title": "Word Search",
   "url": "https://leetcode.com/problems/word-search/",
-  "updatedAt": "2026-11-26T09:29:56.664Z",
+  "updatedAt": "2026-11-26T09:30:05.404Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an m x n grid of characters board and a string word, return true if word exists in the grid.\n\nThe word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.\n\nExample 1:\n\nInput: board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCCED\"\nOutput: true\n\nExample 2:\n\nInput: board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"SEE\"\nOutput: true\n\nExample 3:\n\nInput: board = [[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]], word = \"ABCB\"\nOutput: false\n\nConstraints:\n\n- m == board.length\n\n- n = board[i].length\n\n- 1 <= m, n <= 6\n\n- 1 <= word.length <= 15\n\n- board and word consists of only lowercase and uppercase English letters.\n\nFollow up: Could you use search pruning to make your solution faster with a larger board?"
@@ -18,5 +18,165 @@
     "Track your current cell `(r, c)` and an index `k` meaning `word[0..k-1]` has already been matched along this path. Also keep a visited marker, for example by temporarily overwriting `board[r][c]` with a sentinel character and restoring it afterwards.",
     "Try every cell in the grid as a possible start with `k = 0`.\nAt a cell: if it is out of bounds, already used, or not equal to `word[k]`, fail.\nIf `k` is the last index of the word, succeed.\nMark the cell as used.\nRecurse into the 4 neighbors with `k + 1`, and stop as soon as one succeeds.\nUnmark the cell and return the result.\nReturn true if any start succeeds, otherwise false.",
     "The trickiest step is restoring the cell on every exit path, including early returns, or later searches will break. Handle a one-letter word and a word longer than `m * n`. Useful pruning: return false immediately if the board lacks enough copies of some letter the word needs. Also reverse the word when its last letter is rarer on the board than its first, so the search starts from fewer cells. Time is `O(m * n * 3^L)` and extra space is `O(L)` for the recursion depth."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"C\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"SFCS\""
+          }
+        ],
+        "output": "true",
+        "note": "Path that zigzags across the middle row and up to the top row."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"A\",\"B\"],[\"C\",\"D\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"ABDC\""
+          }
+        ],
+        "output": "true",
+        "note": "Path that walks around a 2x2 square."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"A\",\"B\"],[\"C\",\"D\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"AD\""
+          }
+        ],
+        "output": "false",
+        "note": "Diagonal moves are not allowed."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"C\",\"A\",\"A\"],[\"A\",\"A\",\"A\"],[\"B\",\"C\",\"D\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"AAB\""
+          }
+        ],
+        "output": "true",
+        "note": "Needs backtracking over several A cells before finding the B."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"a\",\"b\"],[\"c\",\"d\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"cdba\""
+          }
+        ],
+        "output": "true",
+        "note": "Lowercase letters, path starting from a non-corner start."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"a\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"a\""
+          }
+        ],
+        "output": "true",
+        "note": "Single cell: the one-letter word matches."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"a\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"aa\""
+          }
+        ],
+        "output": "false",
+        "note": "Cell reuse: the single cell cannot be used twice."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"a\",\"b\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"ba\""
+          }
+        ],
+        "output": "true",
+        "note": "Single row: the path goes from right to left."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"A\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"a\""
+          }
+        ],
+        "output": "false",
+        "note": "Case sensitivity: uppercase A does not match lowercase a."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"a\",\"a\"],[\"a\",\"a\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"aaaaa\""
+          }
+        ],
+        "output": "false",
+        "note": "All-equal letters: the word is longer than the number of cells."
+      },
+      {
+        "args": [
+          {
+            "name": "board",
+            "value": "[[\"A\",\"B\",\"C\",\"E\"],[\"S\",\"F\",\"E\",\"S\"],[\"A\",\"D\",\"E\",\"E\"]]"
+          },
+          {
+            "name": "word",
+            "value": "\"ABCESEEEFS\""
+          }
+        ],
+        "output": "true",
+        "note": "Tricky backtracking: the long path loops through the E cluster."
+      }
+    ]
+  }
 }

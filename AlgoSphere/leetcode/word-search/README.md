@@ -2,6 +2,8 @@
 
 **LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/word-search/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -109,6 +111,29 @@ Return true if any start succeeds, otherwise false.
 The trickiest step is restoring the cell on every exit path, including early returns, or later searches will break. Handle a one-letter word and a word longer than `m * n`. Useful pruning: return false immediately if the board lacks enough copies of some letter the word needs. Also reverse the word when its last letter is rarer on the board than its first, so the search starts from fewer cells. Time is `O(m * n * 3^L)` and extra space is `O(L)` for the recursion depth.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]]<br>word = "SFCS" | true | Path that zigzags across the middle row and up to the top row. |
+| board = [["A","B"],["C","D"]]<br>word = "ABDC" | true | Path that walks around a 2x2 square. |
+| board = [["A","B"],["C","D"]]<br>word = "AD" | false | Diagonal moves are not allowed. |
+| board = [["C","A","A"],["A","A","A"],["B","C","D"]]<br>word = "AAB" | true | Needs backtracking over several A cells before finding the B. |
+| board = [["a","b"],["c","d"]]<br>word = "cdba" | true | Lowercase letters, path starting from a non-corner start. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single cell | board = [["a"]]<br>word = "a" | true | The one-letter word matches. |
+| Cell reuse | board = [["a"]]<br>word = "aa" | false | The single cell cannot be used twice. |
+| Single row | board = [["a","b"]]<br>word = "ba" | true | The path goes from right to left. |
+| Case sensitivity | board = [["A"]]<br>word = "a" | false | Uppercase A does not match lowercase a. |
+| All-equal letters | board = [["a","a"],["a","a"]]<br>word = "aaaaa" | false | The word is longer than the number of cells. |
+| Tricky backtracking | board = [["A","B","C","E"],["S","F","E","S"],["A","D","E","E"]]<br>word = "ABCESEEEFS" | true | The long path loops through the E cluster. |
 
 ---
 

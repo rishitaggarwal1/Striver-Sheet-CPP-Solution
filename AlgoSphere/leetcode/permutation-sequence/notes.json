@@ -4,7 +4,7 @@
   "slug": "permutation-sequence",
   "title": "Permutation Sequence",
   "url": "https://leetcode.com/problems/permutation-sequence/",
-  "updatedAt": "2026-11-26T10:05:54.804Z",
+  "updatedAt": "2026-11-26T10:06:09.886Z",
   "problem": {
     "difficulty": "Hard",
     "description": "The set [1, 2, 3, ..., n] contains a total of n! unique permutations.\n\nBy listing and labeling all of the permutations in order, we get the following sequence for n = 3:\n\n- \"123\"\n\n- \"132\"\n\n- \"213\"\n\n- \"231\"\n\n- \"312\"\n\n- \"321\"\n\nGiven n and k, return the k^th permutation sequence.\n\nExample 1:\n\nInput: n = 3, k = 3\nOutput: \"213\"\n\nExample 2:\n\nInput: n = 4, k = 9\nOutput: \"2314\"\n\nExample 3:\n\nInput: n = 3, k = 1\nOutput: \"123\"\n\nConstraints:\n\n- 1 <= n <= 9\n\n- 1 <= k <= n!"
@@ -33,5 +33,179 @@
     "Keep a sorted list of the digits not yet used, and precompute factorials `0!` through `(n-1)!`. Track the current 0-based rank inside the current block; it tells you which remaining digit to pick next.",
     "Precompute factorials up to `(n-1)!`.\nPut digits 1..n in a sorted list and set k = k - 1.\nFor each position, let f = (number of remaining digits - 1)!.\nPick the digit at index k / f in the remaining list and append it to the answer.\nRemove that digit from the list and set k = k % f.\nRepeat until the list is empty, then return the built string.",
     "The trickiest step is converting to 0-based: if you divide the original k, you go off by one whenever k is an exact multiple of a block size. Check the edges: n = 1 gives \"1\", k = 1 gives the sorted order, and k = n! gives the fully reversed order. Removing from the list costs `O(n)` per step, so the total is `O(n^2)` time and `O(n)` space, which is trivial for n up to 9."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "4"
+          },
+          {
+            "name": "k",
+            "value": "1"
+          }
+        ],
+        "output": "\"1234\"",
+        "note": "First permutation of n=4."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "4"
+          },
+          {
+            "name": "k",
+            "value": "17"
+          }
+        ],
+        "output": "\"3412\"",
+        "note": "Middle permutation for n=4."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "5"
+          },
+          {
+            "name": "k",
+            "value": "50"
+          }
+        ],
+        "output": "\"31254\"",
+        "note": "Moderate n with mixed factorial digits."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "6"
+          },
+          {
+            "name": "k",
+            "value": "400"
+          }
+        ],
+        "output": "\"425361\"",
+        "note": "Larger n requiring multiple non-zero indices."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "3"
+          },
+          {
+            "name": "k",
+            "value": "5"
+          }
+        ],
+        "output": "\"312\"",
+        "note": "Small n second-to-last permutation."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "1"
+          },
+          {
+            "name": "k",
+            "value": "1"
+          }
+        ],
+        "output": "\"1\"",
+        "note": "Minimum size: single element."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "9"
+          },
+          {
+            "name": "k",
+            "value": "1"
+          }
+        ],
+        "output": "\"123456789\"",
+        "note": "Max n, first permutation: sorted order."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "9"
+          },
+          {
+            "name": "k",
+            "value": "362880"
+          }
+        ],
+        "output": "\"987654321\"",
+        "note": "Max n, k = n!: reverse-sorted."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "2"
+          },
+          {
+            "name": "k",
+            "value": "2"
+          }
+        ],
+        "output": "\"21\"",
+        "note": "Small last permutation: swap of two."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "9"
+          },
+          {
+            "name": "k",
+            "value": "40320"
+          }
+        ],
+        "output": "\"198765432\"",
+        "note": "Block boundary: last permutation starting with 1."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "9"
+          },
+          {
+            "name": "k",
+            "value": "40321"
+          }
+        ],
+        "output": "\"213456789\"",
+        "note": "Block boundary: first permutation starting with 2."
+      },
+      {
+        "args": [
+          {
+            "name": "n",
+            "value": "9"
+          },
+          {
+            "name": "k",
+            "value": "200000"
+          }
+        ],
+        "output": "\"596742183\"",
+        "note": "Large k: full factorial decomposition at max n."
+      }
+    ]
+  }
 }

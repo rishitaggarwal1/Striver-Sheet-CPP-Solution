@@ -2,7 +2,7 @@
 
 **LeetCode** · **Hard** · [Open the problem](https://leetcode.com/problems/permutation-sequence/) · ✅ Solved in C++
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution) · [Test cases](#test-cases)
 
 ## Problem
 
@@ -149,6 +149,30 @@ public:
     }
 };
 ```
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| n = 4<br>k = 1 | "1234" | First permutation of n=4. |
+| n = 4<br>k = 17 | "3412" | Middle permutation for n=4. |
+| n = 5<br>k = 50 | "31254" | Moderate n with mixed factorial digits. |
+| n = 6<br>k = 400 | "425361" | Larger n requiring multiple non-zero indices. |
+| n = 3<br>k = 5 | "312" | Small n second-to-last permutation. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Minimum size | n = 1<br>k = 1 | "1" | Single element. |
+| Max n, first permutation | n = 9<br>k = 1 | "123456789" | Sorted order. |
+| Max n, k = n! | n = 9<br>k = 362880 | "987654321" | Reverse-sorted. |
+| Small last permutation | n = 2<br>k = 2 | "21" | Swap of two. |
+| Block boundary | n = 9<br>k = 40320 | "198765432" | Last permutation starting with 1. |
+| Block boundary | n = 9<br>k = 40321 | "213456789" | First permutation starting with 2. |
+| Large k | n = 9<br>k = 200000 | "596742183" | Full factorial decomposition at max n. |
 
 ---
 

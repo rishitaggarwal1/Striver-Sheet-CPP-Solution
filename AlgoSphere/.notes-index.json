@@ -411,5 +411,18 @@
       "path": "gfg/rat-in-a-maze-problem/my-solution.cpp"
     },
     "updatedAt": "2026-11-26T09:17:05.967Z"
+  },
+  "leetcode/word-search": {
+    "title": "Word Search",
+    "site": "leetcode",
+    "slug": "word-search",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/word-search",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-26T09:29:56.664Z"
   }
 }

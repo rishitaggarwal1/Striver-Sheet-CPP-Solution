@@ -1,0 +1,27 @@
+{
+  "format": 2,
+  "site": "leetcode",
+  "slug": "permutation-sequence",
+  "title": "Permutation Sequence",
+  "url": "https://leetcode.com/problems/permutation-sequence/",
+  "updatedAt": "2026-11-26T10:05:46.279Z",
+  "problem": {
+    "difficulty": "Hard",
+    "description": "The set [1, 2, 3, ..., n] contains a total of n! unique permutations.\n\nBy listing and labeling all of the permutations in order, we get the following sequence for n = 3:\n\n- \"123\"\n\n- \"132\"\n\n- \"213\"\n\n- \"231\"\n\n- \"312\"\n\n- \"321\"\n\nGiven n and k, return the k^th permutation sequence.\n\nExample 1:\n\nInput: n = 3, k = 3\nOutput: \"213\"\n\nExample 2:\n\nInput: n = 4, k = 9\nOutput: \"2314\"\n\nExample 3:\n\nInput: n = 3, k = 1\nOutput: \"123\"\n\nConstraints:\n\n- 1 <= n <= 9\n\n- 1 <= k <= n!"
+  },
+  "mySolutions": [
+    {
+      "code": "class Solution {\npublic:\n    string getPermutation(int n, int k) {\n        string str=\"\";\n        vector<int> v;\n        int fact = 1;\n        for(int i=1;i<n;i++)\n        {\n            fact = fact*i;\n            v.push_back(i);\n        }\n        v.push_back(n);\n        k--;\n        while(true)\n        {\n            str+=to_string(v[k/fact]);\n            v.erase(v.begin()+k/fact);\n            if(v.size()==0) break;\n            k=k%fact;\n            fact=fact/v.size();\n        }\n        return str;\n    }\n};",
+      "lang": "C++",
+      "runtime": "",
+      "memory": "",
+      "runtimePercentile": null,
+      "memoryPercentile": null,
+      "passed": "",
+      "attempts": 1,
+      "hintsUsed": 0,
+      "acceptedAt": "2026-11-26T10:05:43.056Z",
+      "platform": "LeetCode"
+    }
+  ]
+}

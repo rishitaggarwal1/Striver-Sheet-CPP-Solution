@@ -427,5 +427,21 @@
       "path": "leetcode/word-search/my-solution.cpp"
     },
     "updatedAt": "2026-11-26T09:34:40.627Z"
+  },
+  "leetcode/permutation-sequence": {
+    "title": "Permutation Sequence",
+    "site": "leetcode",
+    "slug": "permutation-sequence",
+    "difficulty": "Hard",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/permutation-sequence",
+    "solution": "",
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/permutation-sequence/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-26T10:05:46.279Z"
   }
 }

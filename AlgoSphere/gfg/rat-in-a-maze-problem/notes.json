@@ -4,7 +4,7 @@
   "slug": "rat-in-a-maze-problem",
   "title": "Rat in Maze",
   "url": "https://www.geeksforgeeks.org/problems/rat-in-a-maze-problem/1",
-  "updatedAt": "2026-11-26T09:04:42.601Z",
+  "updatedAt": "2026-11-26T09:04:58.882Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given a square binary matrix maze[][] containing values 0 and 1, find all possible paths for a rat to travel from the top-left cell to the bottom-right cell. The rat can move in four directions: up(U), down(D), left(L), and right(R).\n\n- 1 represents an open cell through which the rat can move.\n\n- 0 represents a blocked cell that cannot be traversed.\n\nThe rat can move only through open cells and cannot visit the same cell more than once in a path. Return all valid paths as strings consisting of 'U', 'D', 'L', and 'R', representing the sequence of moves taken by the rat.\n\nNote: Return the paths in lexicographically increasing order. If no valid path exists, return an empty list.\n\nExamples:\n\nInput: maze[][] = [[1, 0, 0, 0], [1, 1, 0, 1], [1, 1, 0, 0], [0, 1, 1, 1]]\nOutput: [\"DDRDRR\", \"DRDDRR\"]\nExplanation: There are two valid paths from the source cell (0, 0) to the destination cell (3, 3).\n\nInput: maze[][] = [[1, 0], [1, 0]]\nOutput: []\nExplanation: No path exists as the destination cell (1, 1) is blocked.\n\nConstraints:\n2 ≤ n ≤ 5\n0 ≤ maze[i][j] ≤ 1"
@@ -18,5 +18,121 @@
     "Track the current cell `(r, c)`, the move string built so far, a visited grid (or temporarily set the maze cell to 0) showing which cells are on the current path, and a result list of finished paths. Keep a fixed list of direction steps paired with their letters: `D=(+1,0)`, `L=(0,-1)`, `R=(0,+1)`, `U=(-1,0)`.",
     "If `maze[0][0]` or `maze[n-1][n-1]` is 0, return an empty list.\nStart exploring from `(0,0)` with an empty move string and mark the start as visited.\nWhen the current cell is `(n-1,n-1)`, add the move string to the results and go back.\nOtherwise, for each direction in order D, L, R, U, compute the neighbor cell.\nIf the neighbor is inside the grid, open, and not visited, mark it, append the letter, and explore from it.\nAfter that call returns, remove the letter and unmark the neighbor.\nReturn the result list.",
     "The trickiest step is undoing your changes: forgetting to unmark a cell or to remove the last letter quietly loses valid paths or corrupts later ones. Check the edge cases: a blocked start or end gives an empty list, and an all-ones grid gives many paths, which is still fine for `n=5`. Time is exponential, roughly `O(4^(n^2))` in the worst case or about `O(3^(n^2))` since you never step straight back, and extra space is `O(n^2)` for the recursion depth and visited grid, not counting the output."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,1],[1,1]]"
+          }
+        ],
+        "output": "[\"DR\", \"RD\"]",
+        "note": "Fully open 2x2 grid gives two paths."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,1,1],[1,0,1],[1,1,1]]"
+          }
+        ],
+        "output": "[\"DDRR\", \"RRDD\"]",
+        "note": "Blocked center forces border paths."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,1,0],[1,1,0],[0,1,1]]"
+          }
+        ],
+        "output": "[\"DRDR\", \"RDDR\"]",
+        "note": "Open 2x2 block with dead-end loops."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,1,1,1],[0,0,0,1],[1,1,1,1],[1,0,0,1]]"
+          }
+        ],
+        "output": "[\"RRRDDD\"]",
+        "note": "Unique path with a dead-end branch."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,0,0],[1,1,1],[0,0,1]]"
+          }
+        ],
+        "output": "[\"DRRD\"]",
+        "note": "Single winding corridor."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[0,1],[1,1]]"
+          }
+        ],
+        "output": "[]",
+        "note": "Blocked source: no paths."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,1],[1,0]]"
+          }
+        ],
+        "output": "[]",
+        "note": "Blocked destination: no paths."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,0],[0,1]]"
+          }
+        ],
+        "output": "[]",
+        "note": "Disconnected corners: no route exists."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,0,0],[1,0,0],[1,1,1]]"
+          }
+        ],
+        "output": "[\"DDRR\"]",
+        "note": "Edge corridor: single path along left and bottom."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[1,1,1],[1,1,1],[1,1,1]]"
+          }
+        ],
+        "output": "[\"DDRR\", \"DDRURD\", \"DDRUURDD\", \"DRDR\", \"DRRD\", \"DRURDD\", \"RDDR\", \"RDLDRR\", \"RDRD\", \"RRDD\", \"RRDLDR\", \"RRDLLDRR\"]",
+        "note": "All open: all 12 self-avoiding paths in sorted order."
+      },
+      {
+        "args": [
+          {
+            "name": "mat",
+            "value": "[[0,0],[0,0]]"
+          }
+        ],
+        "output": "[]",
+        "note": "All zeros: no paths."
+      }
+    ]
+  }
 }

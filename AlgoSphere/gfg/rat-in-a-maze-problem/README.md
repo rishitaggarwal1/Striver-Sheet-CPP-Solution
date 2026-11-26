@@ -2,6 +2,8 @@
 
 **GeeksforGeeks** · **Medium** · [Open the problem](https://www.geeksforgeeks.org/problems/rat-in-a-maze-problem/1)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -100,6 +102,29 @@ Return the result list.
 The trickiest step is undoing your changes: forgetting to unmark a cell or to remove the last letter quietly loses valid paths or corrupts later ones. Check the edge cases: a blocked start or end gives an empty list, and an all-ones grid gives many paths, which is still fine for `n=5`. Time is exponential, roughly `O(4^(n^2))` in the worst case or about `O(3^(n^2))` since you never step straight back, and extra space is `O(n^2)` for the recursion depth and visited grid, not counting the output.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| mat = [[1,1],[1,1]] | ["DR", "RD"] | Fully open 2x2 grid gives two paths. |
+| mat = [[1,1,1],[1,0,1],[1,1,1]] | ["DDRR", "RRDD"] | Blocked center forces border paths. |
+| mat = [[1,1,0],[1,1,0],[0,1,1]] | ["DRDR", "RDDR"] | Open 2x2 block with dead-end loops. |
+| mat = [[1,1,1,1],[0,0,0,1],[1,1,1,1],[1,0,0,1]] | ["RRRDDD"] | Unique path with a dead-end branch. |
+| mat = [[1,0,0],[1,1,1],[0,0,1]] | ["DRRD"] | Single winding corridor. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Blocked source | mat = [[0,1],[1,1]] | [] | No paths. |
+| Blocked destination | mat = [[1,1],[1,0]] | [] | No paths. |
+| Disconnected corners | mat = [[1,0],[0,1]] | [] | No route exists. |
+| Edge corridor | mat = [[1,0,0],[1,0,0],[1,1,1]] | ["DDRR"] | Single path along left and bottom. |
+| All open | mat = [[1,1,1],[1,1,1],[1,1,1]] | ["DDRR", "DDRURD", "DDRUURDD", "DRDR", "DRRD", "DRURDD", "RDDR", "RDLDRR", "RDRD", "RRDD", "RRDLDR", "RRDLLDRR"] | All 12 self-avoiding paths in sorted order. |
+| All zeros | mat = [[0,0],[0,0]] | [] | No paths. |
 
 ---
 

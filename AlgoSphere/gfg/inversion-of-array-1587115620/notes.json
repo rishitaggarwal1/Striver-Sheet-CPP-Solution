@@ -4,7 +4,7 @@
   "slug": "inversion-of-array-1587115620",
   "title": "Count Inversions",
   "url": "https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1",
-  "updatedAt": "2026-11-26T10:29:04.946Z",
+  "updatedAt": "2026-11-26T10:33:06.514Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an array of integers arr[]. You have to find the Inversion Count of the array. Inversion count is the number of pairs of elements (i, j) such that i < j and arr[i] > arr[j].\n\nExamples:\n\nInput: arr[] = [2, 4, 1, 3, 5]\nOutput: 3\nExplanation: The sequence 2, 4, 1, 3, 5 has three inversions (2, 1), (4, 1), (4, 3).\n\nInput: arr[] = [2, 3, 4, 5, 6]\nOutput: 0\nExplanation: As the sequence is already sorted so there is no inversion count.\n\nInput: arr[] = [10, 10, 10]\nOutput: 0\nExplanation: As all the elements of array are same, so there is no inversion count."
@@ -76,5 +76,20 @@
       "Computing mid as `l + (r-l)/2` avoids overflow, and the copy-back loop is clean."
     ]
   },
-  "reviewFor": "class Solution {\n  public:\n    int cnt=0;\n    void merge(vector<int> &arr, int l, int r, int mid)\n    {\n        int i=l,j=mid+1;\n        vector<int> v(r-l+1);\n        int k=0;\n        while(i<=mid && j<=r)\n        {\n            if(arr[i]<=arr[j])\n            {\n                v[k++]=arr[i++];\n            }\n            else\n            {\n                cnt+=(mid-l+1);\n                v[k++]=arr[j++];\n            }\n        }\n        while(i<=mid)\n            v[k++]=arr[i++];\n        while(j<=r)\n            v[k++]=arr[j++];\n        for(int i=l,k=0;i<=r;i++,k++)\n        {\n            arr[i]=v[k];\n        }\n        return;\n    }\n    void mergeSort(vector<int> &arr, int l, int r)\n    {\n        if(l>=r)    return;\n        int mid = l + (r-l)/2;\n        mergeSort(arr,l,mid);\n        merge(arr,l,mid,r);\n        mergeSort(arr,mid+1,r);\n    }\n    int inversionCount(vector<int> &arr) {\n        // code here\n        int n = arr.size();\n        mergeSort(arr,0,n-1);\n        return cnt;\n    }\n};"
+  "reviewFor": "class Solution {\n  public:\n    int cnt=0;\n    void merge(vector<int> &arr, int l, int r, int mid)\n    {\n        int i=l,j=mid+1;\n        vector<int> v(r-l+1);\n        int k=0;\n        while(i<=mid && j<=r)\n        {\n            if(arr[i]<=arr[j])\n            {\n                v[k++]=arr[i++];\n            }\n            else\n            {\n                cnt+=(mid-l+1);\n                v[k++]=arr[j++];\n            }\n        }\n        while(i<=mid)\n            v[k++]=arr[i++];\n        while(j<=r)\n            v[k++]=arr[j++];\n        for(int i=l,k=0;i<=r;i++,k++)\n        {\n            arr[i]=v[k];\n        }\n        return;\n    }\n    void mergeSort(vector<int> &arr, int l, int r)\n    {\n        if(l>=r)    return;\n        int mid = l + (r-l)/2;\n        mergeSort(arr,l,mid);\n        merge(arr,l,mid,r);\n        mergeSort(arr,mid+1,r);\n    }\n    int inversionCount(vector<int> &arr) {\n        // code here\n        int n = arr.size();\n        mergeSort(arr,0,n-1);\n        return cnt;\n    }\n};",
+  "mySolutions": [
+    {
+      "code": "class Solution {\n  public:\n    int cnt=0;\n    void merge(vector<int> &arr, int l, int r, int mid)\n    {\n        int i=l,j=mid+1;\n        vector<int> v(r-l+1);\n        int k=0;\n        while(i<=mid && j<=r)\n        {\n            if(arr[i]<=arr[j])\n            {\n                v[k++]=arr[i++];\n            }\n            else\n            {\n                cnt+=(mid-i+1);\n                v[k++]=arr[j++];\n            }\n        }\n        while(i<=mid)\n            v[k++]=arr[i++];\n        while(j<=r)\n            v[k++]=arr[j++];\n        for(int i=l,k=0;i<=r;i++,k++)\n        {\n            arr[i]=v[k];\n        }\n        return;\n    }\n    void mergeSort(vector<int> &arr, int l, int r)\n    {\n        if(l>=r)    return;\n        int mid = l + (r-l)/2;\n        mergeSort(arr,l,mid);\n        mergeSort(arr,mid+1,r);\n        merge(arr,l,r,mid);\n    }\n    int inversionCount(vector<int> &arr) {\n        // code here\n        int n = arr.size();\n        mergeSort(arr,0,n-1);\n        return cnt;\n    }\n};",
+      "lang": "C++",
+      "runtime": "0.34 s",
+      "memory": "",
+      "runtimePercentile": null,
+      "memoryPercentile": null,
+      "passed": "1115 / 1115",
+      "attempts": 1,
+      "hintsUsed": 0,
+      "acceptedAt": "2026-11-26T10:33:04.211Z",
+      "platform": "GeeksforGeeks"
+    }
+  ]
 }

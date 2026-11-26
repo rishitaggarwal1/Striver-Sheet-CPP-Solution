@@ -2,7 +2,7 @@
 
 Problem-by-problem notes. Each folder walks through one problem: progressive hints, the intuition behind it, every approach from brute force to optimal with a complexity breakdown and a step-by-step dry run, a commented C++ solution, and test cases.
 
-**32 problems** · 14 solved · Easy 5 · Medium 18 · Hard 9 · 24 patterns
+**32 problems** · 15 solved · Easy 5 · Medium 18 · Hard 9 · 24 patterns
 
 **How to use these notes:** try the problem first, then open the hints one at a time. Read the intuition and the approaches only after you've made an attempt.
 
@@ -12,7 +12,7 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 2 | [Check if All A's Appears Before All B's](leetcode/check-if-all-as-appears-before-all-bs/) | LeetCode | Easy |   |   |   | ✅ [C++](leetcode/check-if-all-as-appears-before-all-bs/my-solution.cpp) |
 | 3 | [Cherry Pickup II](leetcode/cherry-pickup-ii/) | LeetCode | Hard | 3D DP on (row, j1, j2): two walkers moving in lockstep | `O(rows · cols^2 · 9)` time, `O(cols^2)` space | [C++](leetcode/cherry-pickup-ii/cherry-pickup-ii.cpp) |   |
 | 4 | [Climbing Stairs](leetcode/climbing-stairs/) | LeetCode | Easy | 1D DP (Fibonacci recurrence) | `O(n)` time, `O(1)` space | [C++](leetcode/climbing-stairs/climbing-stairs.cpp) |   |
-| 5 | [Count Inversions](gfg/inversion-of-array-1587115620/) | GeeksforGeeks | Medium |   |   |   |   |
+| 5 | [Count Inversions](gfg/inversion-of-array-1587115620/) | GeeksforGeeks | Medium |   |   |   | ✅ [C++](gfg/inversion-of-array-1587115620/my-solution.cpp) |
 | 6 | [Count Square Submatrices with All Ones](leetcode/count-square-submatrices-with-all-ones/) | LeetCode | Medium | 2D DP: largest square ending at each cell | `O(m·n)` time, `O(n)` space | [C++](leetcode/count-square-submatrices-with-all-ones/count-square-submatrices-with-all-ones.cpp) |   |
 | 7 | [Expression Add Operators](leetcode/expression-add-operators/) | LeetCode | Hard |   |   |   |   |
 | 8 | [Find Subtree Sizes After Changes](leetcode/find-subtree-sizes-after-changes/) | LeetCode | Medium | DFS with per-character ancestor state (backtracking), then subtree-size accumulation | `O(n)` time, `O(n)` space | [C++](leetcode/find-subtree-sizes-after-changes/find-subtree-sizes-after-changes.cpp) |   |

@@ -1,6 +1,8 @@
 # Count Inversions
 
-**GeeksforGeeks** · **Medium** · [Open the problem](https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1)
+**GeeksforGeeks** · **Medium** · [Open the problem](https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1) · ✅ Solved in C++ · 0.34 s
+
+**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution)
 
 ## Problem
 
@@ -91,6 +93,60 @@ Return left count + right count + merge count.
 The trickiest step is using `<=` for the comparison, so equal elements (as in `[10,10,10]`) are not counted as inversions. Handle arrays of length 0 or 1 by returning 0, and use a 64-bit counter. Time is `O(n log n)` and extra space is `O(n)` for the buffer plus `O(log n)` for recursion. A Fenwick tree over compressed values is an equally fast alternative.
 
 </details>
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ | 0.34 s |   | 1115 / 1115 | 1 | 0 of 8 | 2026-11-26 |
+
+```cpp
+class Solution {
+  public:
+    int cnt=0;
+    void merge(vector<int> &arr, int l, int r, int mid)
+    {
+        int i=l,j=mid+1;
+        vector<int> v(r-l+1);
+        int k=0;
+        while(i<=mid && j<=r)
+        {
+            if(arr[i]<=arr[j])
+            {
+                v[k++]=arr[i++];
+            }
+            else
+            {
+                cnt+=(mid-i+1);
+                v[k++]=arr[j++];
+            }
+        }
+        while(i<=mid)
+            v[k++]=arr[i++];
+        while(j<=r)
+            v[k++]=arr[j++];
+        for(int i=l,k=0;i<=r;i++,k++)
+        {
+            arr[i]=v[k];
+        }
+        return;
+    }
+    void mergeSort(vector<int> &arr, int l, int r)
+    {
+        if(l>=r)    return;
+        int mid = l + (r-l)/2;
+        mergeSort(arr,l,mid);
+        mergeSort(arr,mid+1,r);
+        merge(arr,l,r,mid);
+    }
+    int inversionCount(vector<int> &arr) {
+        // code here
+        int n = arr.size();
+        mergeSort(arr,0,n-1);
+        return cnt;
+    }
+};
+```
 
 ---
 

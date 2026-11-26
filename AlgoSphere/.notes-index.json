@@ -395,5 +395,18 @@
       "path": "leetcode/palindrome-partitioning/my-solution.cpp"
     },
     "updatedAt": "2026-11-26T08:46:15.903Z"
+  },
+  "gfg/rat-in-a-maze-problem": {
+    "title": "Rat in Maze",
+    "site": "gfg",
+    "slug": "rat-in-a-maze-problem",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "gfg/rat-in-a-maze-problem",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-26T09:04:42.601Z"
   }
 }

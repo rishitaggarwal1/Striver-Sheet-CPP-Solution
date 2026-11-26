@@ -4,7 +4,7 @@
   "slug": "m-coloring-problem-1587115620",
   "title": "M-Coloring Problem",
   "url": "https://www.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1",
-  "updatedAt": "2026-11-26T07:07:21.628Z",
+  "updatedAt": "2026-11-26T07:11:56.165Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an undirected graph consisting of V vertices represented by an adjacency list adj[][] and an integer m, check whether the graph can be colored using at most m different colors such that no two adjacent vertices have the same color.\n\nNote: The graph uses 0-based indexing and may be connected or disconnected.\n\nExamples:\n\nInput: adj[][] = [[1, 3, 2], [0, 3], [3, 0], [1, 2, 0]], m = 3\nOutput: true\nExplanation: It is possible to color the given graph using 3 colors, for example, one of the possible ways vertices can be colored as follows:\n\nVertex 0: Color 1\nVertex 1: Color 2\nVertex 2: Color 2\nVertex 3: Color 3\n\nInput: adj[][] = [[1, 2], [0, 2], [0, 1]], m = 2\nOutput: false\nExplanation: It is not possible to color the given graph using only 2 colors because vertices 0, 1, and 2 form a triangle.\n\nConstraints:\n1 ≤ V ≤ 10\n1 ≤ E = edges.size() ≤ (V*(V-1))/2\n0 ≤ edges[i][j] ≤ V-1\n1 ≤ m ≤ V"
@@ -1225,45 +1225,55 @@
   },
   "review": {
     "verdict": "wrong_answer",
-    "summary": "You chose the right backtracking idea, but the safety check is mixed into the recursion, so you assign a color after checking only some neighbors, and a vertex with no neighbors never gets a color at all.",
-    "yourIdea": "You color vertices in order 0..V-1 and try every color 1..m on each one. You check the vertex's neighbors so you never reuse a neighbor's color, recurse to the next vertex, and undo the color if the recursion fails.",
+    "summary": "Your safety check and recursion are set up correctly, but the `break` after a failed recursive call turns the backtracking into a one-shot greedy coloring, so you answer false on graphs that can actually be colored.",
+    "yourIdea": "You color vertices in index order from 0 to V-1. For each vertex you try colors 1..m, check that no already-colored neighbor has the same color, and recurse to the next vertex. If you reach `i == adj.size()`, every vertex got a valid color.",
     "gaps": [
       {
-        "title": "Deciding 'safe' before you've looked at all neighbors",
-        "explanation": "A color is safe only if no neighbor has it, which is a statement about all neighbors. Your code assigns `col[i] = j` and recurses inside the neighbor loop, on the first neighbor that doesn't conflict. Neighbors later in the list are never checked before you commit. Treat 'is color j safe for vertex i?' as its own complete question: scan every neighbor first, and only after that scan decide whether to assign and recurse.",
-        "lines": "8-16"
+        "title": "A dead end below does not mean this color is hopeless",
+        "explanation": "On line 23 you `break` as soon as `func(i+1, ...)` fails. That treats \"the first color that fits vertex i didn't work out\" as \"no color for vertex i can work out\". That is only true if the choice at i is irrelevant to what happens later, and it isn't: a different color here can free up a color for some later neighbor. Since every level breaks the same way, one failure anywhere makes the whole search give up. You end up trying exactly one coloring: the greedy one, where each vertex takes the smallest color that fits. Greedy coloring is not optimal, which is why this problem needs backtracking. After a failed recursion you should move on to the next color j.",
+        "lines": "20-23"
       },
       {
-        "title": "A vertex with no neighbors can never be colored",
-        "explanation": "Because the assign-and-recurse step lives inside the neighbor loop, a vertex whose list is empty never runs that step. The function falls through to `return false`. The problem says the graph may be disconnected, so isolated vertices can appear, and any color works for them. Once the safety check is separated from the assignment, this case is handled for free.",
-        "lines": "8, 19"
+        "title": "Undo step is unreachable",
+        "explanation": "Line 24 (`col[i] = -1`) comes after both a `return` and a `break`, so it never runs. Once you stop breaking and keep looping, that reset has to execute. If it doesn't, a stale color on vertex i can stay behind after you leave this call. Then when the parent tries a new color, vertices further down would see a vertex marked as colored that is actually not decided yet.",
+        "lines": "22-24"
       }
     ],
     "bugs": [
       {
-        "lines": "10-15",
-        "issue": "The color assignment, the recursive call and the undo all run once per neighbor that is checked, not once per color after the full check.",
-        "fix": "Loop over all neighbors first and set a flag such as `safe = false` on any conflict, then outside that loop do `if(safe){ col[i]=j; if(func(...)) return true; col[i]=-1; }`."
+        "lines": "22-23",
+        "issue": "`else break;` stops trying the remaining colors after the first recursive failure.",
+        "fix": "Remove the `else break;` so the loop continues to the next color j."
+      },
+      {
+        "lines": "24",
+        "issue": "The reset of `col[i]` is dead code, so the color is never undone.",
+        "fix": "Make sure `col[i] = -1;` runs after a failed recursive call. Once the break is removed it will execute in that position, or you can put it after the color loop."
+      },
+      {
+        "lines": "11",
+        "issue": "`col[adj[i][k]] != -1 &&` is redundant, because the colors j are always at least 1. It is harmless, though.",
+        "fix": "You can simplify the check to `col[adj[i][k]] == j`."
       }
     ],
     "counterexample": {
-      "input": "adj = [[1,2],[0,2],[0,1]], m = 2",
-      "expected": "false",
-      "yours": "true",
-      "why": "The run sets col[0]=1, then col[1]=2. At vertex 2, j=2 is checked against neighbor 0 only (color 1, no conflict). The code immediately sets col[2]=2 and recurses to the end, returning true. It never compares against neighbor 1, which also has color 2."
+      "input": "adj = [[2], [3], [0, 3], [2, 1]], m = 2   (the path 0-2-3-1)",
+      "expected": "true",
+      "yours": "false",
+      "why": "Vertex 0 gets color 1. Vertex 1 has no colored neighbor yet, so it also gets color 1. Vertex 2 must take color 2 because of vertex 0. Vertex 3 is adjacent to vertex 1 (color 1) and vertex 2 (color 2), so it has no color left. The failure travels back up, and every level hits `break` instead of trying color 2. In particular vertex 1 never tries color 2, which would have worked."
     },
     "complexity": {
-      "time": "O(m^V * V) worst case for backtracking",
-      "space": "O(V) for the color array and recursion depth",
-      "verdict": "With V ≤ 10, pruned backtracking runs well within limits even though the raw bound m^V is up to about 10^10."
+      "time": "As written it is effectively O(V*m + E): a single greedy pass. Fixed backtracking is O(m^V * V) worst case.",
+      "space": "O(V) for col plus recursion depth",
+      "verdict": "Once fixed, the worst case is about 10^10 nodes in theory, but V ≤ 10 and the pruning at each vertex keep it far below that in practice. This is the intended solution."
     },
-    "nudge": "When can you honestly say color j is safe for vertex i: after looking at one neighbor, or after looking at all of them? Also, what should happen for a vertex with an empty adjacency list?",
-    "correctIdea": "Use backtracking over vertices 0..V-1. For each vertex, try colors 1..m, and for each color first verify against every neighbor that none of them already has it. Only if the color passes that full check, assign it, recurse to the next vertex, and reset it if the recursion fails. Return true when all vertices are colored, and false if no color works for the current vertex.",
+    "nudge": "When `func(i+1, ...)` returns false with vertex i colored j, what have you actually learned: that vertex i can't be colored at all, or only that color j doesn't lead anywhere? What should the loop do next in that case, and what must you clean up first?",
+    "correctIdea": "Use full backtracking. For each vertex in order, try every color 1..m that no already-colored neighbor uses. Assign it and recurse. If the recursion fails, reset the vertex to uncolored and try the next color. Return false only after every color has failed for this vertex. Because V ≤ 10, this exhaustive search with pruning is fast enough.",
     "strengths": [
-      "You recognized this as a backtracking problem with a correct base case (`i == adj.size()`).",
-      "You undo the assignment (`col[i] = -1`) after a failed recursion, which is the right backtracking discipline.",
-      "Using -1 for uncolored vertices and colors 1..m avoids false conflicts with neighbors that aren't colored yet."
+      "The safety check against neighbors' colors is correct.",
+      "The recursion structure and base case (`i == adj.size()`) are right, and processing vertices by index naturally handles disconnected graphs.",
+      "You returned true as soon as a full coloring is found, so the search stops early."
     ]
   },
-  "reviewFor": "class Solution {\n  public:\n    bool func(int i, vector<vector<int>> &adj, vector<int>& col, int m)\n    {\n        if(i==adj.size())   return true;\n        for(int j=1;j<=m;j++)\n        {\n            for(int k = 0; k<adj[i].size();k++)\n            {\n                if(col[adj[i][k]]==j)    break;\n                \n                col[i] = j;\n                if(func(i+1,adj,col,m))\n                    return true;\n                col[i] = -1;\n            }\n            \n        }\n        return false;\n    }\n    bool graphColoring(vector<vector<int>> &adj, int m) {\n        // code here\n        int n = adj.size();\n        vector<int> col(n,-1);\n        return func(0,adj,col,m);\n    }\n};"
+  "reviewFor": "class Solution {\n  public:\n    bool func(int i, vector<vector<int>> &adj, vector<int>& col, int m)\n    {\n        if(i==adj.size())   return true;\n        for(int j=1;j<=m;j++)\n        {\n            bool v = true;\n            for(int k = 0; k<adj[i].size();k++)\n            {\n                if(col[adj[i][k]] !=-1 && col[adj[i][k]]==j)    \n                {\n                    v = false;\n                    break;\n                }\n            }\n            if(v)\n            {\n                col[i] = j;\n                if(func(i+1,adj,col,m))\n                    return true;\n                else\n                    break;\n                col[i] = -1;\n            }\n        }\n        return false;\n    }\n    bool graphColoring(vector<vector<int>> &adj, int m) {\n        // code here\n        int n = adj.size();\n        vector<int> col(n,-1);\n        return func(0,adj,col,m);\n    }\n};"
 }

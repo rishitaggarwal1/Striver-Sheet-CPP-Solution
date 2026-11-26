@@ -2,6 +2,8 @@
 
 **LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/palindrome-partitioning/)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -93,6 +95,29 @@ After returning, remove the last piece from the path (backtrack).
 The trickiest parts are filling the DP table in an order where `isPal[i+1][j-1]` is already known, and saving a copy of the path rather than the reused list itself. A length-1 string yields just one partition, and an all-same-letter string produces the maximum `2^(n-1)` partitions. Time is `O(n * 2^n)` because building the output dominates; space is `O(n^2)` for the table plus `O(n)` recursion depth, not counting the output.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| s = "aba" | [["a","b","a"],["aba"]] | Odd-length palindrome as a whole string. |
+| s = "abba" | [["a","b","b","a"],["a","bb","a"],["abba"]] | Even-length palindrome with a nested palindrome. |
+| s = "abc" | [["a","b","c"]] | No multi-character palindromes, so only single characters. |
+| s = "efe" | [["e","f","e"],["efe"]] | Short string that is itself a palindrome. |
+| s = "abbab" | [["a","b","b","a","b"],["a","b","bab"],["a","bb","a","b"],["abba","b"]] | Overlapping palindromes across different positions. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single character | s = "z" | [["z"]] | Only one partition exists. |
+| Two equal characters | s = "aa" | [["a","a"],["aa"]] | Two partitions. |
+| Two distinct characters | s = "ab" | [["a","b"]] | Only the single-character split. |
+| All equal characters | s = "aaa" | [["a","a","a"],["a","aa"],["aa","a"],["aaa"]] | Every split is valid, giving 2^(n-1) partitions. |
+| Max length all-equal | s = "aaaaaaaaaaaaaaaa" | 32768 partitions (every split of the 16 a's is valid) | Produces 2^15 = 32768 partitions; full list omitted. |
+| Max length all-distinct | s = "abcdefghijklmnop" | [["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"]] | Only one partition, into single characters. |
 
 ---
 

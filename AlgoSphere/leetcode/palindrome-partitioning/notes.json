@@ -4,7 +4,7 @@
   "slug": "palindrome-partitioning",
   "title": "Palindrome Partitioning",
   "url": "https://leetcode.com/problems/palindrome-partitioning/",
-  "updatedAt": "2026-11-26T08:32:16.560Z",
+  "updatedAt": "2026-11-26T08:32:25.923Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible palindrome partitioning of s.\n\nExample 1:\n\nInput: s = \"aab\"\nOutput: [[\"a\",\"a\",\"b\"],[\"aa\",\"b\"]]\n\nExample 2:\n\nInput: s = \"a\"\nOutput: [[\"a\"]]\n\nConstraints:\n\n- 1 <= s.length <= 16\n\n- s contains only lowercase English letters."
@@ -18,5 +18,121 @@
     "Track the current list of chosen pieces (the path) and the current start index, meaning everything before it is already partitioned. Also keep the 2D boolean table `isPal[i][j]`, which says whether the substring from i to j inclusive is a palindrome, plus the result list.",
     "Fill `isPal` with i going from the end of the string down to 0, and j from i up to the end.\nCall a recursive explore(start) with an empty path.\nIf start equals the string length, add a copy of the path to the results.\nOtherwise loop end from start to the last index.\nIf `isPal[start][end]` is true, append that substring to the path and explore(end+1).\nAfter returning, remove the last piece from the path (backtrack).",
     "The trickiest parts are filling the DP table in an order where `isPal[i+1][j-1]` is already known, and saving a copy of the path rather than the reused list itself. A length-1 string yields just one partition, and an all-same-letter string produces the maximum `2^(n-1)` partitions. Time is `O(n * 2^n)` because building the output dominates; space is `O(n^2)` for the table plus `O(n)` recursion depth, not counting the output."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"aba\""
+          }
+        ],
+        "output": "[[\"a\",\"b\",\"a\"],[\"aba\"]]",
+        "note": "Odd-length palindrome as a whole string."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"abba\""
+          }
+        ],
+        "output": "[[\"a\",\"b\",\"b\",\"a\"],[\"a\",\"bb\",\"a\"],[\"abba\"]]",
+        "note": "Even-length palindrome with a nested palindrome."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"abc\""
+          }
+        ],
+        "output": "[[\"a\",\"b\",\"c\"]]",
+        "note": "No multi-character palindromes, so only single characters."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"efe\""
+          }
+        ],
+        "output": "[[\"e\",\"f\",\"e\"],[\"efe\"]]",
+        "note": "Short string that is itself a palindrome."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"abbab\""
+          }
+        ],
+        "output": "[[\"a\",\"b\",\"b\",\"a\",\"b\"],[\"a\",\"b\",\"bab\"],[\"a\",\"bb\",\"a\",\"b\"],[\"abba\",\"b\"]]",
+        "note": "Overlapping palindromes across different positions."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"z\""
+          }
+        ],
+        "output": "[[\"z\"]]",
+        "note": "Single character: only one partition exists."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"aa\""
+          }
+        ],
+        "output": "[[\"a\",\"a\"],[\"aa\"]]",
+        "note": "Two equal characters: two partitions."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"ab\""
+          }
+        ],
+        "output": "[[\"a\",\"b\"]]",
+        "note": "Two distinct characters: only the single-character split."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"aaa\""
+          }
+        ],
+        "output": "[[\"a\",\"a\",\"a\"],[\"a\",\"aa\"],[\"aa\",\"a\"],[\"aaa\"]]",
+        "note": "All equal characters: every split is valid, giving 2^(n-1) partitions."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"aaaaaaaaaaaaaaaa\""
+          }
+        ],
+        "output": "32768 partitions (every split of the 16 a's is valid)",
+        "note": "Max length all-equal: produces 2^15 = 32768 partitions; full list omitted."
+      },
+      {
+        "args": [
+          {
+            "name": "s",
+            "value": "\"abcdefghijklmnop\""
+          }
+        ],
+        "output": "[[\"a\",\"b\",\"c\",\"d\",\"e\",\"f\",\"g\",\"h\",\"i\",\"j\",\"k\",\"l\",\"m\",\"n\",\"o\",\"p\"]]",
+        "note": "Max length all-distinct: only one partition, into single characters."
+      }
+    ]
+  }
 }

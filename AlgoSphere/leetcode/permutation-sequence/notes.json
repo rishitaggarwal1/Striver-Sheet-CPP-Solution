@@ -4,7 +4,7 @@
   "slug": "permutation-sequence",
   "title": "Permutation Sequence",
   "url": "https://leetcode.com/problems/permutation-sequence/",
-  "updatedAt": "2026-11-26T10:06:09.886Z",
+  "updatedAt": "2026-11-26T10:06:30.454Z",
   "problem": {
     "difficulty": "Hard",
     "description": "The set [1, 2, 3, ..., n] contains a total of n! unique permutations.\n\nBy listing and labeling all of the permutations in order, we get the following sequence for n = 3:\n\n- \"123\"\n\n- \"132\"\n\n- \"213\"\n\n- \"231\"\n\n- \"312\"\n\n- \"321\"\n\nGiven n and k, return the k^th permutation sequence.\n\nExample 1:\n\nInput: n = 3, k = 3\nOutput: \"213\"\n\nExample 2:\n\nInput: n = 4, k = 9\nOutput: \"2314\"\n\nExample 3:\n\nInput: n = 3, k = 1\nOutput: \"123\"\n\nConstraints:\n\n- 1 <= n <= 9\n\n- 1 <= k <= n!"
@@ -206,6 +206,134 @@
         "output": "\"596742183\"",
         "note": "Large k: full factorial decomposition at max n."
       }
+    ]
+  },
+  "approach": {
+    "version": 3,
+    "oneLiner": "Return, as a string, the k-th permutation (1-indexed) of the digits 1..n when all n! permutations are listed in lexicographic order.",
+    "pattern": "Factorial number system (block skipping)",
+    "signals": [
+      "\"listing and labeling all of the permutations in order\" → the permutations come in equal-sized blocks that share the same first digit. You can count blocks instead of listing them.",
+      "For n = 3 each first digit leads exactly 2 = 2! permutations (123,132 | 213,231 | 312,321) → the first digit of the answer is the block index found by dividing (k-1) by (n-1)!.",
+      "1 <= k <= n! with n <= 9 → k is a rank among n! objects. Decompose it in a mixed-radix base of factorials.",
+      "Output is a single permutation, not all of them → you should build it digit by digit rather than enumerate."
+    ],
+    "constraints": "n <= 9 means n! = 362,880. Enumerating up to k permutations at O(n) each costs about 3.3·10^6 operations, which still passes. The factorial-digit method needs only about n^2 = 81 operations. The target is O(n^2), or O(n) per digit with a list of size n, which is effectively constant here.",
+    "thinking": [
+      {
+        "q": "What is the most literal way to get the k-th permutation?",
+        "a": "Generate permutations in lexicographic order and stop at the k-th. With n = 9 and k = 362880 that walks the whole list, so it is correct but does work proportional to k."
+      },
+      {
+        "q": "Looking at the n = 3 list, what structure do the permutations have?",
+        "a": "They split into 3 groups of 2 by first digit: 1xx, 2xx, 3xx. In general, fixing the first digit leaves (n-1)! orderings of the rest, so each group has (n-1)! members."
+      },
+      {
+        "q": "Given that structure, how do I find the first digit without listing anything?",
+        "a": "Convert to 0-indexed rank r = k-1. The first digit sits at index r / (n-1)! in the sorted list of unused digits. For n = 4, k = 9: r = 8, and 8 / 3! = 1, so the first digit is the element at index 1 of [1,2,3,4], which is 2."
+      },
+      {
+        "q": "How do I continue after the first digit?",
+        "a": "Replace r with r % (n-1)! (here 8 % 6 = 2) and remove the chosen digit, leaving [1,3,4]. Then repeat with (n-2)!: 2 / 2! = 1 picks 3, r becomes 0. Then 0 / 1! = 0 picks 1, and the last digit is 4, giving \"2314\"."
+      },
+      {
+        "q": "Why must I subtract 1 from k?",
+        "a": "Block indices are 0-based. With k = 6 for n = 3, using k directly gives 6 / 2 = 3, which is out of range. Using r = 5 gives 5 / 2 = 2, so the first digit is 3, and the rest produces \"321\" correctly."
+      },
+      {
+        "q": "What is the key insight in one line?",
+        "a": "k-1 written in the factorial number system (digits r/(n-1)!, r/(n-2)!, ...) tells you directly which remaining digit to take at each position."
+      }
+    ],
+    "intuition": [],
+    "approaches": [
+      {
+        "level": "Brute force",
+        "name": "Generate all permutations in order",
+        "aha": "The statement literally describes listing every permutation in order, so building that list and indexing it at k-1 is the first idea.",
+        "idea": "Recursively build permutations by trying the unused digits 1..n in increasing order at each position. That order produces permutations lexicographically. Collect them, or count them and stop when the counter reaches k. It is correct because depth-first search over choices in ascending order visits permutations in exactly the sequence shown.",
+        "steps": [
+          "Keep a used[] array for digits 1..n and a current string.",
+          "At each depth, try every unused digit in increasing order, append it, and recurse.",
+          "When the string reaches length n, increment a counter.",
+          "When the counter equals k, record the string and stop.",
+          "Return the recorded string."
+        ],
+        "time": "O(k·n) with early stop, O(n!·n) worst case",
+        "space": "O(n) recursion, or O(n!·n) if all permutations are stored",
+        "complexity": "Every permutation before the k-th is fully built at O(n) cost. When k = n! that is 362,880 × 9 operations. Memory is the recursion stack plus the used array, or the whole list if you store it.",
+        "tradeoff": "It passes for n <= 9, but the cost is proportional to k, so it is about 10^5 times more work than needed. It would collapse for n = 15 (1.3·10^12 permutations)."
+      },
+      {
+        "level": "Better",
+        "name": "Apply next-permutation k-1 times",
+        "aha": "The brute force uses recursion and possibly stores a list, yet each permutation only depends on the previous one. Stepping forward in place removes the extra memory.",
+        "idea": "Start from \"123...n\" and apply the standard next-permutation step k-1 times. Each step finds the rightmost i with a[i] < a[i+1], swaps a[i] with the smallest larger element to its right, and reverses the suffix. It is correct because next-permutation produces the immediate lexicographic successor, so k-1 steps land on rank k.",
+        "steps": [
+          "Initialize array a = [1, 2, ..., n].",
+          "Repeat k-1 times: find the rightmost i with a[i] < a[i+1].",
+          "Find the rightmost j > i with a[j] > a[i] and swap a[i] and a[j].",
+          "Reverse a[i+1..n-1].",
+          "After the loop, join a into a string and return it."
+        ],
+        "time": "O(k·n)",
+        "space": "O(n)",
+        "complexity": "There are k-1 successor steps, and each scans and reverses at most n elements. Only the n-element array is kept.",
+        "tradeoff": "Memory is now minimal, but the time is still proportional to k. It walks through every permutation before the answer instead of jumping to it."
+      },
+      {
+        "level": "Optimal",
+        "name": "Factorial number system / block skipping",
+        "aha": "Both previous methods step through permutations one at a time. Yet whole groups of (n-1)! permutations share a prefix, so we can skip an entire group with one division.",
+        "idea": "Let r = k-1 and keep a sorted list of unused digits. At position i, each choice of digit leads exactly f = (n-1-i)! permutations. So the digit to place is unused[r / f], and r becomes r % f for the subproblem. This works because lexicographic order sorts first by the leading digit, then recursively by the rest. Picking from a sorted list keeps the same correspondence at every level.",
+        "steps": [
+          "Precompute factorials 0! through (n-1)!.",
+          "Build the list unused = [1, 2, ..., n] and set r = k - 1.",
+          "For i from 0 to n-1, let f = (n-1-i)!.",
+          "Compute idx = r / f, append unused[idx] to the answer, and remove it from unused.",
+          "Set r = r % f.",
+          "Return the built string."
+        ],
+        "time": "O(n^2)",
+        "space": "O(n)",
+        "complexity": "There are n iterations, and each removes from a list of up to n elements, which shifts O(n) items. That is 81 operations for n = 9. Extra memory is the factorial table and the unused list.",
+        "tradeoff": "You must output n characters, so Ω(n) is unavoidable. The O(n^2) list removal could become O(n log n) with a Fenwick tree, but that is pointless when n <= 9."
+      }
+    ],
+    "mistakes": [
+      "Using k instead of k-1 when dividing by the factorial. For n = 3, k = 2 you get 2/2 = 1, so the answer starts with 2 instead of producing \"132\". When k = n! the index goes out of range.",
+      "Picking the digit as idx+1 (by value) instead of indexing into the list of remaining digits. This returns already-used digits, for example \"2214\" for n = 4, k = 9.",
+      "Dividing by n! or (n-i)! instead of (n-1-i)!. The block size is the number of orderings of the digits after the current position.",
+      "Forgetting to update r = r % f after each pick. The later digits then always come out as the first or a wrong block."
+    ],
+    "edgeCases": [
+      "n = 1, k = 1 → \"1\". Checks that the loop with f = 0! = 1 works.",
+      "k = 1 (for example n = 3) → \"123\". Here r = 0, so every index is 0 and the digits come out ascending.",
+      "k = n! (for example n = 3, k = 6 → \"321\"). Here r = n!-1, which is the maximum valid index at every level. It exposes off-by-one errors.",
+      "n = 9, k = 362880 → \"987654321\". The largest input, where brute force is slowest and indexing bugs show up."
+    ],
+    "related": [
+      {
+        "title": "Next Permutation",
+        "slug": "next-permutation",
+        "why": "It is the successor operation behind the Better approach. It is the same lexicographic-order reasoning applied one step at a time."
+      },
+      {
+        "title": "Permutations",
+        "slug": "permutations",
+        "why": "It is the backtracking enumeration used in the brute force."
+      },
+      {
+        "title": "K-th Smallest in Lexicographical Order",
+        "slug": "k-th-smallest-in-lexicographical-order",
+        "why": "It finds the k-th item by counting the size of each prefix subtree and skipping whole subtrees, the same block-skipping idea."
+      }
+    ],
+    "takeaways": [
+      "To find the k-th item in an ordered combinatorial list, count how many items share each prefix and skip whole blocks instead of enumerating.",
+      "Convert 1-indexed ranks to 0-indexed (k-1) before doing division and modulo decomposition.",
+      "A permutation's rank is a number in the factorial (mixed-radix) base. Each digit is an index into the remaining unused choices.",
+      "Small n (n <= 9) means even O(n^2) list operations are negligible. Spend effort on correctness of the indexing, not on fancy data structures."
     ]
   }
 }

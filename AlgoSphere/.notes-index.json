@@ -433,15 +433,15 @@
     "site": "leetcode",
     "slug": "permutation-sequence",
     "difficulty": "Hard",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Factorial number system (block skipping)",
+    "time": "O(n^2)",
+    "space": "O(n)",
     "dir": "leetcode/permutation-sequence",
     "solution": "",
     "mine": {
       "lang": "C++",
       "path": "leetcode/permutation-sequence/my-solution.cpp"
     },
-    "updatedAt": "2026-11-26T10:06:09.886Z"
+    "updatedAt": "2026-11-26T10:06:30.454Z"
   }
 }

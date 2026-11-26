@@ -2,7 +2,7 @@
 
 Problem-by-problem notes. Each folder walks through one problem: progressive hints, the intuition behind it, every approach from brute force to optimal with a complexity breakdown and a step-by-step dry run, a commented C++ solution, and test cases.
 
-**26 problems** · 9 solved · Easy 5 · Medium 13 · Hard 8 · 21 patterns
+**27 problems** · 9 solved · Easy 5 · Medium 14 · Hard 8 · 21 patterns
 
 **How to use these notes:** try the problem first, then open the hints one at a time. Read the intuition and the approaches only after you've made an attempt.
 
@@ -18,22 +18,23 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 8 | [House Robber](leetcode/house-robber/) | LeetCode | Medium | 1D DP on prefixes (pick / skip) | `O(n)` time, `O(1)` space | [C++](leetcode/house-robber/house-robber.cpp) |   |
 | 9 | [House Robber II](leetcode/house-robber-ii/) | LeetCode | Medium | 1D take/skip DP, run twice to break the circle | `O(n)` time, `O(1)` space | [C++](leetcode/house-robber-ii/house-robber-ii.cpp) |   |
 | 10 | [K-th of Two Sorted Arrays](gfg/k-th-element-of-two-sorted-array1317/) | GeeksforGeeks | Medium |   |   |   |   |
-| 11 | [Max Circular Subarray Sum](gfg/max-circular-subarray-sum-1587115620/) | GeeksforGeeks | Hard |   |   |   |   |
-| 12 | [Maximize Consecutive Elements in an Array After Modification](leetcode/maximize-consecutive-elements-in-an-array-after-modification/) | LeetCode | Hard | Sorting + Dynamic Programming | `O(n log n)` time, `O(n)` space | [C++](leetcode/maximize-consecutive-elements-in-an-array-after-modification/maximize-consecutive-elements-in-an-array-after-modification.cpp) |   |
-| 13 | [Maximum Subarray With Equal Products](leetcode/maximum-subarray-with-equal-products/) | LeetCode | Easy | Prime-exponent reasoning + sliding window | `O(n)` time, `O(1)` space | [C++](leetcode/maximum-subarray-with-equal-products/maximum-subarray-with-equal-products.cpp) | ✅ [C++](leetcode/maximum-subarray-with-equal-products/my-solution.cpp) |
-| 14 | [Median of Two Sorted Arrays](leetcode/median-of-two-sorted-arrays/) | LeetCode | Hard |   |   |   |   |
-| 15 | [Minimum Falling Path Sum](leetcode/minimum-falling-path-sum/) | LeetCode | Medium | Grid DP, row by row (free start and end) | `O(n^2)` time, `O(n)` space | [C++](leetcode/minimum-falling-path-sum/minimum-falling-path-sum.cpp) |   |
-| 16 | [N-Queens](leetcode/n-queens/) | LeetCode | Hard | Backtracking with constant-time conflict sets | `O(n!) roughly` time, `O(n) besides output` space | [C++](leetcode/n-queens/n-queens.cpp) | ✅ [C++](leetcode/n-queens/my-solution.cpp) |
-| 17 | [Network Delay Time](leetcode/network-delay-time/) | LeetCode | Medium | Single-source shortest paths (Dijkstra) | `O(E log E), i.e. O(E log n)` time, `O(n + E)` space | [C++](leetcode/network-delay-time/network-delay-time.cpp) | ✅ [C++](leetcode/network-delay-time/my-solution.cpp) |
-| 18 | [Product of the Last K Numbers](leetcode/product-of-the-last-k-numbers/) | LeetCode | Medium | Prefix products reset at zero | `O(1) per add and getProduct (amortised for append)` time, `O(n)` space | [C++](leetcode/product-of-the-last-k-numbers/product-of-the-last-k-numbers.cpp) | ✅ [C++](leetcode/product-of-the-last-k-numbers/my-solution.cpp) |
-| 19 | [Rotate Array](leetcode/rotate-array/) | LeetCode | Medium | Array reversal (three reverses) | `O(n)` time, `O(1)` space |   | ✅ [C++](leetcode/rotate-array/my-solution.cpp) |
-| 20 | [Smallest Unique Subarray](leetcode/smallest-unique-subarray/) | LeetCode | Hard | Binary search on answer + rolling hash | `O(n log n)` time, `O(n)` space | [C++](leetcode/smallest-unique-subarray/smallest-unique-subarray.cpp) | ✅ [C++](leetcode/smallest-unique-subarray/my-solution.cpp) |
-| 21 | [Stone Removal Game](leetcode/stone-removal-game/) | LeetCode | Easy | Deterministic game simulation | `O(1)` time, `O(1)` space |   | ✅ [C++](leetcode/stone-removal-game/my-solution.cpp) |
-| 22 | [Sudoku Solver](leetcode/sudoku-solver/) | LeetCode | Hard | Backtracking with constraint bitmasks | `Exponential worst case, but each node costs O(m) and in practice only a few hundred nodes are explored` time, `O(m) recursion plus 27 integers` space | [C++](leetcode/sudoku-solver/sudoku-solver.cpp) | ✅ [C++](leetcode/sudoku-solver/my-solution.cpp) |
-| 23 | [Triangle](leetcode/triangle/) | LeetCode | Medium | 2D grid DP on a triangle, filled bottom-up | `O(n^2)` time, `O(n)` space | [C++](leetcode/triangle/triangle.cpp) |   |
-| 24 | [Unique Paths](leetcode/unique-paths/) | LeetCode | Medium | Grid DP for counting paths, which collapses to a binomial coefficient | `O(min(m, n))` time, `O(1)` space | [C++](leetcode/unique-paths/unique-paths.cpp) |   |
-| 25 | [Unique Paths II](leetcode/unique-paths-ii/) | LeetCode | Medium | 2D grid DP (counting paths) | `O(m·n)` time, `O(n)` space | [C++](leetcode/unique-paths-ii/unique-paths-ii.cpp) |   |
-| 26 | [Zigzag Conversion](leetcode/zigzag-conversion/) | LeetCode | Medium | Simulation, then periodic index arithmetic | `O(n)` time, `O(1) besides the output` space | [C++](leetcode/zigzag-conversion/zigzag-conversion.cpp) |   |
+| 11 | [M-Coloring Problem](gfg/m-coloring-problem-1587115620/) | GeeksforGeeks | Medium |   |   |   |   |
+| 12 | [Max Circular Subarray Sum](gfg/max-circular-subarray-sum-1587115620/) | GeeksforGeeks | Hard |   |   |   |   |
+| 13 | [Maximize Consecutive Elements in an Array After Modification](leetcode/maximize-consecutive-elements-in-an-array-after-modification/) | LeetCode | Hard | Sorting + Dynamic Programming | `O(n log n)` time, `O(n)` space | [C++](leetcode/maximize-consecutive-elements-in-an-array-after-modification/maximize-consecutive-elements-in-an-array-after-modification.cpp) |   |
+| 14 | [Maximum Subarray With Equal Products](leetcode/maximum-subarray-with-equal-products/) | LeetCode | Easy | Prime-exponent reasoning + sliding window | `O(n)` time, `O(1)` space | [C++](leetcode/maximum-subarray-with-equal-products/maximum-subarray-with-equal-products.cpp) | ✅ [C++](leetcode/maximum-subarray-with-equal-products/my-solution.cpp) |
+| 15 | [Median of Two Sorted Arrays](leetcode/median-of-two-sorted-arrays/) | LeetCode | Hard |   |   |   |   |
+| 16 | [Minimum Falling Path Sum](leetcode/minimum-falling-path-sum/) | LeetCode | Medium | Grid DP, row by row (free start and end) | `O(n^2)` time, `O(n)` space | [C++](leetcode/minimum-falling-path-sum/minimum-falling-path-sum.cpp) |   |
+| 17 | [N-Queens](leetcode/n-queens/) | LeetCode | Hard | Backtracking with constant-time conflict sets | `O(n!) roughly` time, `O(n) besides output` space | [C++](leetcode/n-queens/n-queens.cpp) | ✅ [C++](leetcode/n-queens/my-solution.cpp) |
+| 18 | [Network Delay Time](leetcode/network-delay-time/) | LeetCode | Medium | Single-source shortest paths (Dijkstra) | `O(E log E), i.e. O(E log n)` time, `O(n + E)` space | [C++](leetcode/network-delay-time/network-delay-time.cpp) | ✅ [C++](leetcode/network-delay-time/my-solution.cpp) |
+| 19 | [Product of the Last K Numbers](leetcode/product-of-the-last-k-numbers/) | LeetCode | Medium | Prefix products reset at zero | `O(1) per add and getProduct (amortised for append)` time, `O(n)` space | [C++](leetcode/product-of-the-last-k-numbers/product-of-the-last-k-numbers.cpp) | ✅ [C++](leetcode/product-of-the-last-k-numbers/my-solution.cpp) |
+| 20 | [Rotate Array](leetcode/rotate-array/) | LeetCode | Medium | Array reversal (three reverses) | `O(n)` time, `O(1)` space |   | ✅ [C++](leetcode/rotate-array/my-solution.cpp) |
+| 21 | [Smallest Unique Subarray](leetcode/smallest-unique-subarray/) | LeetCode | Hard | Binary search on answer + rolling hash | `O(n log n)` time, `O(n)` space | [C++](leetcode/smallest-unique-subarray/smallest-unique-subarray.cpp) | ✅ [C++](leetcode/smallest-unique-subarray/my-solution.cpp) |
+| 22 | [Stone Removal Game](leetcode/stone-removal-game/) | LeetCode | Easy | Deterministic game simulation | `O(1)` time, `O(1)` space |   | ✅ [C++](leetcode/stone-removal-game/my-solution.cpp) |
+| 23 | [Sudoku Solver](leetcode/sudoku-solver/) | LeetCode | Hard | Backtracking with constraint bitmasks | `Exponential worst case, but each node costs O(m) and in practice only a few hundred nodes are explored` time, `O(m) recursion plus 27 integers` space | [C++](leetcode/sudoku-solver/sudoku-solver.cpp) | ✅ [C++](leetcode/sudoku-solver/my-solution.cpp) |
+| 24 | [Triangle](leetcode/triangle/) | LeetCode | Medium | 2D grid DP on a triangle, filled bottom-up | `O(n^2)` time, `O(n)` space | [C++](leetcode/triangle/triangle.cpp) |   |
+| 25 | [Unique Paths](leetcode/unique-paths/) | LeetCode | Medium | Grid DP for counting paths, which collapses to a binomial coefficient | `O(min(m, n))` time, `O(1)` space | [C++](leetcode/unique-paths/unique-paths.cpp) |   |
+| 26 | [Unique Paths II](leetcode/unique-paths-ii/) | LeetCode | Medium | 2D grid DP (counting paths) | `O(m·n)` time, `O(n)` space | [C++](leetcode/unique-paths-ii/unique-paths-ii.cpp) |   |
+| 27 | [Zigzag Conversion](leetcode/zigzag-conversion/) | LeetCode | Medium | Simulation, then periodic index arithmetic | `O(n)` time, `O(1) besides the output` space | [C++](leetcode/zigzag-conversion/zigzag-conversion.cpp) |   |
 
 ---
 

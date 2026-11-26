@@ -363,5 +363,18 @@
       "path": "leetcode/stone-removal-game/my-solution.cpp"
     },
     "updatedAt": "2026-11-26T03:08:05.853Z"
+  },
+  "gfg/m-coloring-problem-1587115620": {
+    "title": "M-Coloring Problem",
+    "site": "gfg",
+    "slug": "m-coloring-problem-1587115620",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "gfg/m-coloring-problem-1587115620",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-26T06:45:28.520Z"
   }
 }

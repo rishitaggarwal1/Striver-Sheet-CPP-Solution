@@ -347,5 +347,18 @@
       "path": "leetcode/smallest-unique-subarray/my-solution.cpp"
     },
     "updatedAt": "2026-11-25T09:37:36.157Z"
+  },
+  "leetcode/stone-removal-game": {
+    "title": "Stone Removal Game",
+    "site": "leetcode",
+    "slug": "stone-removal-game",
+    "difficulty": "Easy",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "leetcode/stone-removal-game",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-26T03:06:44.501Z"
   }
 }

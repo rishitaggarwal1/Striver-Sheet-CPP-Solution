@@ -4,7 +4,7 @@
   "slug": "m-coloring-problem-1587115620",
   "title": "M-Coloring Problem",
   "url": "https://www.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1",
-  "updatedAt": "2026-11-26T06:45:28.520Z",
+  "updatedAt": "2026-11-26T06:45:36.962Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an undirected graph consisting of V vertices represented by an adjacency list adj[][] and an integer m, check whether the graph can be colored using at most m different colors such that no two adjacent vertices have the same color.\n\nNote: The graph uses 0-based indexing and may be connected or disconnected.\n\nExamples:\n\nInput: adj[][] = [[1, 3, 2], [0, 3], [3, 0], [1, 2, 0]], m = 3\nOutput: true\nExplanation: It is possible to color the given graph using 3 colors, for example, one of the possible ways vertices can be colored as follows:\n\nVertex 0: Color 1\nVertex 1: Color 2\nVertex 2: Color 2\nVertex 3: Color 3\n\nInput: adj[][] = [[1, 2], [0, 2], [0, 1]], m = 2\nOutput: false\nExplanation: It is not possible to color the given graph using only 2 colors because vertices 0, 1, and 2 form a triangle.\n\nConstraints:\n1 ≤ V ≤ 10\n1 ≤ E = edges.size() ≤ (V*(V-1))/2\n0 ≤ edges[i][j] ≤ V-1\n1 ≤ m ≤ V"
@@ -18,5 +18,176 @@
     "Keep an array `color[v]`, where 0 means uncolored and 1 to `m` is the assigned color. To check whether color `c` is safe for vertex `v`, scan `adj[v]` and make sure no neighbor has `color[u] == c`.",
     "Start a recursive solve at vertex 0 with every vertex uncolored.\nIf the current index equals V, every vertex is colored, so return true.\nFor each color c from 1 to m, check whether c is safe for the current vertex.\nIf it is safe, assign it and recurse on the next vertex.\nIf the recursion returns true, propagate true upward.\nOtherwise reset the vertex to uncolored and try the next color.\nIf no color works, return false.",
     "The trickiest step is undoing the assignment (resetting `color[v]` to 0) after a failed branch, so later safety checks see correct state. Disconnected graphs and isolated vertices need no special handling, because the fixed vertex order reaches every vertex. If the input gives an edge list rather than an adjacency list, build the adjacency list first and add both directions. Time is `O(m^V * V)` in the worst case, but pruning makes it fast for V up to 10. Space is `O(V)` for the color array and the recursion stack."
-  ]
+  ],
+  "tests": {
+    "normal": [
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1,3],[0,2],[1,3],[2,0]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "2"
+          }
+        ],
+        "output": "true",
+        "note": "4-cycle is bipartite, so 2 colors suffice."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1,4],[0,2],[1,3],[2,4],[3,0]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "2"
+          }
+        ],
+        "output": "false",
+        "note": "Odd 5-cycle cannot be 2-colored."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1,4],[0,2],[1,3],[2,4],[3,0]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "3"
+          }
+        ],
+        "output": "true",
+        "note": "Odd 5-cycle can be 3-colored."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1,2,3],[0,2,3],[0,1,3],[0,1,2]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "3"
+          }
+        ],
+        "output": "false",
+        "note": "K4 needs 4 colors."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1,2],[0,2],[0,1],[4],[3]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "3"
+          }
+        ],
+        "output": "true",
+        "note": "Disconnected graph with a triangle and an edge."
+      }
+    ],
+    "edge": [
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1],[0]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "1"
+          }
+        ],
+        "output": "false",
+        "note": "Single color: one edge cannot be colored with one color."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1],[0]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "2"
+          }
+        ],
+        "output": "true",
+        "note": "Minimal graph: two vertices, one edge, two colors."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1,2,3],[0,2,3],[0,1,3],[0,1,2]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "4"
+          }
+        ],
+        "output": "true",
+        "note": "Complete graph: K4 with m equal to V."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1,2,3,4],[0],[0],[0],[0]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "2"
+          }
+        ],
+        "output": "true",
+        "note": "Star graph: bipartite, 2 colors suffice."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1,2,3,4,5],[0,2,5],[0,1,3],[0,2,4],[0,3,5],[0,4,1]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "3"
+          }
+        ],
+        "output": "false",
+        "note": "Odd wheel: hub plus 5-cycle needs 4 colors."
+      },
+      {
+        "args": [
+          {
+            "name": "adj",
+            "value": "[[1],[0],[3],[2],[5],[4],[7],[6],[9],[8]]",
+            "kind": "adjacency"
+          },
+          {
+            "name": "m",
+            "value": "2"
+          }
+        ],
+        "output": "true",
+        "note": "Max V: ten vertices as five disjoint edges."
+      }
+    ]
+  }
 }

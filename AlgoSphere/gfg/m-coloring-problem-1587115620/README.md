@@ -2,6 +2,8 @@
 
 **GeeksforGeeks** · **Medium** · [Open the problem](https://www.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1)
 
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+
 ## Problem
 
 <details>
@@ -101,6 +103,29 @@ If no color works, return false.
 The trickiest step is undoing the assignment (resetting `color[v]` to 0) after a failed branch, so later safety checks see correct state. Disconnected graphs and isolated vertices need no special handling, because the fixed vertex order reaches every vertex. If the input gives an edge list rather than an adjacency list, build the adjacency list first and add both directions. Time is `O(m^V * V)` in the worst case, but pruning makes it fast for V up to 10. Space is `O(V)` for the color array and the recursion stack.
 
 </details>
+
+## Test cases
+
+**Normal cases**
+
+| Input | Expected | What it checks |
+| --- | --- | --- |
+| adj = [[1,3],[0,2],[1,3],[2,0]]<br>m = 2 | true | 4-cycle is bipartite, so 2 colors suffice. |
+| adj = [[1,4],[0,2],[1,3],[2,4],[3,0]]<br>m = 2 | false | Odd 5-cycle cannot be 2-colored. |
+| adj = [[1,4],[0,2],[1,3],[2,4],[3,0]]<br>m = 3 | true | Odd 5-cycle can be 3-colored. |
+| adj = [[1,2,3],[0,2,3],[0,1,3],[0,1,2]]<br>m = 3 | false | K4 needs 4 colors. |
+| adj = [[1,2],[0,2],[0,1],[4],[3]]<br>m = 3 | true | Disconnected graph with a triangle and an edge. |
+
+**Edge cases**
+
+| Case | Input | Expected | Why it matters |
+| --- | --- | --- | --- |
+| Single color | adj = [[1],[0]]<br>m = 1 | false | One edge cannot be colored with one color. |
+| Minimal graph | adj = [[1],[0]]<br>m = 2 | true | Two vertices, one edge, two colors. |
+| Complete graph | adj = [[1,2,3],[0,2,3],[0,1,3],[0,1,2]]<br>m = 4 | true | K4 with m equal to V. |
+| Star graph | adj = [[1,2,3,4],[0],[0],[0],[0]]<br>m = 2 | true | Bipartite, 2 colors suffice. |
+| Odd wheel | adj = [[1,2,3,4,5],[0,2,5],[0,1,3],[0,2,4],[0,3,5],[0,4,1]]<br>m = 3 | false | Hub plus 5-cycle needs 4 colors. |
+| Max V | adj = [[1],[0],[3],[2],[5],[4],[7],[6],[9],[8]]<br>m = 2 | true | Ten vertices as five disjoint edges. |
 
 ---
 

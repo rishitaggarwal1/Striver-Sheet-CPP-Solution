@@ -369,12 +369,12 @@
     "site": "gfg",
     "slug": "m-coloring-problem-1587115620",
     "difficulty": "Medium",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Backtracking (constraint satisfaction)",
+    "time": "O(m^V · V) worst case, heavily pruned in practice",
+    "space": "O(V)",
     "dir": "gfg/m-coloring-problem-1587115620",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-26T06:45:36.962Z"
+    "updatedAt": "2026-11-26T06:46:26.116Z"
   }
 }

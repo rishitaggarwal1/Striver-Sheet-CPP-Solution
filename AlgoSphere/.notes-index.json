@@ -443,5 +443,18 @@
       "path": "leetcode/permutation-sequence/my-solution.cpp"
     },
     "updatedAt": "2026-11-26T10:07:18.223Z"
+  },
+  "gfg/inversion-of-array-1587115620": {
+    "title": "Count Inversions",
+    "site": "gfg",
+    "slug": "inversion-of-array-1587115620",
+    "difficulty": "Medium",
+    "pattern": "",
+    "time": "",
+    "space": "",
+    "dir": "gfg/inversion-of-array-1587115620",
+    "solution": "",
+    "mine": null,
+    "updatedAt": "2026-11-26T10:26:58.230Z"
   }
 }

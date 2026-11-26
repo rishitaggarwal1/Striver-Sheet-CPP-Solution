@@ -1,0 +1,22 @@
+{
+  "format": 2,
+  "site": "gfg",
+  "slug": "inversion-of-array-1587115620",
+  "title": "Count Inversions",
+  "url": "https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1",
+  "updatedAt": "2026-11-26T10:26:58.230Z",
+  "problem": {
+    "difficulty": "Medium",
+    "description": "Given an array of integers arr[]. You have to find the Inversion Count of the array. Inversion count is the number of pairs of elements (i, j) such that i < j and arr[i] > arr[j].\n\nExamples:\n\nInput: arr[] = [2, 4, 1, 3, 5]\nOutput: 3\nExplanation: The sequence 2, 4, 1, 3, 5 has three inversions (2, 1), (4, 1), (4, 3).\n\nInput: arr[] = [2, 3, 4, 5, 6]\nOutput: 0\nExplanation: As the sequence is already sorted so there is no inversion count.\n\nInput: arr[] = [10, 10, 10]\nOutput: 0\nExplanation: As all the elements of array are same, so there is no inversion count."
+  },
+  "hints": [
+    "You need to count how many pairs of positions have a larger number appearing before a smaller one. Equal values do not count, and a sorted array has zero such pairs.",
+    "A sorted array gives 0 and a strictly decreasing array of length `n` gives the maximum, `n*(n-1)/2`. The count is really a measure of how far the array is from sorted, which suggests that the act of sorting could reveal it.",
+    "GeeksforGeeks allows `n` up to about `10^5`, so checking every pair in `O(n^2)` means roughly `10^10` operations, which is too slow. Aim for `O(n log n)`, and keep the answer in a 64-bit integer, since it can reach about `5*10^9`.",
+    "This is divide and conquer, specifically a modified merge sort. Every inversion either lies inside the left half, inside the right half, or crosses between them. The first two kinds are counted recursively, and the crossing kind can be counted during the merge.",
+    "While merging two sorted halves, suppose the current right element is strictly smaller than the current left element `L[i]`. Then it is also smaller than every remaining element of the left half, because that half is sorted. So it forms `(size of left half - i)` inversions in one step.",
+    "Track a running inversion total, a temporary buffer for merging, and two pointers `i` and `j` into the sorted left and right halves. The value `mid - i + 1` (or left length minus `i`) is how many left elements are still waiting, and each of them is greater than the right element being placed.",
+    "Split the array at `mid` and recursively sort and count each half.\nMerge the halves with pointers `i` (left) and `j` (right).\nIf `left[i] <= right[j]`, place `left[i]` and advance `i` (no inversions).\nOtherwise place `right[j]`, add the number of remaining left elements to the count, and advance `j`.\nCopy any leftovers, then write the merged result back.\nReturn left count + right count + merge count.",
+    "The trickiest step is using `<=` for the comparison, so equal elements (as in `[10,10,10]`) are not counted as inversions. Handle arrays of length 0 or 1 by returning 0, and use a 64-bit counter. Time is `O(n log n)` and extra space is `O(n)` for the buffer plus `O(log n)` for recursion. A Fenwick tree over compressed values is an equally fast alternative."
+  ]
+}

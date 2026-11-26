@@ -4,7 +4,7 @@
   "slug": "rat-in-a-maze-problem",
   "title": "Rat in Maze",
   "url": "https://www.geeksforgeeks.org/problems/rat-in-a-maze-problem/1",
-  "updatedAt": "2026-11-26T09:11:56.973Z",
+  "updatedAt": "2026-11-26T09:15:35.061Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given a square binary matrix maze[][] containing values 0 and 1, find all possible paths for a rat to travel from the top-left cell to the bottom-right cell. The rat can move in four directions: up(U), down(D), left(L), and right(R).\n\n- 1 represents an open cell through which the rat can move.\n\n- 0 represents a blocked cell that cannot be traversed.\n\nThe rat can move only through open cells and cannot visit the same cell more than once in a path. Return all valid paths as strings consisting of 'U', 'D', 'L', and 'R', representing the sequence of moves taken by the rat.\n\nNote: Return the paths in lexicographically increasing order. If no valid path exists, return an empty list.\n\nExamples:\n\nInput: maze[][] = [[1, 0, 0, 0], [1, 1, 0, 1], [1, 1, 0, 0], [0, 1, 1, 1]]\nOutput: [\"DDRDRR\", \"DRDDRR\"]\nExplanation: There are two valid paths from the source cell (0, 0) to the destination cell (3, 3).\n\nInput: maze[][] = [[1, 0], [1, 0]]\nOutput: []\nExplanation: No path exists as the destination cell (1, 1) is blocked.\n\nConstraints:\n2 ≤ n ≤ 5\n0 ≤ maze[i][j] ≤ 1"
@@ -137,65 +137,44 @@
   },
   "review": {
     "verdict": "wrong_answer",
-    "summary": "The backtracking plan is right, but the bounds checks for L and R are copy-pasted wrong, the destination cell is never un-marked, and a blocked start is not handled, so the code misses paths and reads out of bounds.",
-    "yourIdea": "You are doing DFS with backtracking from (0,0). You mark a cell visited on entry and unmark it on exit, and you try moves in the order D, L, R, U so the paths come out already in lexicographic order. Every time you reach the bottom-right cell you record the current move string.",
-    "gaps": [
-      {
-        "title": "Backtracking must undo state on every exit path",
-        "explanation": "The invariant behind your visited array is that every exit from `solve` undoes the mark it made on entry. The early `return` at the destination skips line 27, so the destination stays marked forever after the first path is found. Every later path that needs that cell gets rejected. When you add an early return to a backtracking function, ask yourself whether it skips the undo step.",
-        "lines": "9-14, 27"
-      },
-      {
-        "title": "Validate the cell you are about to touch, not a neighbouring one",
-        "explanation": "The safety of each move depends on checking bounds for the exact cell you then index. For L and R you check `(r+1, c)` but then read `maze[r][c-1]` and `maze[r][c+1]`. As a result, horizontal moves are never allowed in the last row. They are also allowed with an out-of-range column, for example `maze[0][-1]` at the very start. A cleaner habit is to compute `(nr, nc)` first and pass those same coordinates to `check`, `maze` and `vis`. Direction arrays make that natural.",
-        "lines": "18, 21"
-      }
-    ],
+    "summary": "Your backtracking idea and move order are right, but the bounds checks for Left and Right were copy-pasted from Down, so you never move sideways in the last row and you read outside the array.",
+    "yourIdea": "You are doing a DFS with backtracking from (0,0). You mark the current cell visited, try the four moves in the order D, L, R, U so the paths come out in lexicographic order, unmark the cell on return, and record the path string when you reach the bottom-right cell.",
+    "gaps": [],
     "bugs": [
       {
-        "lines": "18",
-        "issue": "The L move checks bounds for `(r+1, c)` but accesses column `c-1`. At c = 0 this reads `maze[r][-1]`, which is undefined behaviour. In the last row the move is never tried at all.",
-        "fix": "Check the cell you actually move to: `check(r, c - 1, m, n)`."
+        "lines": "20",
+        "issue": "The Left move guards with `check(r + 1, c, m, n)` but then reads `maze[r][c - 1]`. When c == 0 and r < m-1 you index `maze[r][-1]` and `vis[r][-1]`, which is undefined behaviour. When r == m-1 the move is wrongly rejected.",
+        "fix": "Guard the Left move with the cell you actually step into: `check(r, c - 1, m, n)`."
       },
       {
-        "lines": "21",
-        "issue": "The R move checks bounds for `(r+1, c)` but accesses column `c+1`. It can read past the row end, and it never moves right in the last row. Every path has to end with a move into the last row or column, so many valid paths are lost.",
-        "fix": "Use `check(r, c + 1, m, n)`."
+        "lines": "25",
+        "issue": "The Right move also guards with `check(r + 1, c, m, n)`. In the last row Right is never tried, which kills every path that ends by moving right along the bottom row. When c == n-1 you read `maze[r][n]`, which is out of bounds.",
+        "fix": "Use `check(r, c + 1, m, n)` for the Right move."
       },
       {
-        "lines": "11-13",
-        "issue": "When the destination is reached, you return before `vis[r][c] = false`, so the destination stays visited for all later searches.",
-        "fix": "Reset `vis[r][c] = false` before the early return, or restructure so line 27 always runs."
-      },
-      {
-        "lines": "32",
-        "issue": "You only check whether the destination is blocked. If `maze[0][0] == 0`, the rat still starts there and can produce paths through a blocked start.",
-        "fix": "Also return the empty list when `maze[0][0] == 0`."
-      },
-      {
-        "lines": "3",
-        "issue": "`ans` is a member variable that is never cleared, so results would pile up if the same object were reused for several test cases.",
-        "fix": "Clear `ans` at the start of `ratInMaze`, or make it a local variable passed by reference."
+        "lines": "3, 43",
+        "issue": "`ans` is a class member that is never cleared. If the same Solution object is reused for several test cases, results pile up.",
+        "fix": "Call `ans.clear()` at the start of `ratInMaze`, or keep the result vector local and pass it by reference."
       }
     ],
     "counterexample": {
-      "input": "maze = [[1,0,0,0],[1,1,0,1],[1,1,0,0],[0,1,1,1]]",
-      "expected": "[\"DDRDRR\", \"DRDDRR\"]",
-      "yours": "[] (and it also reads maze[0][-1] at the start, which is undefined behaviour)",
-      "why": "The only way into (3,3) is an R move from (3,2). At row 3 the R branch tests `check(4, c)`, which is false, so the destination is never reached. Even after you fix that, the un-reset `vis[3][3]` would block the second path DRDDRR."
+      "input": "maze = [[1,0],[1,1]]",
+      "expected": "[\"DR\"]",
+      "yours": "[] (and it also reads maze[0][-1] out of bounds while at (0,0))",
+      "why": "After moving D to (1,0) you are in the last row. Lines 20 and 25 call `check(2,0,...)`, which fails, so R is never tried and (1,1) is never reached. Example 1 fails the same way: both expected paths need R moves along row 3, so you return []."
     },
     "complexity": {
-      "time": "O(3^(n^2)) in the worst case, since each step has at most 3 unvisited directions, times O(n^2) for string copies",
-      "space": "O(n^2) for the recursion depth and visited array, plus the output",
-      "verdict": "With n ≤ 5 there are at most 25 cells, and real mazes prune heavily, so exhaustive backtracking is well within limits."
+      "time": "O(3^(n^2)) in the worst case: each cell has at most 3 unvisited neighbours, and copying the string adds O(n^2) per call.",
+      "space": "O(n^2) for the recursion depth, the visited grid and the path strings (plus the output).",
+      "verdict": "With n ≤ 5 there are only 25 cells, so exhaustive backtracking is the intended approach and runs easily within limits."
     },
-    "nudge": "For each of your four `if` lines, put the three cell coordinates you use side by side (the one in `check`, the one in `maze`, the one in `vis`). Are they the same cell? Then ask: when `solve` returns at the destination, which line that should run never runs?",
-    "correctIdea": "Plain DFS backtracking is the intended solution. Reject the case immediately if the start or end cell is blocked. From each cell, try neighbours in lexicographic order D, L, R, U, so results come out already sorted. Only step to in-bounds, open, unvisited cells, and make sure the visited mark is undone on every return, including the one at the destination. Computing `nr = r + dr[k], nc = c + dc[k]` once per direction removes the copy-paste risk.",
+    "nudge": "For each of your four `if` statements, look at which cell `check` validates and which cell you then index into `maze` and `vis`. Are they always the same cell?",
+    "correctIdea": "Use DFS with backtracking from (0,0). Try the moves in alphabetical order D, L, R, U so the paths come out already sorted. For every move, bounds-check the neighbour you step into, require it to be open and not yet visited on the current path, and unmark the cell when you backtrack. A direction array of (dr, dc, char) tuples avoids copy-paste bugs like the one here.",
     "strengths": [
-      "Choosing the order D, L, R, U so the output is lexicographic without sorting",
-      "Correct overall backtracking structure: mark, recurse, unmark",
-      "Early exit when the destination cell is blocked"
+      "Trying moves in the order D, L, R, U gives lexicographic order for free, so no sorting is needed.",
+      "Marking and unmarking `vis` around each recursive call is correct backtracking.",
+      "You handle the blocked start cell before starting the search."
     ]
   },
-  "reviewFor": "class Solution {\n  public:\n    vector<string> ans;\n    bool check(int i, int j, int m, int n) {\n      return i >= 0 && i < m && j >= 0 && j < n;\n    }\n    void solve(vector<vector<int>> &maze, int r, int c, string str,\n               vector<vector<bool>>& vis) {\n      vis[r][c] = true;\n      int m = maze.size(), n = maze[0].size();\n      if (r == m-1 && c == n-1) {\n        ans.push_back(str);\n        return;\n      }\n      if (check(r + 1, c, m, n) && maze[r + 1][c] == 1 && vis[r+1][c] == false) {\n        solve(maze, r + 1, c, str+\"D\",vis);\n      }\n      if (check(r + 1, c, m, n) && maze[r][c - 1] == 1 && vis[r][c-1] == false) {\n        solve(maze, r, c - 1,  str+\"L\",vis);\n      }\n      if (check(r + 1, c, m, n) && maze[r][c + 1] == 1 && vis[r][c+1] == false) {\n        solve(maze, r, c + 1,  str+\"R\",vis);\n      }\n      if (check(r -1, c, m, n) && maze[r-1][c] == 1 && vis[r-1][c] == false) {\n        solve(maze, r - 1, c,  str+\"U\",vis);\n      }\n      vis[r][c] = false;\n    }\n    vector<string> ratInMaze(vector<vector<int>> &maze) {\n      // code here\n      int m = maze.size(), n = maze[0].size();\n      if(maze[m-1][n-1]==0) return ans;\n      vector<vector<bool>> vis(m, vector<bool>(n, false));\n      solve(maze, 0, 0, \"\",vis);\n      return ans;\n    }\n};"
+  "reviewFor": "class Solution {\n  public:\n    vector<string> ans;\n    bool check(int i, int j, int m, int n) {\n      return i >= 0 && i < m && j >= 0 && j < n;\n    }\n    void solve(vector<vector<int>> &maze, int r, int c, string str,\n               vector<vector<bool>>& vis) {\n      \n      int m = maze.size(), n = maze[0].size();\n      if (r == m-1 && c == n-1) {\n        ans.push_back(str);\n        return;\n      }\n      if (check(r + 1, c, m, n) && maze[r + 1][c] == 1 && vis[r+1][c] == false) {\n        vis[r][c] = true;\n        solve(maze, r + 1, c, str+\"D\",vis);\n        vis[r][c] = false;\n      }\n      if (check(r + 1, c, m, n) && maze[r][c - 1] == 1 && vis[r][c-1] == false) {\n        vis[r][c] = true;\n        solve(maze, r, c - 1,  str+\"L\",vis);\n        vis[r][c] = false;\n      }\n      if (check(r + 1, c, m, n) && maze[r][c + 1] == 1 && vis[r][c+1] == false) {\n        vis[r][c] = true;\n        solve(maze, r, c + 1,  str+\"R\",vis);\n        vis[r][c] = false;\n      }\n      if (check(r -1, c, m, n) && maze[r-1][c] == 1 && vis[r-1][c] == false) {\n        vis[r][c] = true;\n        solve(maze, r - 1, c,  str+\"U\",vis);\n        vis[r][c] = false;\n      }\n    }\n    vector<string> ratInMaze(vector<vector<int>> &maze) {\n      // code here\n      int m = maze.size(), n = maze[0].size();\n      \n      vector<vector<bool>> vis(m, vector<bool>(n, false));\n      if(maze[0][0]==1)\n        solve(maze, 0, 0, \"\",vis);\n      return ans;\n    }\n};"
 }

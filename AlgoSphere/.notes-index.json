@@ -385,12 +385,12 @@
     "site": "leetcode",
     "slug": "palindrome-partitioning",
     "difficulty": "Medium",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Backtracking with precomputed palindrome DP table",
+    "time": "O(n · 2^n)",
+    "space": "O(n^2) besides output",
     "dir": "leetcode/palindrome-partitioning",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-26T08:32:25.923Z"
+    "updatedAt": "2026-11-26T08:32:45.000Z"
   }
 }

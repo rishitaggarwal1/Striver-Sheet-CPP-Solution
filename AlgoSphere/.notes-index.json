@@ -353,12 +353,12 @@
     "site": "leetcode",
     "slug": "stone-removal-game",
     "difficulty": "Easy",
-    "pattern": "",
-    "time": "",
-    "space": "",
+    "pattern": "Deterministic game simulation",
+    "time": "O(1)",
+    "space": "O(1)",
     "dir": "leetcode/stone-removal-game",
     "solution": "",
     "mine": null,
-    "updatedAt": "2026-11-26T03:07:18.826Z"
+    "updatedAt": "2026-11-26T03:07:53.922Z"
   }
 }

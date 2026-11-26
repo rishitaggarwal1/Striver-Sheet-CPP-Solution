@@ -1,10 +1,10 @@
 # M-Coloring Problem
 
-**GeeksforGeeks** · **Medium** · [Open the problem](https://www.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1) · Pattern: **Backtracking (constraint satisfaction)**
+**GeeksforGeeks** · **Medium** · [Open the problem](https://www.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1) · Pattern: **Backtracking (constraint satisfaction)** · ✅ Solved in C++ · 0.81 s
 
 > Decide whether each of the V vertices can be given one of m colors so that every edge joins two different colors.
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [Intuition](#intuition) · [Approaches](#approaches) · [My solution](#my-solution) · [Test cases](#test-cases) · [Mistakes and edge cases](#mistakes-and-edge-cases) · [Practice next](#practice-next) · [Takeaways](#takeaways)
 
 ## Problem
 
@@ -384,6 +384,52 @@ int main() {
 **Complexity:** time `O(m^V · V) worst case, heavily pruned in practice`, space `O(V)`. The worst case is the size of the search tree, up to m^V leaves, with an O(deg(v)) ≤ O(V) safety check at each node. Memory is the color array and a recursion depth of V.
 
 **Why this is the best:** It is still exponential, which is unavoidable because m-colorability is NP-complete. DP over subsets of independent sets, O(2^V·V) or O(3^V), is an alternative, but at V ≤ 10 backtracking is simpler and fast enough.
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ | 0.81 s |   | 361 / 361 | 1 | 0 of 8 | 2026-11-26 |
+
+For comparison, the optimal approach (Backtracking with local isSafe check) runs in `O(m^V · V) worst case, heavily pruned in practice` time and `O(V)` space.
+
+```cpp
+class Solution {
+  public:
+    bool safe(int i, vector<vector<int>> &adj, vector<int>& col, int c)
+    {
+        for(int k = 0; k<adj[i].size();k++)
+        {
+            if(col[adj[i][k]]==c)    
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    bool func(int i, vector<vector<int>> &adj, vector<int>& col, int m)
+    {
+        if(i==adj.size())   return true;
+        for(int j=1;j<=m;j++)
+        {
+            if(safe(i,adj,col,j))
+            {
+                col[i] = j;
+                if(func(i+1,adj,col,m))
+                    return true;
+                col[i] = -1;
+            }
+        }
+        return false;
+    }
+    bool graphColoring(vector<vector<int>> &adj, int m) {
+        // code here
+        int n = adj.size();
+        vector<int> col(n,-1);
+        return func(0,adj,col,m);
+    }
+};
+```
 
 ## Test cases
 

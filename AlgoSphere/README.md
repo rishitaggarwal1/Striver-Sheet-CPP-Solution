@@ -2,7 +2,7 @@
 
 Problem-by-problem notes. Each folder walks through one problem: progressive hints, the intuition behind it, every approach from brute force to optimal with a complexity breakdown and a step-by-step dry run, a commented C++ solution, and test cases.
 
-**27 problems** · 9 solved · Easy 5 · Medium 14 · Hard 8 · 22 patterns
+**27 problems** · 10 solved · Easy 5 · Medium 14 · Hard 8 · 22 patterns
 
 **How to use these notes:** try the problem first, then open the hints one at a time. Read the intuition and the approaches only after you've made an attempt.
 
@@ -18,7 +18,7 @@ Problem-by-problem notes. Each folder walks through one problem: progressive hin
 | 8 | [House Robber](leetcode/house-robber/) | LeetCode | Medium | 1D DP on prefixes (pick / skip) | `O(n)` time, `O(1)` space | [C++](leetcode/house-robber/house-robber.cpp) |   |
 | 9 | [House Robber II](leetcode/house-robber-ii/) | LeetCode | Medium | 1D take/skip DP, run twice to break the circle | `O(n)` time, `O(1)` space | [C++](leetcode/house-robber-ii/house-robber-ii.cpp) |   |
 | 10 | [K-th of Two Sorted Arrays](gfg/k-th-element-of-two-sorted-array1317/) | GeeksforGeeks | Medium |   |   |   |   |
-| 11 | [M-Coloring Problem](gfg/m-coloring-problem-1587115620/) | GeeksforGeeks | Medium | Backtracking (constraint satisfaction) | `O(m^V · V) worst case, heavily pruned in practice` time, `O(V)` space | [C++](gfg/m-coloring-problem-1587115620/m-coloring-problem-1587115620.cpp) |   |
+| 11 | [M-Coloring Problem](gfg/m-coloring-problem-1587115620/) | GeeksforGeeks | Medium | Backtracking (constraint satisfaction) | `O(m^V · V) worst case, heavily pruned in practice` time, `O(V)` space | [C++](gfg/m-coloring-problem-1587115620/m-coloring-problem-1587115620.cpp) | ✅ [C++](gfg/m-coloring-problem-1587115620/my-solution.cpp) |
 | 12 | [Max Circular Subarray Sum](gfg/max-circular-subarray-sum-1587115620/) | GeeksforGeeks | Hard |   |   |   |   |
 | 13 | [Maximize Consecutive Elements in an Array After Modification](leetcode/maximize-consecutive-elements-in-an-array-after-modification/) | LeetCode | Hard | Sorting + Dynamic Programming | `O(n log n)` time, `O(n)` space | [C++](leetcode/maximize-consecutive-elements-in-an-array-after-modification/maximize-consecutive-elements-in-an-array-after-modification.cpp) |   |
 | 14 | [Maximum Subarray With Equal Products](leetcode/maximum-subarray-with-equal-products/) | LeetCode | Easy | Prime-exponent reasoning + sliding window | `O(n)` time, `O(1)` space | [C++](leetcode/maximum-subarray-with-equal-products/maximum-subarray-with-equal-products.cpp) | ✅ [C++](leetcode/maximum-subarray-with-equal-products/my-solution.cpp) |

@@ -422,7 +422,10 @@
     "space": "",
     "dir": "leetcode/word-search",
     "solution": "",
-    "mine": null,
-    "updatedAt": "2026-11-26T09:30:15.142Z"
+    "mine": {
+      "lang": "C++",
+      "path": "leetcode/word-search/my-solution.cpp"
+    },
+    "updatedAt": "2026-11-26T09:34:40.627Z"
   }
 }

@@ -1,8 +1,8 @@
 # Word Search
 
-**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/word-search/)
+**LeetCode** · **Medium** · [Open the problem](https://leetcode.com/problems/word-search/) · ✅ Solved in C++
 
-**Contents:** [Problem](#problem) · [Hints](#hints) · [Test cases](#test-cases)
+**Contents:** [Problem](#problem) · [Hints](#hints) · [My solution](#my-solution) · [Test cases](#test-cases)
 
 ## Problem
 
@@ -111,6 +111,75 @@ Return true if any start succeeds, otherwise false.
 The trickiest step is restoring the cell on every exit path, including early returns, or later searches will break. Handle a one-letter word and a word longer than `m * n`. Useful pruning: return false immediately if the board lacks enough copies of some letter the word needs. Also reverse the word when its last letter is rarer on the board than its first, so the search starts from fewer cells. Time is `O(m * n * 3^L)` and extra space is `O(L)` for the recursion depth.
 
 </details>
+
+## My solution
+
+| Language | Runtime | Memory | Tests passed | Attempts | Hints used | Accepted on |
+| --- | --- | --- | --- | --- | --- | --- |
+| C++ |   |   |   | 1 | 0 of 8 | 2026-11-26 |
+
+```cpp
+class Solution {
+public:
+    bool check(int i, int j, int m, int n)
+    {
+        return i>=0 && i<m && j>=0 &&j<n;
+    }
+    bool solve(vector<vector<char>>& board, string& word, int r, int c, int k, vector<vector<bool>>& vis)
+    {
+        int m = board.size(), n=board[0].size();
+        if(k==word.length())
+        {
+            return true;
+        }
+        // Down
+        if(check(r+1,c,m,n) && !vis[r+1][c] && board[r+1][c]==word[k])
+        {
+            vis[r][c]=true;
+            if(solve(board,word,r+1,c,k+1,vis)) return true;
+            vis[r][c]=false;
+        }
+        //Right
+        if(check(r,c+1,m,n) && !vis[r][c+1] && board[r][c+1]==word[k])
+        {
+            vis[r][c]=true;
+            if(solve(board,word,r,c+1,k+1,vis)) return true;
+            vis[r][c]=false;
+        }
+        //Left
+        if(check(r,c-1,m,n) && !vis[r][c-1] && board[r][c-1]==word[k])
+        {
+            vis[r][c]=true;
+            if(solve(board,word,r,c-1,k+1,vis)) return true;
+            vis[r][c]=false;
+        }
+        //UP
+        if(check(r-1,c,m,n) && !vis[r-1][c] && board[r-1][c]==word[k])
+        {
+            vis[r][c]=true;
+            if(solve(board,word,r-1,c,k+1,vis)) return true;
+            vis[r][c]=false;
+        }
+        return false;
+    }
+    bool exist(vector<vector<char>>& board, string word) {
+        int m = board.size(), n=board[0].size();
+        vector<vector<bool>> vis(m,vector<bool>(n,false));
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(board[i][j] == word[0])
+                {
+                    if(solve(board,word,i,j,1,vis))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+};
+```
 
 ## Test cases
 

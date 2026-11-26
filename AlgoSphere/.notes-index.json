@@ -373,8 +373,8 @@
     "time": "O(m^V · V) worst case, heavily pruned in practice",
     "space": "O(V)",
     "dir": "gfg/m-coloring-problem-1587115620",
-    "solution": "",
+    "solution": "gfg/m-coloring-problem-1587115620/m-coloring-problem-1587115620.cpp",
     "mine": null,
-    "updatedAt": "2026-11-26T06:46:26.116Z"
+    "updatedAt": "2026-11-26T06:47:23.982Z"
   }
 }

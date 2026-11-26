@@ -202,7 +202,147 @@ Symmetry breaking helps: a vertex never needs a color more than one above the hi
 5. If an assignment passes all edges, return true.
 6. After all m^V assignments, return false.
 
-**Complexity:** time `O(m^V · (V+E))`, space `O(V)`. There are m^V assignments, and each one gets a full edge scan of O(V+E). The only extra memory is the color array.
+**Pseudocode**
+
+```text
+ 1 │ function graphColoring(adj, m):
+ 2 │   V ← size(adj)
+ 3 │   color ← array of V zeros  // first assignment: every vertex gets color 0
+ 4 │   while true:
+ 5 │     valid ← true
+ 6 │     for u ← 0 to V − 1:
+ 7 │       for each w in adj[u]:
+ 8 │         if color[u] = color[w]:
+ 9 │           valid ← false  // edge (u, w) has both ends the same color
+10 │     if valid:
+11 │       return true  // every edge checked and none conflicts
+12 │     pos ← 0  // add 1 to the base-m number; color[0] is the lowest digit
+13 │     while pos < V and color[pos] = m − 1:
+14 │       color[pos] ← 0  // this digit overflows, so it carries
+15 │       pos ← pos + 1
+16 │     if pos = V:
+17 │       return false  // counter wrapped around, so all m^V assignments were tried
+18 │     color[pos] ← color[pos] + 1
+```
+
+**Time complexity: `O(m^V · (V+E))`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| Outer while loop (lines 4-18) | up to m^V iterations | Each iteration handles exactly one of the m^V possible color assignments. |
+| Validity scan (lines 5-9) | O(V + 2E) = O(V+E) per iteration | It visits every vertex once and every adjacency entry once, and each undirected edge appears twice. |
+| Counter increment (lines 12-18) | O(V) worst, O(1) amortized per iteration | Carries move through at most V digits, and on average fewer than one carry happens per increment. |
+
+- **Adding it up:** m^V iterations × (O(V+E) scan + O(1) amortized increment) = O(m^V · (V+E)); the scan dominates each iteration
+- **Best vs worst case:** Best case: an early assignment such as a low counter value is valid, so the function returns true after a few iterations. Worst case: the graph cannot be colored, e.g. the complete graph K10 with m = 9. Then all m^V assignments are scanned before returning false.
+- **At the maximum input:** V = 10, m = 9 on K10 → 9^10 ≈ 3.5·10^9 assignments × about 100 adjacency checks ≈ 3.5·10^11 steps, far too slow (time limit exceeded). Small m or a quickly found coloring finishes instantly.
+
+**Space complexity: `O(V)`**
+
+| Part | Cost | Why |
+| --- | --- | --- |
+| color array (line 3) | V integers | It stores the current assignment, which is also the digits of the base-m counter. |
+| Scalars V, valid, u, w, pos (lines 2-15) | O(1) | A fixed number of loop and flag variables. |
+
+- **Adding it up:** O(V) + O(1) = O(V)
+- **Not counted:** The input adjacency list is not counted. There is no recursion, so there is no stack depth to add.
+
+**Dry run** on `adj = [[1, 3, 2], [0, 3], [3, 0], [1, 2, 0]], m = 3`
+
+| Step | Line | What happens | State (step 1) / what changed |
+| --- | --- | --- | --- |
+| 1 | 3 | V = 4 and every vertex starts with color 0. This is the counter value 0000. | `V = 4`<br>`m = 3`<br>`color = [0, 0, 0, 0]`<br>`G: 4 nodes` |
+| 2 | 9 | Scanning u = 0 and w = 1 finds color[0] = color[1] = 0, so valid becomes false. The scan finishes, but this assignment is rejected. | `valid = false`<br>`u = 0`<br>`w = 1`<br>`color = [0, 0, 0, 0]` (u→0, w→1)<br>`G: u→0, w→1; edge 0–1` |
+| 3 | 18 | Increment: color[0] = 0 is not m−1 = 2, so there is no carry. color[0] becomes 1. | `pos = 0`<br>`color = [1, 0, 0, 0]` (pos→0)<br>`G: 4 nodes` |
+| 4 | 9 | Vertex 0 now differs from all its neighbours. But u = 1 and w = 3 both have color 0, so valid = false. | `u = 1`<br>`w = 3`<br>`color = [1, 0, 0, 0]` (u→1, w→3)<br>`G: u→1, w→3; edge 1–3` |
+| 5 | 18 | Increment again with no carry: color[0] goes from 1 to 2. | `pos = 0`<br>`color = [2, 0, 0, 0]` (pos→0)<br>`G: 4 nodes` |
+| 6 | 9 | Edge (1, 3) still has both ends colored 0, so this assignment is rejected too. | `u = 1`<br>`w = 3`<br>`color = [2, 0, 0, 0]` (u→1, w→3)<br>`G: u→1, w→3; edge 1–3` |
+| 7 | 15 | color[0] = 2 equals m−1, so it carries: color[0] is reset to 0 and pos moves to 1. | `pos = 1`<br>`color = [0, 0, 0, 0]` (pos→1)<br>`G: 4 nodes` |
+| 8 | 18 | color[1] = 0 is not 2, so the carry stops there and color[1] becomes 1. The counter value is now 3. | `color = [0, 1, 0, 0]` (pos→1) |
+| 9 | 18 | Skipping counter values 3 through 13: each one has a conflicting edge. The last of them, [1,1,1,0], fails on edge (0, 1) where both are 1. Its increment has no carry, so color[0] goes from 1 to 2. | `pos = 0`<br>`color = [2, 1, 1, 0]` (pos→0) |
+| 10 | 10 | The scan of all edges with color = [2,1,1,0] finds no conflict: 0-1 is 2/1, 0-3 is 2/0, 0-2 is 2/1, 1-3 is 1/0 and 2-3 is 1/0. So valid stays true. | `valid = true`<br>`color = [2, 1, 1, 0]`<br>`G: visited {0, 1, 2, 3}` |
+| 11 | 11 | A valid 3-coloring exists, so the function returns true. | (no change) |
+
+**Result:** true. The assignment [2,1,1,0] gives different colors to the two ends of every edge, so 3 colors are enough.
+
+**C++ solution**
+
+```cpp
+class Solution {
+  public:
+    bool graphColoring(vector<vector<int>> &adj, int m) {
+        int V = adj.size();                 // number of vertices
+        vector<int> color(V, 0);            // current assignment, read as a base-m counter (color[0] = lowest digit)
+        while (true) {
+            bool valid = true;              // assume valid until a conflicting edge is found
+            for (int u = 0; u < V && valid; u++) {      // scan every vertex
+                for (int w : adj[u]) {                  // and every neighbour of it
+                    if (color[u] == color[w]) {         // both ends of edge (u, w) share a color
+                        valid = false;                  // this assignment is invalid
+                        break;
+                    }
+                }
+            }
+            if (valid) return true;         // every edge has different colors at its two ends
+            int pos = 0;                    // add 1 to the base-m counter
+            while (pos < V && color[pos] == m - 1) {
+                color[pos] = 0;             // digit overflows: reset it and carry
+                pos++;
+            }
+            if (pos == V) return false;     // counter wrapped around: all m^V assignments failed
+            color[pos]++;                   // increment the first digit that can absorb the carry
+        }
+    }
+};
+```
+
+<details>
+<summary>Full program with <code>main()</code> (compile and run locally)</summary>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+  public:
+    bool graphColoring(vector<vector<int>> &adj, int m) {
+        int V = adj.size();                 // number of vertices
+        vector<int> color(V, 0);            // current assignment, read as a base-m counter (color[0] = lowest digit)
+        while (true) {
+            bool valid = true;              // assume valid until a conflicting edge is found
+            for (int u = 0; u < V && valid; u++) {      // scan every vertex
+                for (int w : adj[u]) {                  // and every neighbour of it
+                    if (color[u] == color[w]) {         // both ends of edge (u, w) share a color
+                        valid = false;                  // this assignment is invalid
+                        break;
+                    }
+                }
+            }
+            if (valid) return true;         // every edge has different colors at its two ends
+            int pos = 0;                    // add 1 to the base-m counter
+            while (pos < V && color[pos] == m - 1) {
+                color[pos] = 0;             // digit overflows: reset it and carry
+                pos++;
+            }
+            if (pos == V) return false;     // counter wrapped around: all m^V assignments failed
+            color[pos]++;                   // increment the first digit that can absorb the carry
+        }
+    }
+};
+
+int main() {
+    Solution sol;
+    vector<vector<int>> adj1 = {{1, 3, 2}, {0, 3}, {3, 0}, {1, 2, 0}};
+    bool r1 = sol.graphColoring(adj1, 3);
+    cout << "Example 1: " << (r1 ? "true" : "false") << " (expected true)" << endl;
+    vector<vector<int>> adj2 = {{1, 2}, {0, 2}, {0, 1}};
+    bool r2 = sol.graphColoring(adj2, 2);
+    cout << "Example 2: " << (r2 ? "true" : "false") << " (expected false)" << endl;
+    return 0;
+}
+```
+
+</details>
 
 **Why move on:** With m = V = 10 this is 10^10 assignments times up to 45 edges each, which is far too slow. Invalid prefixes are expanded completely before being rejected.
 

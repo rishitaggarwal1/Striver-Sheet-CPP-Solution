@@ -4,7 +4,7 @@
   "slug": "m-coloring-problem-1587115620",
   "title": "M-Coloring Problem",
   "url": "https://www.geeksforgeeks.org/problems/m-coloring-problem-1587115620/1",
-  "updatedAt": "2026-11-26T06:46:26.116Z",
+  "updatedAt": "2026-11-26T06:47:23.982Z",
   "problem": {
     "difficulty": "Medium",
     "description": "Given an undirected graph consisting of V vertices represented by an adjacency list adj[][] and an integer m, check whether the graph can be colored using at most m different colors such that no two adjacent vertices have the same color.\n\nNote: The graph uses 0-based indexing and may be connected or disconnected.\n\nExamples:\n\nInput: adj[][] = [[1, 3, 2], [0, 3], [3, 0], [1, 2, 0]], m = 3\nOutput: true\nExplanation: It is possible to color the given graph using 3 colors, for example, one of the possible ways vertices can be colored as follows:\n\nVertex 0: Color 1\nVertex 1: Color 2\nVertex 2: Color 2\nVertex 3: Color 3\n\nInput: adj[][] = [[1, 2], [0, 2], [0, 1]], m = 2\nOutput: false\nExplanation: It is not possible to color the given graph using only 2 colors because vertices 0, 1, and 2 form a triangle.\n\nConstraints:\n1 ≤ V ≤ 10\n1 ≤ E = edges.size() ≤ (V*(V-1))/2\n0 ≤ edges[i][j] ≤ V-1\n1 ≤ m ≤ V"
@@ -245,7 +245,903 @@
         "time": "O(m^V · (V+E))",
         "space": "O(V)",
         "complexity": "There are m^V assignments, and each one gets a full edge scan of O(V+E). The only extra memory is the color array.",
-        "tradeoff": "With m = V = 10 this is 10^10 assignments times up to 45 edges each, which is far too slow. Invalid prefixes are expanded completely before being rejected."
+        "tradeoff": "With m = V = 10 this is 10^10 assignments times up to 45 edges each, which is far too slow. Invalid prefixes are expanded completely before being rejected.",
+        "deep": {
+          "pseudocode": [
+            "function graphColoring(adj, m):",
+            "  V ← size(adj)",
+            "  color ← array of V zeros  // first assignment: every vertex gets color 0",
+            "  while true:",
+            "    valid ← true",
+            "    for u ← 0 to V − 1:",
+            "      for each w in adj[u]:",
+            "        if color[u] = color[w]:",
+            "          valid ← false  // edge (u, w) has both ends the same color",
+            "    if valid:",
+            "      return true  // every edge checked and none conflicts",
+            "    pos ← 0  // add 1 to the base-m number; color[0] is the lowest digit",
+            "    while pos < V and color[pos] = m − 1:",
+            "      color[pos] ← 0  // this digit overflows, so it carries",
+            "      pos ← pos + 1",
+            "    if pos = V:",
+            "      return false  // counter wrapped around, so all m^V assignments were tried",
+            "    color[pos] ← color[pos] + 1"
+          ],
+          "time": {
+            "total": "O(m^V · (V+E))",
+            "parts": [
+              {
+                "part": "Outer while loop (lines 4-18)",
+                "cost": "up to m^V iterations",
+                "why": "Each iteration handles exactly one of the m^V possible color assignments."
+              },
+              {
+                "part": "Validity scan (lines 5-9)",
+                "cost": "O(V + 2E) = O(V+E) per iteration",
+                "why": "It visits every vertex once and every adjacency entry once, and each undirected edge appears twice."
+              },
+              {
+                "part": "Counter increment (lines 12-18)",
+                "cost": "O(V) worst, O(1) amortized per iteration",
+                "why": "Carries move through at most V digits, and on average fewer than one carry happens per increment."
+              }
+            ],
+            "sum": "m^V iterations × (O(V+E) scan + O(1) amortized increment) = O(m^V · (V+E)); the scan dominates each iteration",
+            "cases": "Best case: an early assignment such as a low counter value is valid, so the function returns true after a few iterations. Worst case: the graph cannot be colored, e.g. the complete graph K10 with m = 9. Then all m^V assignments are scanned before returning false.",
+            "feel": "V = 10, m = 9 on K10 → 9^10 ≈ 3.5·10^9 assignments × about 100 adjacency checks ≈ 3.5·10^11 steps, far too slow (time limit exceeded). Small m or a quickly found coloring finishes instantly.",
+            "note": ""
+          },
+          "space": {
+            "total": "O(V)",
+            "parts": [
+              {
+                "part": "color array (line 3)",
+                "cost": "V integers",
+                "why": "It stores the current assignment, which is also the digits of the base-m counter."
+              },
+              {
+                "part": "Scalars V, valid, u, w, pos (lines 2-15)",
+                "cost": "O(1)",
+                "why": "A fixed number of loop and flag variables."
+              }
+            ],
+            "sum": "O(V) + O(1) = O(V)",
+            "cases": "",
+            "feel": "",
+            "note": "The input adjacency list is not counted. There is no recursion, so there is no stack depth to add."
+          },
+          "dryRun": {
+            "input": "adj = [[1, 3, 2], [0, 3], [3, 0], [1, 2, 0]], m = 3",
+            "steps": [
+              {
+                "line": 3,
+                "explain": "V = 4 and every vertex starts with color 0. This is the counter value 0000.",
+                "vars": {
+                  "V": "4",
+                  "m": "3"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Scanning u = 0 and w = 1 finds color[0] = color[1] = 0, so valid becomes false. The scan finishes, but this assignment is rejected.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "false",
+                  "u": "0",
+                  "w": "1"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "u": 0,
+                      "w": 1
+                    },
+                    "highlight": [
+                      0,
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {
+                      "u": "0",
+                      "w": "1"
+                    },
+                    "highlight": [
+                      "0",
+                      "1"
+                    ],
+                    "visited": [],
+                    "activeEdges": [
+                      [
+                        "0",
+                        "1"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "Increment: color[0] = 0 is not m−1 = 2, so there is no carry. color[0] becomes 1.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "false",
+                  "pos": "0"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "1",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "pos": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Vertex 0 now differs from all its neighbours. But u = 1 and w = 3 both have color 0, so valid = false.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "false",
+                  "u": "1",
+                  "w": "3"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "1",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "u": 1,
+                      "w": 3
+                    },
+                    "highlight": [
+                      1,
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {
+                      "u": "1",
+                      "w": "3"
+                    },
+                    "highlight": [
+                      "1",
+                      "3"
+                    ],
+                    "visited": [],
+                    "activeEdges": [
+                      [
+                        "1",
+                        "3"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "Increment again with no carry: color[0] goes from 1 to 2.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "false",
+                  "pos": "0"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "2",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "pos": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 9,
+                "explain": "Edge (1, 3) still has both ends colored 0, so this assignment is rejected too.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "false",
+                  "u": "1",
+                  "w": "3"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "2",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "u": 1,
+                      "w": 3
+                    },
+                    "highlight": [
+                      1,
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {
+                      "u": "1",
+                      "w": "3"
+                    },
+                    "highlight": [
+                      "1",
+                      "3"
+                    ],
+                    "visited": [],
+                    "activeEdges": [
+                      [
+                        "1",
+                        "3"
+                      ]
+                    ]
+                  }
+                }
+              },
+              {
+                "line": 15,
+                "explain": "color[0] = 2 equals m−1, so it carries: color[0] is reset to 0 and pos moves to 1.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "false",
+                  "pos": "1"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "pos": 1
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "color[1] = 0 is not 2, so the carry stops there and color[1] becomes 1. The counter value is now 3.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "false",
+                  "pos": "1"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "0",
+                      "1",
+                      "0",
+                      "0"
+                    ],
+                    "pointers": {
+                      "pos": 1
+                    },
+                    "highlight": [
+                      1
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 18,
+                "explain": "Skipping counter values 3 through 13: each one has a conflicting edge. The last of them, [1,1,1,0], fails on edge (0, 1) where both are 1. Its increment has no carry, so color[0] goes from 1 to 2.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "false",
+                  "pos": "0"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "2",
+                      "1",
+                      "1",
+                      "0"
+                    ],
+                    "pointers": {
+                      "pos": 0
+                    },
+                    "highlight": [
+                      0
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 10,
+                "explain": "The scan of all edges with color = [2,1,1,0] finds no conflict: 0-1 is 2/1, 0-3 is 2/0, 0-2 is 2/1, 1-3 is 1/0 and 2-3 is 1/0. So valid stays true.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "true"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "2",
+                      "1",
+                      "1",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": [
+                      0,
+                      1,
+                      2,
+                      3
+                    ]
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              },
+              {
+                "line": 11,
+                "explain": "A valid 3-coloring exists, so the function returns true.",
+                "vars": {
+                  "V": "4",
+                  "m": "3",
+                  "valid": "true"
+                },
+                "arrays": {
+                  "color": {
+                    "values": [
+                      "2",
+                      "1",
+                      "1",
+                      "0"
+                    ],
+                    "pointers": {},
+                    "highlight": []
+                  }
+                },
+                "structures": {},
+                "trees": {},
+                "lists": {},
+                "graphs": {
+                  "G": {
+                    "nodes": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "edges": [
+                      [
+                        "0",
+                        "1",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "0",
+                        "2",
+                        ""
+                      ],
+                      [
+                        "1",
+                        "3",
+                        ""
+                      ],
+                      [
+                        "2",
+                        "3",
+                        ""
+                      ]
+                    ],
+                    "directed": false,
+                    "pointers": {},
+                    "highlight": [],
+                    "visited": [
+                      "0",
+                      "1",
+                      "2",
+                      "3"
+                    ],
+                    "activeEdges": []
+                  }
+                }
+              }
+            ],
+            "result": "true. The assignment [2,1,1,0] gives different colors to the two ends of every edge, so 3 colors are enough."
+          },
+          "solution": "class Solution {\n  public:\n    bool graphColoring(vector<vector<int>> &adj, int m) {\n        int V = adj.size();                 // number of vertices\n        vector<int> color(V, 0);            // current assignment, read as a base-m counter (color[0] = lowest digit)\n        while (true) {\n            bool valid = true;              // assume valid until a conflicting edge is found\n            for (int u = 0; u < V && valid; u++) {      // scan every vertex\n                for (int w : adj[u]) {                  // and every neighbour of it\n                    if (color[u] == color[w]) {         // both ends of edge (u, w) share a color\n                        valid = false;                  // this assignment is invalid\n                        break;\n                    }\n                }\n            }\n            if (valid) return true;         // every edge has different colors at its two ends\n            int pos = 0;                    // add 1 to the base-m counter\n            while (pos < V && color[pos] == m - 1) {\n                color[pos] = 0;             // digit overflows: reset it and carry\n                pos++;\n            }\n            if (pos == V) return false;     // counter wrapped around: all m^V assignments failed\n            color[pos]++;                   // increment the first digit that can absorb the carry\n        }\n    }\n};",
+          "prelude": "#include <bits/stdc++.h>\nusing namespace std;",
+          "main": "int main() {\n    Solution sol;\n    vector<vector<int>> adj1 = {{1, 3, 2}, {0, 3}, {3, 0}, {1, 2, 0}};\n    bool r1 = sol.graphColoring(adj1, 3);\n    cout << \"Example 1: \" << (r1 ? \"true\" : \"false\") << \" (expected true)\" << endl;\n    vector<vector<int>> adj2 = {{1, 2}, {0, 2}, {0, 1}};\n    bool r2 = sol.graphColoring(adj2, 2);\n    cout << \"Example 2: \" << (r2 ? \"true\" : \"false\") << \" (expected false)\" << endl;\n    return 0;\n}"
+        }
       },
       {
         "level": "Better",
